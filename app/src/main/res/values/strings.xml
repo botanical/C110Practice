@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CSE110Practice</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="edit_message">Enter A String</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_display_message">My Message</string>
+</resources>
