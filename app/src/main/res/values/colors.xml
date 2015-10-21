@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="login_page_bg">#009bc3</color>
+    <color name="login_page_fg">@android:color/white</color>
+
+    <color name="app_text_bg">@android:color/white</color>
+
+    <color name="app_button_bg">@android:color/white</color>
+
+    <color name="app_text">#c0c0c0</color>
+
+</resources>

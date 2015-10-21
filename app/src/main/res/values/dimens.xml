@@ -2,4 +2,11 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="app_button_text_size">20sp</dimen>
+
+    <!-- login page dims -->
+    <dimen name="login_page_title_text_size">40sp</dimen>
+    <dimen name="login_page_username_field_label_text_size">16sp</dimen>
+    <dimen name="login_page_username_field_padding">8dp</dimen>
+    <dimen name="login_page_username_field_text_size">24sp</dimen>
 </resources>

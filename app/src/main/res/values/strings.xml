@@ -7,4 +7,8 @@
     <string name="edit_message">Enter A String</string>
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
+
+
+    <!--Login Page-->
+    <string name="login_page_login_button_text">LOGIN</string>
 </resources>
