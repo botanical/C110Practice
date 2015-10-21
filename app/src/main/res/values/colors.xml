@@ -8,6 +8,6 @@
 
     <color name="app_button_bg">@android:color/white</color>
 
-    <color name="app_text">#c0c0c0</color>
+    <color name="app_text">@android:color/black</color>
 
 </resources>

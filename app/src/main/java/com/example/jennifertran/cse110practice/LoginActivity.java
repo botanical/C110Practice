@@ -5,11 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 
 
-
-
-    public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
         private static final String LOGIN_FILE = "LOGIN_FILE";
 
@@ -49,13 +48,8 @@ import android.view.View;
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-
-            fetchServerSideData();
-
-
-
-            finish();
-
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         }
 
         private void fetchServerSideData() {
