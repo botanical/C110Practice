@@ -19,13 +19,11 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
-            mLoginPreferences = getSharedPreferences(LOGIN_FILE, MODE_PRIVATE);
-
             //Make user always log in
             mLoginPreferences.edit()
                     .putBoolean(LOGGED_IN, false)
                     .apply();
+            mLoginPreferences = getSharedPreferences(LOGIN_FILE, MODE_PRIVATE);
 
             if (mLoginPreferences.getBoolean(LOGGED_IN, true)) {
                 Intent dashboardIntent = new Intent(this, MainActivity.class);
