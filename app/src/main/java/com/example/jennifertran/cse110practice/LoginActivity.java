@@ -23,11 +23,11 @@ public class LoginActivity extends AppCompatActivity {
 
             mLoginPreferences = getSharedPreferences(LOGIN_FILE, MODE_PRIVATE);
 
-            if (mLoginPreferences.getBoolean(LOGGED_IN, false)) {
+            if (mLoginPreferences.getBoolean(LOGGED_IN, true)) {
                 Intent dashboardIntent = new Intent(this, MainActivity.class);
                 startActivity(dashboardIntent);
 
-                finish();
+                //finish();
             } else {
                 setContentView(R.layout.activity_login);
 
