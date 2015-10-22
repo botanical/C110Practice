@@ -18,10 +18,14 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            // boilerplate...
             super.onCreate(savedInstanceState);
 
             mLoginPreferences = getSharedPreferences(LOGIN_FILE, MODE_PRIVATE);
+
+            //Make user always log in
+            mLoginPreferences.edit()
+                    .putBoolean(LOGGED_IN, false)
+                    .apply();
 
             if (mLoginPreferences.getBoolean(LOGGED_IN, true)) {
                 Intent dashboardIntent = new Intent(this, MainActivity.class);
@@ -29,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 //finish();
             } else {
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivity(loginIntent);
                 setContentView(R.layout.activity_login);
 
                 // set listener of login button to call login() on press
@@ -43,10 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         private void login() {
-            // ...
-            mLoginPreferences.edit()
-                    .putBoolean(LOGGED_IN, true)
-                    .apply();
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
