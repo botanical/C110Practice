@@ -11,4 +11,7 @@
 
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
+
+    <!--Startup Page-->
+    <string name="instructions_title">Instructions</string>
 </resources>
