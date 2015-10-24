@@ -18,4 +18,14 @@
         android:layout_height="wrap_content"
         android:text="@string/button_send"
         android:onClick="sendMessage"/>
+
+
+
+    <Button
+        android:id="@+id/quiz_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/quiz_link_text"
+        android:onClick="quizTest"/>
+
 </LinearLayout>

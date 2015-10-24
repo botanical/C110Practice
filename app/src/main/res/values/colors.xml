@@ -10,4 +10,8 @@
 
     <color name="app_text">@android:color/black</color>
 
+    <!--Quiz Colors-->
+    <color name="quiz_background">#009bc0</color>
+    <color name="quiz_link_bg">@android:color/holo_red_dark</color>
+    <color name="quiz_text_color">@android:color/black</color>"
 </resources>
