@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -42,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-        Intent intent = new Intent(this, SubjectNav.class);
+        Intent intent = new Intent(this, SubjectNavActivity.class);
         startActivity(intent);
         }
 
