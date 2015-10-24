@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Test</string>
+    <string name="app_name">Mek</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -8,7 +8,10 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
 
+    <!--Subject Navigation page -->
+
 
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
+    <string name="title_activity_subject_nav">SubjectNav</string>
 </resources>
