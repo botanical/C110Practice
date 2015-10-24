@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-        Intent intent = new Intent(this, SubjectNav.class);
+        Intent intent = new Intent(this, QuizActivity.class);
         startActivity(intent);
         }
 
