@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,6 +20,8 @@ public class SubjectNavActivity extends Activity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+    public final static String EXTRA_MESSAGE = "extra message?"; // for sending intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,16 @@ public class SubjectNavActivity extends Activity {
                                 listDataHeader.get(groupPosition)).get(
                                 childPosition), Toast.LENGTH_SHORT)
                         .show();
+
+                // sending intent to Startup Page
+                Intent intent = new Intent(getApplicationContext(), StartupPage.class);
+                String subjectMessage = listDataHeader.get(groupPosition)
+                        + " : "
+                        + listDataChild.get(
+                        listDataHeader.get(groupPosition)).get(
+                        childPosition);
+                intent.putExtra(EXTRA_MESSAGE, subjectMessage);
+                startActivity(intent);
                 return false;
             }
         });
