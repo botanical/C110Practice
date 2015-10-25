@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -41,11 +42,27 @@ public class LoginActivity extends AppCompatActivity {
             mLoginPreferences.edit()
                     .putBoolean(LOGGED_IN, true)
                     .apply();
-
+/*
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        }
+            */
+            ///*
+            Intent sendIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+// Always use string resources for UI text.
+// This says something like "Share this photo with"
+            String title = getResources().getString(R.string.hello_world);
+// Create intent to show the chooser dialog
+            Intent chooser = Intent.createChooser(sendIntent, title);
 
+// Verify the original intent will resolve to at least one activity
+            if (sendIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
+            else
+                Toast.makeText(this, "No app with Action_send", Toast.LENGTH_SHORT).show();
+
+            //  */
+        }
         private void fetchServerSideData() {
         }
 
