@@ -36,7 +36,7 @@
             android:label="@string/quiz_title" >
         </activity>
 
-
+>
         <activity
             android:name=".DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
@@ -46,6 +46,15 @@
                 android:value="com.example.jennifertran.cse110practice.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".SubjectNav"
+            android:label="@string/title_activity_subject_nav"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jennifertran.cse110practice.LoginActivity" />
+        </activity>
     </application>
 
 </manifest>

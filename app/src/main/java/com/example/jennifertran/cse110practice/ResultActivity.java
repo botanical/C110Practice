@@ -25,6 +25,9 @@ public class ResultActivity extends Activity {
         bar.setRating(score);
         switch (score)
         {
+            case 0:
+                t.setText("0 out of 5... ;)");
+                break;
             case 1:
                 t.setText("1 out of 5");
                 break;
