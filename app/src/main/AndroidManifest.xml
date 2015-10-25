@@ -29,6 +29,15 @@
                 android:value="com.example.jennifertran.cse110practice.MainActivity" />
         </activity>
         <activity
+            android:name=".SubjectNavActivity"
+            android:label="@string/title_activity_subject_nav"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jennifertran.cse110practice.LoginActivity" />
+        </activity>
+        <activity
             android:name=".StartupPage"
             android:label="@string/instructions_title" >
         </activity>

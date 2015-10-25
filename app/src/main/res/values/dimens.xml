@@ -9,4 +9,5 @@
     <dimen name="login_page_username_field_label_text_size">16sp</dimen>
     <dimen name="login_page_username_field_padding">8dp</dimen>
     <dimen name="login_page_username_field_text_size">24sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
