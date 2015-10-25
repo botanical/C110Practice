@@ -42,11 +42,14 @@ public class LoginActivity extends AppCompatActivity {
             mLoginPreferences.edit()
                     .putBoolean(LOGGED_IN, true)
                     .apply();
-/*
-        Intent intent = new Intent(this, MainActivity.class);
+
+
+        //Intent intent = new Intent(this, MainActivity.class);
+
+        Intent intent = new Intent(this, QuizActivity.class);
         startActivity(intent);
-            */
-            ///*
+
+            /*
             Intent sendIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 // Always use string resources for UI text.
 // This says something like "Share this photo with"
@@ -61,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             else
                 Toast.makeText(this, "No app with Action_send", Toast.LENGTH_SHORT).show();
 
-            //  */
+            */
         }
         private void fetchServerSideData() {
         }
