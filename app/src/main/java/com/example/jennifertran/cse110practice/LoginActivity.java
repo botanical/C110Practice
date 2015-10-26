@@ -51,8 +51,6 @@ public class LoginActivity extends AppCompatActivity {
 
             /*
             Intent sendIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-// Always use string resources for UI text.
-// This says something like "Share this photo with"
             String title = getResources().getString(R.string.hello_world);
 // Create intent to show the chooser dialog
             Intent chooser = Intent.createChooser(sendIntent, title);
