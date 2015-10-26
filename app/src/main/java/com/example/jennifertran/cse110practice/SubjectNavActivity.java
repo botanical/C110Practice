@@ -119,28 +119,28 @@ public class SubjectNavActivity extends Activity {
 
         // Adding child data
         List<String> subMath = new ArrayList<String>();
-        subMath.add("Addition");
-        subMath.add("Subtraction");
-        subMath.add("Multiplication");
-        subMath.add("Division");
+        //subMath.add("Addition");
+        //subMath.add("Subtraction");
+        subMath.add("Multiplication and Division");
+        /*subMath.add("Division");
         subMath.add("Negative Numbers");
         subMath.add("Algebraic Expressions");
-        subMath.add("Fractions");
+        subMath.add("Fractions");*/
 
         List<String> subHistory = new ArrayList<String>();
-        subHistory.add("Presidents");
-        subHistory.add("Revolutonary War");
+        //subHistory.add("Presidents");
+        /*subHistory.add("Revolutonary War");
         subHistory.add("Spanish American War");
         subHistory.add("Civil War");
         subHistory.add("World War I");
-        subHistory.add("World War II");
+        subHistory.add("World War II");*/
 
         List<String> subScience = new ArrayList<String>();
-        subScience.add("The Butterfly");
+        /*subScience.add("The Butterfly");
         subScience.add("Magnetism");
-        subScience.add("Kenetic Forces");
-        subScience.add("Basic Chemistry");
-        subScience.add("Astronomy");
+        subScience.add("Kenetic Forces");*/
+        //subScience.add("Basic Chemistry");
+        //subScience.add("Astronomy");
 
         listDataChild.put(listDataHeader.get(0), subMath); // Header, Child data
         listDataChild.put(listDataHeader.get(1), subHistory);

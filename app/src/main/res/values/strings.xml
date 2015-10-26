@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bear\'s Best First App Ever</string>
+    <string name="app_name">Bear Quiz</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -11,20 +11,21 @@
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
 
-    <!--Subject Navigation page -->
-    <string name="title_activity_subject_nav">SubjectNav</string>
-
-    <!--Startup Page-->
-    <string name="instructions_title">Instructions</string>
-
     <!--Quiz Page-->
     <string name="quiz_question_prompt_text">TEXT</string>
     <string name="quiz_next">NEXT</string>
     <string name="quiz_title">QUIZ</string>
+    <string name="num_questions">5</string>
 
     <!--Main Activity Page -->
     <string name="quiz_link_text">QUIZ LINK</string>
 
     <!--Activity Bar -->
     <string name="menu_settings">Settings</string>
+
+    <!--Subject Navigation page -->
+    <string name="title_activity_subject_nav">SubjectNav</string>
+
+    <!--Startup Page-->
+    <string name="instructions_title">Instructions</string>
 </resources>
