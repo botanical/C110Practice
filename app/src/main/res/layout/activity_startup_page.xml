@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="10"
+        android:text="@string/num_questions"
         android:id="@+id/num_of_questions_number"
         android:layout_alignTop="@+id/num_of_questions_text"
         android:layout_toEndOf="@+id/num_of_questions_text" />
