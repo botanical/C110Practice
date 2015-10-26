@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,11 +15,13 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.Toast;
 
-public class SubjectNav extends Activity {
+public class SubjectNavActivity extends Activity {
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+    public final static String EXTRA_MESSAGE = "extra message?"; // for sending intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,16 @@ public class SubjectNav extends Activity {
                                 listDataHeader.get(groupPosition)).get(
                                 childPosition), Toast.LENGTH_SHORT)
                         .show();
+
+                // sending intent to Startup Page
+                Intent intent = new Intent(getApplicationContext(), StartupPage.class);
+                String subjectMessage = listDataHeader.get(groupPosition)
+                        + " : "
+                        + listDataChild.get(
+                        listDataHeader.get(groupPosition)).get(
+                        childPosition);
+                intent.putExtra(EXTRA_MESSAGE, subjectMessage);
+                startActivity(intent);
                 return false;
             }
         });

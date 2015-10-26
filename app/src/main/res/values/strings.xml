@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bear\'s Best First App Ever</string>
+    <string name="app_name">Mek</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -7,6 +7,8 @@
     <string name="edit_message">Enter A String</string>
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
+
+    <!--Subject Navigation page -->
 
 
     <!--Login Page-->
@@ -22,4 +24,11 @@
 
     <!--Activity Bar -->
     <string name="menu_settings">Settings</string>
+
+    <!--Subject Navigation page -->
+    <string name="title_activity_subject_nav">SubjectNav</string>
+
+    <!--Startup Page-->
+    <string name="instructions_title">Instructions</string>
+
 </resources>
