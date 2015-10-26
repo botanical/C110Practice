@@ -14,4 +14,7 @@
     <color name="quiz_background">#009bc0</color>
     <color name="quiz_link_bg">@android:color/holo_red_dark</color>
     <color name="quiz_text_color">@android:color/black</color>"
+
+    <!--Subject Navigation Colors-->
+    <color name="header_color">#c0c0c0</color>
 </resources>
