@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "com.example.jennifertran.cse110practice.MESSAGE";
@@ -22,10 +25,17 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
+    public void quizTest(View view) {
+        //Intent intent = new Intent(this, QuizActivity.class);
+        //startActivity(intent);
+        Toast.makeText(this, "Quiz link is working", Toast.LENGTH_SHORT).show();
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
 
     @Override
@@ -43,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-// Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_search:
                 openSearch();
@@ -62,5 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void openSearch() {
         Toast.makeText(this, "Search is working", Toast.LENGTH_SHORT).show();
+
     }
 }
