@@ -2,11 +2,12 @@ package com.example.jennifertran.cse110practice;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class ResultActivity extends Activity {
+public class ResultActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
