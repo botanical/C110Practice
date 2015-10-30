@@ -3,6 +3,7 @@ package com.example.jennifertran.cse110practice;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class QuizActivity extends Activity {
+public class QuizActivity extends AppCompatActivity {
 
     List<Question> question_list;
     int score=0;
@@ -22,6 +23,7 @@ public class QuizActivity extends Activity {
     TextView textQuestion;
     RadioButton rda, rdb, rdc;
     Button next_button;
+    View submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,9 @@ public class QuizActivity extends Activity {
         rda = (RadioButton)findViewById(R.id.radio0);
         rdb = (RadioButton)findViewById(R.id.radio1);
         rdc = (RadioButton)findViewById(R.id.radio2);
-        next_button = (Button)findViewById(R.id.button1);
+        next_button = (Button)findViewById(R.id.button_next);
+        submit = findViewById(R.id.button_submit);
+        submit.setVisibility(View.GONE);
 
         // Set the question son the page
         setQuestionView();
@@ -60,17 +64,37 @@ public class QuizActivity extends Activity {
                     Log.d("score", "Your score" + score);
                 }
 
-                if(question_id<5){
+                if(question_id < 5){
                     current_question = question_list.get(question_id);
                     setQuestionView();
-                }else{
-                    Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                } else if (question_id == 5){
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                    findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            submit();
+                        }
+                    });
+
+                    /*Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                     Bundle b = new Bundle();
                     b.putInt("score", score); //Your score
                     intent.putExtras(b); //Put your score to your next Intent
                     startActivity(intent);
-                    finish();
+                    finish();*/
                 }
+            }
+
+            private void submit() {
+
+                Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("score", score); //Your score
+                intent.putExtras(b); //Put your score to your next Intent
+                startActivity(intent);
+                finish();
+
             }
         });
     }
