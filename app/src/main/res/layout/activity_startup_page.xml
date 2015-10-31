@@ -72,12 +72,12 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp" />
 
-    <Chronometer
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/chronometer"
+        android:id="@+id/timer"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Time:"
+        android:text="00:30"
         android:format="MM:SS"
         android:layout_alignTop="@+id/time_text"
         android:layout_toEndOf="@+id/time_text" />
@@ -93,5 +93,20 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="40dp" />
+
+    <!--<Button
+        android:text="START"
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timer"
+        android:layout_alignStart="@+id/timer" />
+    <Button
+        android:text="STOP"
+        android:id="@+id/btnStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnStart"
+        android:layout_alignEnd="@+id/subject_title_text" />-->
 
 </RelativeLayout>

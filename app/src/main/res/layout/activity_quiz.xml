@@ -38,7 +38,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RadioButton" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/textViewTimer"
+                android:layout_gravity="center_horizontal" />
         </RadioGroup>
+
         <Button
             android:id="@+id/button1"
             android:layout_width="match_parent"

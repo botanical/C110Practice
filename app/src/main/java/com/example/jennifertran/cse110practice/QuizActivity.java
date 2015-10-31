@@ -3,6 +3,7 @@ package com.example.jennifertran.cse110practice;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -22,6 +23,7 @@ public class QuizActivity extends Activity {
     TextView textQuestion;
     RadioButton rda, rdb, rdc;
     Button next_button;
+    TextView textViewTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class QuizActivity extends Activity {
                 }
             }
         });
+
+        textViewTime = (TextView) findViewById(R.id.textViewTimer);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,4 +93,15 @@ public class QuizActivity extends Activity {
         rdc.setText(current_question.getOPTC());
         question_id++;
     }
+
+    CountDownTimer timer = new CountDownTimer(30000, 1000) {
+
+        public void onTick(long millisUntilFinished) {
+            textViewTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+        }
+
+        public void onFinish() {
+            textViewTime.setText("done!");
+        }
+    }.start();
 }
