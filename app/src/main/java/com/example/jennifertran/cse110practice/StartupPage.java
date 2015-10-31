@@ -9,10 +9,13 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
 public class StartupPage extends AppCompatActivity {
     Button start_button;
-    //Button btnStart, btnStop;
-    //public TextView textViewTime;
+    int testTimeSend = 70000;
+    TextView startTime;
+    public final static String EXTRA_TIME = "Time: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,59 +28,28 @@ public class StartupPage extends AppCompatActivity {
         TextView subText = (TextView) findViewById(R.id.subject_title_text);
         subText.setText(subMessage);
 
-        // set listener of login button to call login() on press
+        // displaying time
+        startTime = (TextView) findViewById(R.id.timer);
+        String timeText = String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(testTimeSend) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(testTimeSend)),
+                TimeUnit.MILLISECONDS.toSeconds(testTimeSend) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(testTimeSend)));
+        startTime.setText(timeText);
+
+        // set listener of start button to call startQuiz() on press
         findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startQuiz();
-                //timer.start();
             }
         });
-
-        //textViewTime = (TextView) findViewById(R.id.timer);
-        /*btnStart = (Button) findViewById(R.id.btnStart);
-        btnStop = (Button) findViewById(R.id.btnStop);
-
-        textViewTime.setText("00:30");
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timer.start();
-            }
-        });
-
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timer.cancel();
-            }
-        });*/
     }
 
     private void startQuiz() {
         Intent intent = new Intent(this, QuizActivity.class);
+        intent.putExtra(EXTRA_TIME, testTimeSend);
         startActivity(intent);
     }
-
-    /*public class CounterClass extends CountDownTimer {
-        public CounterClass(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-            // TODO Auto-generated constructor stub
-        }
-
-        public void onTick
-    }*/
-
-    /*CountDownTimer timer = new CountDownTimer(30000, 1000) {
-
-        public void onTick(long millisUntilFinished) {
-            textViewTime.setText("seconds remaining: " + millisUntilFinished / 1000);
-        }
-
-        public void onFinish() {
-            textViewTime.setText("done!");
-        }
-    }.start();*/
-
 }
 

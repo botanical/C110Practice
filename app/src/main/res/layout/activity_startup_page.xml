@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="You will start the quiz! blah blah blah I am here to fill up space"
+        android:text="You will soon start the quiz! Please do not use the your device's back button, as that will reset the time and quiz."
         android:id="@+id/instruc_id"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -79,7 +79,6 @@
         android:id="@+id/timer"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="00:30"
-        android:format="MM:SS"
         android:layout_alignTop="@+id/time_text"
         android:layout_toEndOf="@+id/time_text" />
 
@@ -94,20 +93,5 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="10dp" />
-
-    <!--<Button
-        android:text="START"
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timer"
-        android:layout_alignStart="@+id/timer" />
-    <Button
-        android:text="STOP"
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnStart"
-        android:layout_alignEnd="@+id/subject_title_text" />-->
 
 </RelativeLayout>

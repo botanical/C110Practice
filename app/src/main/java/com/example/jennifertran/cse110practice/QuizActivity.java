@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.concurrent.TimeUnit;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class QuizActivity extends AppCompatActivity {
     Button next_button;
     View submit;
     TextView textViewTime;
-    int testTime = 15000;
+    int testTime = 30000; // 30 seconds by default for test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,11 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set up the database
         DbHelper db = new DbHelper(this);
+
+        // for timer stuff
+        Intent intentReceived = getIntent();
+        textViewTime = (TextView) findViewById(R.id.textViewTimer);
+        testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);
 
         question_list = db.getAllQuestions();
         current_question = question_list.get(question_id);
@@ -102,7 +108,55 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        textViewTime = (TextView) findViewById(R.id.textViewTimer);
+        // much timer stuff
+        CountDownTimer timer = new CountDownTimer(testTime, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                //textViewTime.setText("Time Remaining: " + millisUntilFinished/60000
+                //+ ":" + (millisUntilFinished/1000) % 60 );
+
+                String timeText = String.format("%02d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+
+                textViewTime.setText(timeText);
+
+                // 1 minute left warning
+                if( millisUntilFinished <= 60000 && millisUntilFinished > 57000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "1 minute left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // 30 seconds left warning
+                if( millisUntilFinished <= 30000 && millisUntilFinished > 27000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "30 seconds left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // 10 seconds left warning
+                if( millisUntilFinished <= 10000 && millisUntilFinished > 7000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "10 seconds left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onFinish() {
+                textViewTime.setText("Time's up!");
+
+                // submit quiz when time's up; just copied code
+                Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("score", score); //Your score
+                intent.putExtras(b); //Put your score to your next Intent
+                startActivity(intent);
+                finish();
+            }
+        }.start();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,30 +173,4 @@ public class QuizActivity extends AppCompatActivity {
         rdc.setText(current_question.getOPTC());
         question_id++;
     }
-
-    CountDownTimer timer = new CountDownTimer(testTime, 1000) {
-
-        public void onTick(long millisUntilFinished) {
-            textViewTime.setText("Time Remaining: " + millisUntilFinished / 1000);
-
-            // 10 seconds left warning
-            if( millisUntilFinished <= 10000) {
-                Toast.makeText(getApplicationContext(),
-                        "Less than 10 seconds left!",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        public void onFinish() {
-            textViewTime.setText("Time's up!");
-
-            // submit quiz when time's up; just copied code
-            Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
-            Bundle b = new Bundle();
-            b.putInt("score", score); //Your score
-            intent.putExtras(b); //Put your score to your next Intent
-            startActivity(intent);
-            finish();
-        }
-    }.start();
 }
