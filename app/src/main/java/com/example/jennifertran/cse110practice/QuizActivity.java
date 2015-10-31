@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class QuizActivity extends Activity {
     RadioButton rda, rdb, rdc;
     Button next_button;
     TextView textViewTime;
+    int testTime = 15000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +96,29 @@ public class QuizActivity extends Activity {
         question_id++;
     }
 
-    CountDownTimer timer = new CountDownTimer(30000, 1000) {
+    CountDownTimer timer = new CountDownTimer(testTime, 1000) {
 
         public void onTick(long millisUntilFinished) {
-            textViewTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+            textViewTime.setText("Time remaining: " + millisUntilFinished / 1000);
+
+            // 10 seconds left warning
+            if( millisUntilFinished <= 10000) {
+                Toast.makeText(getApplicationContext(),
+                        "Less than 10 seconds left!",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
 
         public void onFinish() {
-            textViewTime.setText("done!");
+            textViewTime.setText("Time's up!");
+
+            // submit quiz when time's up; just copied code
+            Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+            Bundle b = new Bundle();
+            b.putInt("score", score); //Your score
+            intent.putExtras(b); //Put your score to your next Intent
+            startActivity(intent);
+            finish();
         }
     }.start();
 }
