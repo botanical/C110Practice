@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"  >
+        android:orientation="vertical">
         <TextView
             android:id="@+id/textView1"
             android:layout_width="match_parent"
@@ -56,26 +56,50 @@
                 android:id="@+id/textViewTimer"
                 android:layout_gravity="center_horizontal" />
         </RadioGroup>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NEXT"
-            android:textColor="@color/quiz_button_color"
-            android:textSize="20dp"
-            android:background="@color/quiz_background"
-            />
+            <View android:id="@+id/fakeView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"/>
+            <Button
+                android:id="@+id/button_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NEXT"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_background"
+                android:weightSum="0.5"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"
+                />
 
-        <Button
-            android:id="@+id/button_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT"
-            android:textSize="20dp"
-            android:textColor="@color/quiz_button_color"
-            android:background="@color/quiz_background"/>
-
-
+            <Button
+                android:id="@+id/button_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BACK"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_next_button_color"
+                android:weightSum="0.5"
+                android:layout_alignRight="@id/fakeView"
+                android:layout_alignParentLeft="true"
+                />
+            <Button
+                android:id="@+id/button_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SUBMIT"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_button_color"
+                android:background="@color/quiz_background"
+                android:weightSum="0.5"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

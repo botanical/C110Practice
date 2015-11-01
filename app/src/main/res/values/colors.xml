@@ -14,10 +14,11 @@
 
 
     <!--Quiz Colors-->
-    <color name="quiz_background">#009bc0</color>
+    <color name="quiz_background">#00BBE8</color>
     <color name="quiz_link_bg">@android:color/holo_red_dark</color>
     <color name="quiz_text_color">@android:color/black</color>"
     <color name="quiz_button_color">@android:color/white</color>
+    <color name="quiz_next_button_color">#009bc0</color>
 
 
     <!--Subject Navigation Colors-->
