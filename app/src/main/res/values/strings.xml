@@ -17,7 +17,7 @@
     <!--Quiz Page-->
     <string name="quiz_question_prompt_text">TEXT</string>
     <string name="quiz_next">NEXT</string>
-    <string name="quiz_title">QUIZ</string>
+    <string name="quiz_title">Quiz</string>
     <string name="num_questions">5</string>
 
     <!--Main Activity Page -->

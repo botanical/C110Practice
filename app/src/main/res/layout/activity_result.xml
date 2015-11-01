@@ -13,13 +13,6 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical" >
 
-        <RatingBar
-            android:id="@+id/ratingBar1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1.0"
-            android:rating="0.0"/>
 
         <TextView
             android:id="@+id/textResult"
