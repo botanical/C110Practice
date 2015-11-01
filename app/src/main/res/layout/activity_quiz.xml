@@ -9,6 +9,13 @@
         android:layout_weight="1"
         android:orientation="vertical"  >
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Time Remaining"
+            android:id="@+id/textViewTimer"
+            android:layout_gravity="top|right"/>
+        <TextView
             android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +39,7 @@
                 android:checked="true"
                 android:text="RadioButton"
                 android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"/>
+                android:textColor="@color/quiz_text_color" />
             <RadioButton
                 android:id="@+id/radio1"
                 android:layout_width="match_parent"
@@ -47,14 +54,6 @@
                 android:text="RadioButton"
                 android:textSize="20dp"
                 android:textColor="@color/quiz_text_color"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Time Remaining"
-                android:id="@+id/textViewTimer"
-                android:layout_gravity="center_horizontal" />
         </RadioGroup>
 
         <Button

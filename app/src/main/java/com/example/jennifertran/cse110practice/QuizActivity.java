@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 
 public class QuizActivity extends AppCompatActivity {
-
+    static CountDownTimer timer;
     List<Question> question_list;
     int score=0;
     int question_id=0;
@@ -97,20 +97,18 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             private void submit() {
-
+                timer.cancel();
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("score", score); //Your score
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();
-
             }
         });
 
         // much timer stuff
-        CountDownTimer timer = new CountDownTimer(testTime, 1000) {
-
+        timer = new CountDownTimer(testTime, 1000) {
             public void onTick(long millisUntilFinished) {
                 //textViewTime.setText("Time Remaining: " + millisUntilFinished/60000
                 //+ ":" + (millisUntilFinished/1000) % 60 );
@@ -147,7 +145,6 @@ public class QuizActivity extends AppCompatActivity {
 
             public void onFinish() {
                 textViewTime.setText("Time's up!");
-
                 // submit quiz when time's up; just copied code
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
@@ -157,6 +154,16 @@ public class QuizActivity extends AppCompatActivity {
                 finish();
             }
         }.start();
+    }
+    @Override
+    public void onBackPressed() {
+        timer.cancel();
+        Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("score", score); //Your score
+        intent.putExtras(b); //Put your score to your next Intent
+        startActivity(intent);
+        finish();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
