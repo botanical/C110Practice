@@ -8,9 +8,6 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
 
-    <!--Subject Navigation page -->
-
-
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
 
@@ -31,5 +28,4 @@
 
     <!--Startup Page-->
     <string name="instructions_title">Instructions</string>
-
 </resources>
