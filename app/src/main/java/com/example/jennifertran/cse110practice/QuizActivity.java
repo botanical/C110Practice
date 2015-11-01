@@ -82,6 +82,7 @@ public class QuizActivity extends Activity {
     }
     private void setQuestionView()
     {
+        // TODO: Randomize questions
         textQuestion.setText(current_question.getQUESTION());
         rda.setText(current_question.getOPTA());
         rdb.setText(current_question.getOPTB());
