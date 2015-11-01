@@ -13,18 +13,20 @@ public class ResultActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         //get rating bar object
-        RatingBar bar=(RatingBar)findViewById(R.id.ratingBar1);
-        bar.setNumStars(5);
+        //RatingBar bar=(RatingBar)findViewById(R.id.ratingBar1);
+        //bar.setNumStars(5);
 
-        bar.setStepSize(0.5f);
+        //bar.setStepSize(0.5f);
         //get text view
         TextView t =(TextView)findViewById(R.id.textResult);
         //get score
         Bundle b = getIntent().getExtras();
         int score= b.getInt("score");
+        double percentage = (((double)score)/5);
         //display score
-        bar.setRating(score);
-        switch (score)
+        //bar.setRating(score);
+        t.setText("Your score is %" + (percentage)*100);
+        /*switch (score)
         {
             case 0:
                 t.setText("0 out of 5... ;)");
@@ -44,7 +46,7 @@ public class ResultActivity extends AppCompatActivity{
             case 5:
                 t.setText("5 out of 5!!!");
                 break;
-        }
+        }*/
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

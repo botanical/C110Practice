@@ -8,6 +8,7 @@ public class Question {
     private String OPTB;
     private String OPTC;
     private String ANSWER;
+
     public Question()
     {
         ID=0;
