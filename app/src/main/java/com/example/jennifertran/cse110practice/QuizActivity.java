@@ -124,30 +124,20 @@ public class QuizActivity extends AppCompatActivity {
                             submit();
                         }
                     });
-
-                    /*Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
-                    Bundle b = new Bundle();
-                    b.putInt("score", score); //Your score
-                    intent.putExtras(b); //Put your score to your next Intent
-                    startActivity(intent);
-                    finish();*/
-
                 }
-
-
             }
-
-
             private void submit() {
                 timer.cancel();
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
+                for (int i = 0; i < (answerScore.length); i++) {
+                    score = answerScore[i] + score;
+                }
                 b.putInt("score", score); //Your score
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();
             }
-
             private void back() {
                 RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 question_id--;
@@ -207,6 +197,10 @@ public class QuizActivity extends AppCompatActivity {
             public void onFinish() {
                 textViewTime.setText("Time's up!");
                 // submit quiz when time's up; just copied code
+                timer.cancel();
+                for (int i = 0; i < (answerScore.length); i++) {
+                    score = answerScore[i] + score;
+                }
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("score", score); //Your score
@@ -219,6 +213,9 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         timer.cancel();
+        for (int i = 0; i < (answerScore.length); i++) {
+            score = answerScore[i] + score;
+        }
         Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
         Bundle b = new Bundle();
         b.putInt("score", score); //Your score
