@@ -66,12 +66,16 @@ public class LoginActivity extends AppCompatActivity {
                     params.put("auth", "qwepoi12332191827364");
                     //Queries the database, in this case searching for the given username and its
                     //associated info.
-                    params.put("query", "SELECT * FROM Users WHERE username='"+username+"'");
-
-                    JSONObject json = jsonParser.makeHttpRequest(loginUrl, "POST", params);
-                    if((json == null))
+                    params.put("query", "SELECT * FROM Users WHERE username='" + username + "'");
+                    JSONArray ar = jsonParser.makeHttpRequest(loginUrl, "POST", params);
+                    if(ar == null)
                         return "";
-                    return json.toString();
+                    JSONObject json = ar.getJSONObject(0);
+                    if(json == null)
+                        return "";
+                    return json.toString(
+
+                    );
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -96,18 +100,24 @@ public class LoginActivity extends AppCompatActivity {
                     if(message.equals("")) {
                         Toast.makeText(LoginActivity.this, "Your credentials....failed.",
                                 Toast.LENGTH_LONG).show();
+                        this.failure = true;
                     }
                     else{
                         JSONObject args = new JSONObject(message);
-                        if(args.get("username").equals(username) &&
-                                args.get("password").equals(password))
+                        if(args.getString("username").equals(username) &&
+                                args.getString("password").equals(password))
                         {
                             Toast.makeText(LoginActivity.this,"You've logged in!",
                                     Toast.LENGTH_LONG).show();
+                            //LOG IN: Start next activity.
+                            Intent intent = new Intent(LoginActivity.this, SubjectNavActivity.class);
+                            intent.putExtra("username", args.getString("username"));
+                            startActivity(intent);
                         }
                         else
                             Toast.makeText(LoginActivity.this,"Your credentials....failed.",
                                     Toast.LENGTH_LONG).show();
+                        this.failure = true;
 
                     }
 
@@ -126,12 +136,15 @@ public class LoginActivity extends AppCompatActivity {
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-/*
-        Intent intent = new Intent(this, SubjectNavActivity.class);
-        startActivity(intent); */
+
+
             username = usernameEdit.getText().toString();
             password = passwordEdit.getText().toString();
-            new AttemptLogin().execute();
+            AttemptLogin log = new AttemptLogin();
+            log.execute();
+
+
+
 
             /*
             Intent sendIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);

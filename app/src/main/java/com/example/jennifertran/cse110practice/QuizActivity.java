@@ -3,6 +3,7 @@ package com.example.jennifertran.cse110practice;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -12,13 +13,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.concurrent.TimeUnit;
 
 import java.util.List;
 
 public class QuizActivity extends AppCompatActivity {
-
+    static CountDownTimer timer;
     List<Question> question_list;
-    int[] answerScore = new int[5];
+    int numQuestions = 5;
+    int[] answerScore = new int[numQuestions];
     int score = 0;
     int question_id = 0;
     Question current_question;
@@ -27,6 +30,9 @@ public class QuizActivity extends AppCompatActivity {
     Button next_button;
     View submit, back_button;
     RadioButton answer;
+    TextView textViewTime;
+    String qid;
+    int testTime = 30000; // 30 seconds by default for test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,16 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set up the database
         DbHelper db = new DbHelper(this);
+
+        // for timer stuff
+        Intent intentReceived = getIntent();
+        textViewTime = (TextView) findViewById(R.id.textViewTimer);
+
+        //Update question number in ActionBar
+        qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numQuestions);
+        setTitle(qid);
+
+        testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);
 
         question_list = db.getAllQuestions();
         current_question = question_list.get(question_id);
@@ -50,7 +66,11 @@ public class QuizActivity extends AppCompatActivity {
         back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
 
-        // Set the question son the page
+        //Update question number in ActionBar
+        qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numQuestions);
+        setTitle(qid);
+
+        // Set the questions on the page
         setQuestionView();
 
         // Call listener to check for next page request
@@ -72,6 +92,11 @@ public class QuizActivity extends AppCompatActivity {
 
                 if(question_id < 3){
                     question_id++;
+
+                    //Update question number in ActionBar
+                    qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numQuestions);
+                    setTitle(qid);
+
                     current_question = question_list.get(question_id);
                     back_button.setVisibility(View.VISIBLE);
                     submit.setVisibility(View.GONE);
@@ -89,6 +114,11 @@ public class QuizActivity extends AppCompatActivity {
                     back_button.setVisibility(View.VISIBLE);
                     next_button.setVisibility(View.GONE);
                     question_id++;
+
+                    //Update question number in ActionBar
+                    qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numQuestions);
+                    setTitle(qid);
+
                     current_question = question_list.get(question_id);
                     setQuestionView();
 
@@ -130,19 +160,23 @@ public class QuizActivity extends AppCompatActivity {
 
 
             private void submit() {
-
+                timer.cancel();
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("score", score); //Your score
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();
-
             }
 
             private void back() {
                 RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 question_id--;
+
+                //Update question number in ActionBar
+                qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numQuestions);
+                setTitle(qid);
+
                 submit.setVisibility(View.GONE);
                 next_button.setVisibility(View.VISIBLE);
 
@@ -160,6 +194,69 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        // Instantiate quiz timer.
+        timer = new CountDownTimer(testTime, 1000) {
+            public void onTick(long millisUntilFinished) {
+                //textViewTime.setText("Time Remaining: " + millisUntilFinished/60000
+                //+ ":" + (millisUntilFinished/1000) % 60 );
+
+                String timeText = String.format("%02d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+
+                textViewTime.setText(timeText);
+
+                // 1 minute left warning
+                if( millisUntilFinished <= 60000 && millisUntilFinished > 57000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "1 minute left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // 30 seconds left warning
+                if( millisUntilFinished <= 30000 && millisUntilFinished > 27000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "30 seconds left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // 10 seconds left warning
+                if( millisUntilFinished <= 10000 && millisUntilFinished > 7000 ) {
+                    Toast.makeText(getApplicationContext(),
+                            "10 seconds left!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onFinish() {
+                textViewTime.setText("Time's up!");
+                for (int i = 0; i < (answerScore.length); i++) {
+                    score = answerScore[i] + score;
+                }
+                // submit quiz when time's up; just copied code
+                Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("score", score); //Your score
+                intent.putExtras(b); //Put your score to your next Intent
+                startActivity(intent);
+                finish();
+            }
+        }.start();
+    }
+    @Override
+    public void onBackPressed() {
+        timer.cancel();
+        for (int i = 0; i < (answerScore.length); i++) {
+            score = answerScore[i] + score;
+        }
+        Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("score", score); //Your score
+        intent.putExtras(b); //Put your score to your next Intent
+        startActivity(intent);
+        finish();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

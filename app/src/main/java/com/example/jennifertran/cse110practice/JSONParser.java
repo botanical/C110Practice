@@ -29,38 +29,12 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class JSONParser {
     static InputStream is = null;
-    static JSONObject jsonObj;
+    static JSONArray jsonObj;
     static String json ="";
 
     public JSONParser(){}
-/*
-    public JSONObject getJSONFromUrl( final String url)
-    {
-        try {
-            URL web = new URL(url);
-            URLConnection c = web.openConnection();
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(c.getInputStream()));
-            String inputLine;
-            StringBuilder str = new StringBuilder();
-            while((inputLine = in.readLine()) != null)
-            {
-                str.append(inputLine + "\n");
-            }
-            json = str.toString();
-            try {
-                jsonObj = new JSONObject(json);
-
-            }catch(Exception e){}
-        }catch (Exception e){}
-
-        return jsonObj;
-
-
-    }*/
-
-    public JSONObject makeHttpRequest(String url, String method,
+    public JSONArray makeHttpRequest(String url, String method,
                                       Map<String, String> params)
     {
 
@@ -95,7 +69,7 @@ public class JSONParser {
              writer.write(jsonParam.toString());
              writer.flush();
 
-             //Handle responses
+             //Handle http response
              InputStreamReader r = new InputStreamReader((InputStream) c.getContent());
              BufferedReader buff = new BufferedReader(r);
              StringBuilder str = new StringBuilder();
@@ -105,17 +79,13 @@ public class JSONParser {
                  str.append(inputLine + "\n");
              }
              json = str.toString();
-             //For some reason, my php code which handles android requests always returns the request
-             //as an array of array of a JSONObject.
-             //"json" at this point is an array of an array so we need to chop off [ ] to access
-             //the string which we can turn into a JSONObject
-             //json = json.substring(1,json.length()-1);
+             //Php returns a JSONArray, where each entry represents a JSONObject encoding of a row.
              try {
                  JSONArray response = new JSONArray(json);
                  if(response.length() == 0)
                      jsonObj = null;
                  else
-                     jsonObj = new JSONArray(json).getJSONObject(0);
+                     jsonObj = new JSONArray(json);
                  writer.close();
                  r.close();
                  return jsonObj;
