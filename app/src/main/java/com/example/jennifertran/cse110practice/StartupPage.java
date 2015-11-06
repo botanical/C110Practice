@@ -17,7 +17,6 @@ public class StartupPage extends AppCompatActivity {
     TextView startTime;
     public final static String EXTRA_TIME = "Time: ";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
