@@ -8,6 +8,7 @@ public class Question {
     private String OPTB;
     private String OPTC;
     private String ANSWER;
+    private String MARKED;
 
     public Question()
     {
@@ -17,15 +18,16 @@ public class Question {
         OPTB="";
         OPTC="";
         ANSWER="";
+        MARKED="";
     }
     public Question(String question, String A, String B, String C,
-                    String answer) {
-
+                    String answer, String marked) {
         QUESTION = question;
         OPTA = A;
         OPTB = B;
         OPTC = C;
         ANSWER = answer;
+        marked = marked;
     }
     public int getID()
     {
@@ -46,6 +48,9 @@ public class Question {
     public String getANSWER() {
         return ANSWER;
     }
+    public String getMARKED() {
+        return MARKED;
+    }
     public void setID(int id)
     {
         ID=id;
@@ -64,6 +69,9 @@ public class Question {
     }
     public void setANSWER(String answer) {
         ANSWER = answer;
+    }
+    public void setMARKED(String marked) {
+        MARKED = marked;
     }
 
 }
