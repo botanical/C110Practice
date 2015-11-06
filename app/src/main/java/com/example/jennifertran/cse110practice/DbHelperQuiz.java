@@ -37,9 +37,20 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
                 + " TEXT, " + KEY_ANSWER+ " TEXT, "+KEY_OPTA +" TEXT, "
                 +KEY_OPTB +" TEXT, "+KEY_OPTC+" TEXT, "+KEY_MARKED+" TEXT)";
+        //String alter = "ALTER TABLE " + TABLE_QUEST + " AUTO_INCREMENT=0";
         db.execSQL(sql);
+        //db.execSQL(alter);
+        //Question fakeQuestion = new Question();
+        //this.addQuestion(fakeQuestion);
+
+        //String delete = "DELETE FROM " + TABLE_QUEST;
+        //db.execSQL(delete);
+        
         addQuestions();
         //db.close();
+
+        String subtraction = "UPDATE " + TABLE_QUEST +  " SET " + KEY_ID + "=" + KEY_ID + " - 1";
+        db.execSQL(subtraction);
     }
     private void addQuestions()
     {
@@ -87,13 +98,13 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Question quest = new Question();
-                quest.setID(cursor.getInt(0));
-                quest.setQUESTION(cursor.getString(1));
-                quest.setANSWER(cursor.getString(2));
-                quest.setOPTA(cursor.getString(3));
-                quest.setOPTB(cursor.getString(4));
-                quest.setOPTC(cursor.getString(5));
-                quest.setMARKED(cursor.getString(6));
+                quest.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+                quest.setQUESTION(cursor.getString((cursor.getColumnIndex(KEY_QUES))));
+                quest.setANSWER(cursor.getString(cursor.getColumnIndex(KEY_ANSWER)));
+                quest.setOPTA(cursor.getString(cursor.getColumnIndex(KEY_OPTA)));
+                quest.setOPTB(cursor.getString(cursor.getColumnIndex(KEY_OPTB)));
+                quest.setOPTC(cursor.getString(cursor.getColumnIndex(KEY_OPTC)));
+                quest.setMARKED(cursor.getString(cursor.getColumnIndex(KEY_MARKED)));
                 quesList.add(quest);
             } while (cursor.moveToNext());
         }
@@ -110,7 +121,8 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         return row;
     }
     public void insertIntoDb(String id, ContentValues value) {
-        dbase.update(TABLE_QUEST, value, id, null);
+        int x = dbase.update(TABLE_QUEST, value, KEY_ID+"="+id, null);
+        Log.d("UPDATED???", String.valueOf(x));
         Log.d("VAL", value.toString());
         Log.d("QID", id);
     }
@@ -119,11 +131,10 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + KEY_MARKED + " FROM " + TABLE_QUEST
                 + " WHERE " + KEY_ID + "=" + id;
         Log.d("QUERY", selectQuery);
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(selectQuery, null);
+        Cursor cursor = dbase.rawQuery(selectQuery, null);
 
         if  (cursor.moveToFirst()) {
-            marked = cursor.getString(cursor.getColumnIndex("marked"));
+            marked = cursor.getString(cursor.getColumnIndex(KEY_MARKED));
             Log.d("moved", "cursor moved!!");
 
             return marked;

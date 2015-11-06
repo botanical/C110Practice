@@ -34,7 +34,6 @@ public class QuizActivity extends AppCompatActivity {
     RadioButton rda, rdb, rdc;
     RadioGroup grp;
     DbHelperQuiz db;
-    ContentValues values = new ContentValues();
     String marked;
 
 
@@ -49,109 +48,83 @@ public class QuizActivity extends AppCompatActivity {
 
         question_list = db.getAllQuestions();
         current_question = question_list.get(question_id);
-
-        // Set up question on page
-        textQuestion = (TextView)findViewById(R.id.textView1);
         rda = (RadioButton)findViewById(R.id.radio0);
         rdb = (RadioButton)findViewById(R.id.radio1);
         rdc = (RadioButton)findViewById(R.id.radio2);
+        // Set up question on page
+        textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
         submit = findViewById(R.id.button_submit);
         submit.setVisibility(View.GONE);
         back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
+        grp = (RadioGroup)findViewById(R.id.radioGroup1);
 
         // Set the question son the page
         setQuestionView();
-        grp = (RadioGroup)findViewById(R.id.radioGroup1);
-        answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-        answerCheck = grp.getCheckedRadioButtonId();
-        if(!(answerCheck == -1)) {
-            if(current_question.getANSWER().equals(answer.getText()))
-            {
-                Log.d("DEBUG", "here");
-                answerScore[question_id] = 1;
-                values.put("marked", answer.getText().toString());
-                db.insertIntoDb(String.valueOf(question_id), values);
 
-            }
-        }
-        else {
-            // Else, put empty string into database for no answer
-            values.put("marked", "");
-            db.insertIntoDb(String.valueOf(question_id), values);
-        }
+
+
 
         // Call listener to check for next page request
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(question_id < 3){
-                    answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-                    grp = (RadioGroup)findViewById(R.id.radioGroup1);
+
+                question_id++;
+                Log.d("QuestionList", String.valueOf(question_list.get(0)));
+                current_question = question_list.get(question_id);
+                grp.clearCheck();
+                if(question_id == 4){
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                }
+                else if (question_id != 0){
+                    back_button.setVisibility(View.VISIBLE);
+                    submit.setVisibility(View.GONE);
+                }
+                else {
+                    back_button.setVisibility(View.GONE);
+                }
+
+
+
 
                     /* Check to see if previous question had radio buttons checked
                      * and resets new question to have no buttons checked.
                      */
-                    if (grp.getCheckedRadioButtonId() != -1) {
-                        answer.setChecked(false);
 
-                    }
+                    Log.d("QUESTION", String.valueOf(question_id));
+
 
                     /* Increments question_id to show new question
                      * and set view accordingly
                      */
-                    question_id++;
-                    current_question = question_list.get(question_id);
 
-                    back_button.setVisibility(View.VISIBLE);
-                    submit.setVisibility(View.GONE);
+                    /* Uncheck all buttons so new page has no checked answer */
 
-                    int next_qid = question_id;
-                    marked = db.queryMarkedAnswers(next_qid);
+                    marked = db.queryMarkedAnswers(question_id);
+
+                    //Log.d("THIS", marked);
 
                     setQuestionView();
-
                     if (((rda.getText()).toString()).equals(marked)) {
-                        rda.setChecked(true);
-                        rdb.setChecked(false);
-                        rdc.setChecked(false);
-                        Log.d("Banana", rda.getText().toString());
+                        grp.check(R.id.radio0);
 
+                        Log.d("Banana1", rda.getText().toString());
                     }
-                    if (((rdb.getText()).toString()).equals(marked)) {
-                        rda.setChecked(false);
-                        rdb.setChecked(true);
-                        rdc.setChecked(false);
-                        Log.d("Banana", rdb.getText().toString());
+                    if (((rdb.getText().toString()).equals(marked))) {
+                        grp.check(R.id.radio1);
+                        Log.d("Banana420 ", String.valueOf(rdb.isChecked()));
+                        Log.d("Banana2", rdb.getText().toString());
 
                     }
                     if (((rdc.getText()).toString()).equals(marked)) {
-                        rda.setChecked(false);
-                        rdb.setChecked(false);
-                        rdc.setChecked(true);
-                        Log.d("Banana", rdc.getText().toString());
+
+                        grp.check(R.id.radio2);
+                        Log.d("Banana3", rdc.getText().toString());
 
                     }
-
-                    grp = (RadioGroup)findViewById(R.id.radioGroup1);
-                    answerCheck = grp.getCheckedRadioButtonId();
-                    if(!(answerCheck == -1)) {
-                        answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-                        if(current_question.getANSWER().equals(answer.getText()))
-                        {
-                            Log.d("DEBUG", "here");
-                            answerScore[question_id] = 1;
-                            values.put("marked", answer.getText().toString());
-                            db.insertIntoDb(String.valueOf(question_id), values);
-
-                        }
-                    }
-                    else {
-                        values.put("marked", "");
-                        db.insertIntoDb(String.valueOf(question_id), values);
-                    }
-
 
                     findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
                         public void onClick(View view) {
@@ -159,75 +132,19 @@ public class QuizActivity extends AppCompatActivity {
                         }
                     });
 
-                } else {
-
-                    submit.setVisibility(View.VISIBLE);
-                    back_button.setVisibility(View.VISIBLE);
-                    next_button.setVisibility(View.GONE);
-                    question_id++;
-                    current_question = question_list.get(question_id);
-
-                    if(!(answerCheck == -1)) {
-                        answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-                        if(current_question.getANSWER().equals(answer.getText()))
-                        {
-                            Log.d("DEBUG", "here");
-                            answerScore[question_id] = 1;
-                            values.put("marked", answer.getText().toString());
-                            db.insertIntoDb(String.valueOf(question_id), values);
-
-                        }
-                    }
-                    else {
-                        values.put("marked", "");
-                        db.insertIntoDb(String.valueOf(question_id), values);
-                    }
-
-                    setQuestionView();
-
-
                     findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            RadioGroup grp = (RadioGroup)findViewById(R.id.radioGroup1);
-
+                            RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                             // Save the user's answer
-                            answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-                            Log.d("your answer", current_question.getANSWER() + " " + answer.getText());
-
-                            if(!(answerCheck == -1)) {
-                                if(current_question.getANSWER().equals(answer.getText()))
-                                {
-                                    Log.d("DEBUG", "here");
-                                    answerScore[question_id] = 1;
-                                    values.put("marked", answer.getText().toString());
-                                    db.insertIntoDb(String.valueOf(question_id), values);
+                            answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
 
                                     for (int i = 0; i < (answerScore.length); i++) {
                                         score = answerScore[i] + score;
                                     }
                                     submit();
-                                }
-                            }
-                            else {
-                                values.put("marked", "");
-                                db.insertIntoDb(String.valueOf(question_id), values);
-                            }
-
-
                         }
                     });
-
-                    /*Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
-                    Bundle b = new Bundle();
-                    b.putInt("score", score); //Your score
-                    intent.putExtras(b); //Put your score to your next Intent
-                    startActivity(intent);
-                    finish();*/
-
-                }
-
-
             }
 
 
@@ -243,69 +160,40 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             private void back() {
-                answer.setChecked(false);
+
                 question_id--;
-                prev_qid = question_id;
-                marked = db.queryMarkedAnswers(prev_qid);
+                Log.d("newqid", String.valueOf(question_id));
+                marked = db.queryMarkedAnswers(question_id);
+                Log.d("marked", "---:"+marked+":---");
                 current_question = question_list.get(question_id);
+                grp.clearCheck();
 
-                submit.setVisibility(View.GONE);
-                next_button.setVisibility(View.VISIBLE);
-
-                if (question_id == 0) {
+                if ((question_id + 1) == 4) {
+                    submit.setVisibility(View.GONE);
+                    next_button.setVisibility(View.VISIBLE);
+                } else if (question_id == 0){
                     back_button.setVisibility(View.GONE);
-                    setQuestionView();
-                } else if (question_id < 5) {
-                    setQuestionView();
                 }
 
-
+                setQuestionView();
                 if (((rda.getText()).toString()).equals(marked)) {
-                    rda.setChecked(true);
-                    rdb.setChecked(false);
-                    rdc.setChecked(false);
+                    grp.check(R.id.radio0);
+
                     Log.d("Checked", rda.getText().toString());
 
                 }
                 if (((rdb.getText()).toString()).equals(marked)) {
-                    rda.setChecked(false);
-                    rdb.setChecked(true);
-                    rdc.setChecked(false);
+                    grp.check(R.id.radio1);
+
                     Log.d("Checked", rdb.getText().toString());
 
                 }
                 if (((rdc.getText()).toString()).equals(marked)) {
-                    rda.setChecked(false);
-                    rdb.setChecked(false);
-                    rdc.setChecked(true);
+                    grp.check(R.id.radio2);
+
                     Log.d("Checked", rdc.getText().toString());
 
                 }
-
-                grp = (RadioGroup)findViewById(R.id.radioGroup1);
-                answerCheck = grp.getCheckedRadioButtonId();
-
-
-                ContentValues values = new ContentValues();
-                if(!(answerCheck == -1)) {
-                    answer = (RadioButton)findViewById(grp.getCheckedRadioButtonId());
-                    if(current_question.getANSWER().equals(answer.getText()))
-                    {
-                        Log.d("DEBUG", "here");
-                        answerScore[question_id] = 1;
-                        values.put("marked", answer.getText().toString());
-                        db.insertIntoDb(String.valueOf(question_id), values);
-
-                    }
-                }
-                else {
-                    // Else, put empty string into database for no answer
-                    values.put("marked", "");
-                    db.insertIntoDb(String.valueOf(question_id), values);
-                }
-                // Save the user's answer
-
-
 
                 Log.d("BUTTON1", rda.getText().toString());
                 Log.d("BUTTON2", rdb.getText().toString());
@@ -314,6 +202,8 @@ public class QuizActivity extends AppCompatActivity {
         });
 
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -327,4 +217,47 @@ public class QuizActivity extends AppCompatActivity {
         rdb.setText(current_question.getOPTB());
         rdc.setText(current_question.getOPTC());
     }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        ContentValues values = new ContentValues();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio0:
+                if (checked)
+                    values.put("marked", rda.getText().toString());
+                if(current_question.getANSWER().equals(rda.getText().toString()))
+                {
+                    answerScore[question_id] = 1;
+                }
+                db.insertIntoDb(String.valueOf(question_id), values);
+                Log.d("inserted", rda.getText().toString());
+                break;
+            case R.id.radio1:
+                if (checked)
+                    values.put("marked", rdb.getText().toString());
+                if(current_question.getANSWER().equals(rdb.getText().toString()))
+                {
+                    answerScore[question_id] = 1;
+                }
+                db.insertIntoDb(String.valueOf(question_id), values);
+                Log.d("inserted", rdb.getText().toString());
+
+                break;
+            case R.id.radio2:
+                if (checked)
+                    values.put("marked", rdc.getText().toString());
+                if(current_question.getANSWER().equals(rdc.getText().toString()))
+                {
+                    answerScore[question_id] = 1;
+                }
+                db.insertIntoDb(String.valueOf(question_id), values);
+                Log.d("inserted", rdc.getText().toString());
+
+                break;
+        }
+    }
+
 }

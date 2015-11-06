@@ -22,7 +22,6 @@ public class Question {
     }
     public Question(String question, String A, String B, String C,
                     String answer, String marked) {
-
         QUESTION = question;
         OPTA = A;
         OPTB = B;
