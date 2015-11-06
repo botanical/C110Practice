@@ -4,45 +4,102 @@
     android:layout_height="match_parent"
     tools:context=".QuizActivity" >
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Time Remaining"
+            android:id="@+id/textViewTimer"
+            android:layout_gravity="top|right"/>
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:text=""
+            android:textSize="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/quiz_text_color"/>
         <RadioGroup
             android:id="@+id/radioGroup1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.04" >
+            android:layout_weight="0.4"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp">
             <RadioButton
                 android:id="@+id/radio0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_text_color" />
             <RadioButton
                 android:id="@+id/radio1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_text_color"/>
             <RadioButton
                 android:id="@+id/radio2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="RadioButton" />
+                android:text="RadioButton"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_text_color"/>
         </RadioGroup>
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NEXT" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <View android:id="@+id/fakeView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"/>
+            <Button
+                android:id="@+id/button_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NEXT"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_background"
+                android:weightSum="0.5"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"
+                />
+
+            <Button
+                android:id="@+id/button_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BACK"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_next_button_color"
+                android:weightSum="0.5"
+                android:layout_alignRight="@id/fakeView"
+                android:layout_alignParentLeft="true"
+                />
+            <Button
+                android:id="@+id/button_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SUBMIT"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_button_color"
+                android:background="@color/quiz_background"
+                android:weightSum="0.5"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

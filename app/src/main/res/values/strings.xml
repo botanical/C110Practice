@@ -8,16 +8,13 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
 
-    <!--Subject Navigation page -->
-
-
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
 
     <!--Quiz Page-->
     <string name="quiz_question_prompt_text">TEXT</string>
     <string name="quiz_next">NEXT</string>
-    <string name="quiz_title">QUIZ</string>
+    <string name="quiz_title">Quiz</string>
     <string name="num_questions">5</string>
 
     <!--Main Activity Page -->
@@ -31,5 +28,7 @@
 
     <!--Startup Page-->
     <string name="instructions_title">Instructions</string>
+
+    <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
 
 </resources>

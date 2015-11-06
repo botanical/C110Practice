@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- General Colors -->
+    <color name="app_bg">#009bc3</color>
+    <color name="app_text_bg">@android:color/white</color>
+    <color name="app_button_bg">@android:color/white</color>
+    <color name="app_text">@android:color/black</color>
+
+    <!-- Login Colors -->
     <color name="login_page_bg">#009bc3</color>
     <color name="login_page_fg">@android:color/white</color>
 
-    <color name="app_text_bg">@android:color/white</color>
 
-    <color name="app_button_bg">@android:color/white</color>
-
-    <color name="app_text">@android:color/black</color>
 
     <!--Quiz Colors-->
-    <color name="quiz_background">#009bc0</color>
+    <color name="quiz_background">#00BBE8</color>
     <color name="quiz_link_bg">@android:color/holo_red_dark</color>
     <color name="quiz_text_color">@android:color/black</color>"
+    <color name="quiz_button_color">@android:color/white</color>
+    <color name="quiz_next_button_color">#009bc0</color>
+
 
     <!--Subject Navigation Colors-->
     <color name="header_color">#c0c0c0</color>
+
+
 </resources>
