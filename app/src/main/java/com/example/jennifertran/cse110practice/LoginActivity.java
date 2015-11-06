@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         this.failure = true;
                     }
                     else{
+
                         JSONObject args = new JSONObject(message);
                         if(args.getString("username").equals(username) &&
                                 args.getString("password").equals(password))
@@ -141,6 +142,8 @@ public class LoginActivity extends AppCompatActivity {
             password = passwordEdit.getText().toString();
             AttemptLogin log = new AttemptLogin();
             log.execute();
+
+
 
 
 

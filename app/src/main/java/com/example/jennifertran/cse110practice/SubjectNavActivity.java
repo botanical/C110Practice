@@ -136,15 +136,18 @@ public class SubjectNavActivity extends Activity {
                             jO.remove("header");
                             jO.remove("indexer");
                             Iterator<?> keyIt = jO.keys();
-                            List<String> subList = new ArrayList<>();
-                            //Iterate over remaining keys which at this point should be our subList
+
+                            //Create subList to store children of current header
+                            List<String> childList = new ArrayList<>();
+
+                            //Iterate over remaining keys which at this point should be our childList
                             //entries.
                             while (keyIt.hasNext()) {
                                 String k = (String) keyIt.next();
                                 if (!jO.getString(k).equals(""))
-                                    subList.add(jO.getString(k));
+                                    childList.add(jO.getString(k));
                             }
-                            listDataChild.put(listDataHeader.get(i), subList);
+                            listDataChild.put(listDataHeader.get(i), childList);
 
                         } catch (Exception e) {
                             e.printStackTrace();
