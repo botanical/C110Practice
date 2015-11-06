@@ -15,6 +15,7 @@
             android:text="Time Remaining"
             android:id="@+id/textViewTimer"
             android:layout_gravity="top|right"/>
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="match_parent"

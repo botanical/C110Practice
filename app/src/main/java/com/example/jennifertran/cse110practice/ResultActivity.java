@@ -23,6 +23,8 @@ public class ResultActivity extends AppCompatActivity{
         Bundle b = getIntent().getExtras();
         int score= b.getInt("score");
         double percentage = (((double)score)/5);
+
+        setTitle("Result: "+String.valueOf(score)+"/"+String.valueOf(5));
         //display score
         //bar.setRating(score);
         t.setText("Your score is %" + (percentage)*100);

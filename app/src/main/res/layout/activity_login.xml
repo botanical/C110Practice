@@ -78,7 +78,7 @@
             android:textSize="@dimen/login_page_username_field_label_text_size"
             android:textColor="@color/login_page_fg"
 
-            android:text="username / id"
+            android:text="Login:"
             />
 
         <Space
@@ -98,13 +98,32 @@
 
             android:background="@color/login_page_fg"
 
-            android:hint="Enter id here"
+            android:hint="Enter ID"
 
             android:gravity="center_vertical|start"
             android:textSize="@dimen/login_page_username_field_text_size"
             android:textColor="@color/app_text"
 
             />
+        <EditText android:id="@+id/login_page_password"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            android:layout_weight="2.5"
+
+            android:padding="@dimen/login_page_username_field_padding"
+            android:inputType="textPersonName"
+
+            android:background="@color/login_page_fg"
+
+            android:hint="Enter Password"
+
+            android:gravity="center_vertical|start"
+            android:textSize="@dimen/login_page_username_field_text_size"
+            android:textColor="@color/app_text"
+
+            />
+
 
         <Space
             android:layout_width="match_parent"
