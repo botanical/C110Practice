@@ -40,7 +40,7 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
 
         // Set up the database
-        DbHelper db = new DbHelper(this);
+        DbHelperQuiz db = new DbHelperQuiz(this);
 
         // for timer stuff
         Intent intentReceived = getIntent();
