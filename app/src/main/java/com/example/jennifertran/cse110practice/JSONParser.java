@@ -62,7 +62,6 @@ public class JSONParser {
              OutputStreamWriter writer = new OutputStreamWriter(c.getOutputStream());
 
              for(Map.Entry<String, String> entry:params.entrySet()) {
-
                  jsonParam.put(entry.getKey(), entry.getValue());
              }
              //Make Post request
