@@ -40,7 +40,7 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
 
         // Set up the database
-        DbHelperQuiz db = new DbHelperQuiz(this);
+        DbHelper db = new DbHelper(this);
 
         // for timer stuff
         Intent intentReceived = getIntent();
@@ -145,20 +145,30 @@ public class QuizActivity extends AppCompatActivity {
                             submit();
                         }
                     });
+
+                    /*Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
+                    Bundle b = new Bundle();
+                    b.putInt("score", score); //Your score
+                    intent.putExtras(b); //Put your score to your next Intent
+                    startActivity(intent);
+                    finish();*/
+
                 }
+
+
             }
+
+
             private void submit() {
                 timer.cancel();
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
-                for (int i = 0; i < (answerScore.length); i++) {
-                    score = answerScore[i] + score;
-                }
                 b.putInt("score", score); //Your score
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();
             }
+
             private void back() {
                 RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 question_id--;
@@ -226,10 +236,6 @@ public class QuizActivity extends AppCompatActivity {
                     score = answerScore[i] + score;
                 }
                 // submit quiz when time's up; just copied code
-                timer.cancel();
-                for (int i = 0; i < (answerScore.length); i++) {
-                    score = answerScore[i] + score;
-                }
                 Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("score", score); //Your score

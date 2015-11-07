@@ -28,20 +28,7 @@
 
     <!--Startup Page-->
     <string name="instructions_title">Instructions</string>
-    <string name="instructions_text">You will soon start the quiz!
-        This quiz is timed and will automatically submit when time runs out.
-        Please do not use your device\'s back button, as that will reset the time and quiz.</string>
 
     <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
-
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_example">Example action</string>
-
 
 </resources>
