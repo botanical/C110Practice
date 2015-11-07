@@ -37,24 +37,26 @@
                 android:id="@+id/radio0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="RadioButton"
                 android:textSize="20dp"
-                android:textColor="@color/quiz_text_color" />
+                android:textColor="@color/quiz_text_color"
+                android:onClick="onRadioButtonClicked"/>
             <RadioButton
                 android:id="@+id/radio1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RadioButton"
                 android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"/>
+                android:textColor="@color/quiz_text_color"
+                android:onClick="onRadioButtonClicked"/>
             <RadioButton
                 android:id="@+id/radio2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RadioButton"
                 android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"/>
+                android:textColor="@color/quiz_text_color"
+                android:onClick="onRadioButtonClicked"/>
         </RadioGroup>
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -100,6 +102,7 @@
                 android:weightSum="0.5"
                 android:layout_alignLeft="@id/fakeView"
                 android:layout_alignParentRight="true"/>
+
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
