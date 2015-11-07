@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,8 +32,9 @@ public class QuizActivity extends AppCompatActivity {
     Button next_button;
     View submit, back_button;
     RadioButton answer;
-    TextView textViewTime;
     String qid;
+    TextView textViewTime;
+    final Animation anim = new AlphaAnimation(1, 0);
     int testTime = 30000; // 30 seconds by default for test
 
     @Override
@@ -194,19 +197,24 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+        // setting up blinking timer animation
+        anim.setDuration(150);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+
         // Instantiate quiz timer.
         timer = new CountDownTimer(testTime, 1000) {
             public void onTick(long millisUntilFinished) {
                 //textViewTime.setText("Time Remaining: " + millisUntilFinished/60000
                 //+ ":" + (millisUntilFinished/1000) % 60 );
 
-                String timeText = String.format("%02d:%02d",
+                String timeString = String.format("%02d:%02d",
                         TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
                                 TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
 
-                textViewTime.setText(timeText);
+                textViewTime.setText(timeString);
 
                 // 1 minute left warning
                 if( millisUntilFinished <= 60000 && millisUntilFinished > 57000 ) {
@@ -227,11 +235,13 @@ public class QuizActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "10 seconds left!",
                             Toast.LENGTH_SHORT).show();
+                    textViewTime.startAnimation(anim);
                 }
             }
 
             public void onFinish() {
                 textViewTime.setText("Time's up!");
+                textViewTime.clearAnimation();
                 for (int i = 0; i < (answerScore.length); i++) {
                     score = answerScore[i] + score;
                 }
