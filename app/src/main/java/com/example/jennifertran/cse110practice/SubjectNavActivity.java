@@ -113,7 +113,9 @@ public class SubjectNavActivity extends Activity {
             //Query for headers and children
             Map<String,String> params = new HashMap<>();
             params.put("auth","qwepoi12332191827364");
-            params.put("query", "SELECT * FROM subExListHeaders ORDER BY indexer ASC");
+            //Sql queries quizes for a particular user. The sql database names the user
+            // specific list of headers and quizzes: usernameQuizzes
+            params.put("query", "SELECT * FROM "+username+"Quizzes ORDER BY indexer ASC");
             JSONParser p = new JSONParser();
             JSONArray j = p.makeHttpRequest(getApplicationContext().getString(R.string.queryUrl),
                     "POST", params);
@@ -178,7 +180,7 @@ public class SubjectNavActivity extends Activity {
                 }
             });
 
-            // Listview Group expanded listener
+            /*Listview Group expanded listener
             expListView.setOnGroupExpandListener(new OnGroupExpandListener() {
 
                 @Override
@@ -187,9 +189,9 @@ public class SubjectNavActivity extends Activity {
                             listDataHeader.get(groupPosition) + " Expanded",
                             Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
 
-            // Listview Group collasped listener
+            /* Listview Group collasped listener
             expListView.setOnGroupCollapseListener(new OnGroupCollapseListener() {
 
                 @Override
@@ -199,7 +201,7 @@ public class SubjectNavActivity extends Activity {
                             Toast.LENGTH_SHORT).show();
 
                 }
-            });
+            });*/
 
             // Listview on child click listener
             expListView.setOnChildClickListener(new OnChildClickListener() {
@@ -207,7 +209,7 @@ public class SubjectNavActivity extends Activity {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
-                    // TODO Auto-generated method stub
+                    /*
                     Toast.makeText(
                             getApplicationContext(),
                             listDataHeader.get(groupPosition)
@@ -216,7 +218,7 @@ public class SubjectNavActivity extends Activity {
                                     listDataHeader.get(groupPosition)).get(
                                     childPosition), Toast.LENGTH_SHORT)
                             .show();
-
+                    */
                     // sending intent to Startup Page
                     Intent intent = new Intent(getApplicationContext(), StartupPage.class);
                     String subjectMessage = listDataHeader.get(groupPosition)

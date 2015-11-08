@@ -37,18 +37,10 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
                 + " TEXT, " + KEY_ANSWER+ " TEXT, "+KEY_OPTA +" TEXT, "
                 +KEY_OPTB +" TEXT, "+KEY_OPTC+" TEXT, "+KEY_MARKED+" TEXT)";
-        //String alter = "ALTER TABLE " + TABLE_QUEST + " AUTO_INCREMENT=0";
         db.execSQL(sql);
-        //db.execSQL(alter);
-        //Question fakeQuestion = new Question();
-        //this.addQuestion(fakeQuestion);
-
-        //String delete = "DELETE FROM " + TABLE_QUEST;
-        //db.execSQL(delete);
-        
         addQuestions();
-        //db.close();
-
+        //db.close()
+        //Sets question id's to start from 0 instead of 1
         String subtraction = "UPDATE " + TABLE_QUEST +  " SET " + KEY_ID + "=" + KEY_ID + " - 1";
         db.execSQL(subtraction);
     }

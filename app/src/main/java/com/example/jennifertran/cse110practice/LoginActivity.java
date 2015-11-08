@@ -52,6 +52,29 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
         }
+
+        class AttemptUpdateQuizzes extends AsyncTask<String,String,String>{
+
+            protected void onPreExecute(){
+                super.onPreExecute();
+                pDialog = new ProgressDialog(LoginActivity.this);
+                pDialog.setMessage("Attempting Update");
+                pDialog.setIndeterminate(false);
+                pDialog.setCancelable(true);
+                pDialog.show();
+
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                return null;
+            }
+
+            protected void onPostExecute(String message){
+                if(pDialog != null)
+                    pDialog.dismiss();
+            }
+        }
+
         class AttemptLogin extends AsyncTask<String,String,String> {
 
             boolean failure = false;
