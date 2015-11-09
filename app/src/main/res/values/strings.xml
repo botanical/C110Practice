@@ -8,6 +8,9 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
 
+    <!--Subject Navigation page -->
+
+
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
 
@@ -32,6 +35,15 @@
         This quiz is timed and will automatically submit when time runs out.
         Please do not use your device\'s back button, as that will reset the time and quiz.</string>
 
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
     <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
+
 
 </resources>
