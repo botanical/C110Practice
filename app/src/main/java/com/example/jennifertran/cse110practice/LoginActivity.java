@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                         login();
                     }
                 });
+
 
         }
 

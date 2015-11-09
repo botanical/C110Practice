@@ -38,10 +38,15 @@ public class SubjectNavActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //Recieve data from LoginActivity
         Intent loginIntent = getIntent();
         username = loginIntent.getStringExtra("username");
+
+        /*Register token with server, listen for updates */
+        RegistrationIntentService regIntent= new RegistrationIntentService("debug");
+        Intent intent = new Intent(SubjectNavActivity.this, RegistrationIntentService.class);
+        intent.putExtra("username",username);
+        //regIntent.startActivity(intent);
 
 
         setContentView(R.layout.activity_subject_nav);
