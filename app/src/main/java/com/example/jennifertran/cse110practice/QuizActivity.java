@@ -2,6 +2,7 @@ package com.example.jennifertran.cse110practice;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -235,6 +236,7 @@ public class QuizActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "10 seconds left!",
                             Toast.LENGTH_SHORT).show();
+                    textViewTime.setTextColor(Color.RED);
                     textViewTime.startAnimation(anim);
                 }
             }
@@ -242,6 +244,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onFinish() {
                 textViewTime.setText("Time's up!");
                 textViewTime.clearAnimation();
+
                 for (int i = 0; i < (answerScore.length); i++) {
                     score = answerScore[i] + score;
                 }
