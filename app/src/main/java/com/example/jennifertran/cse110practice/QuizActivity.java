@@ -28,6 +28,8 @@ public class QuizActivity extends AppCompatActivity {
     static CountDownTimer timer;
     int numOfQuestions = 5;
     String[] yourAnswers = new String[numOfQuestions];
+
+
     String[] correctAnswers = new String[numOfQuestions];
 
     List<Question> question_list;
@@ -56,7 +58,9 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
+        for(int i = 0; i < numOfQuestions; ++i){
+            yourAnswers[i] = "INCOMPLETE";
+        }
         // Set up the database
         db = new DbHelperQuiz(this);
 
