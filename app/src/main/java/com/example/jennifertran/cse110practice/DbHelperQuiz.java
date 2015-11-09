@@ -140,7 +140,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             return marked;
         }
         else {
-            return "null";
+            return "INCOMPLETE";
         }
     }
 }
