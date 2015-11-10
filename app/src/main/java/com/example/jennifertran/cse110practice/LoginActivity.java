@@ -54,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-
         }
+
 
         class AttemptUpdateQuizzes extends AsyncTask<String,String,String>{
 
@@ -70,12 +70,17 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             protected String doInBackground(String... params) {
+                RemoteDBHelper remDb = new RemoteDBHelper();
+                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "SELECT * FROM Users WHERE username='" + username + "'",
+                        loginUrl);
                 return null;
             }
 
             protected void onPostExecute(String message){
                 if(pDialog != null)
                     pDialog.dismiss();
+
             }
         }
 
@@ -84,30 +89,11 @@ public class LoginActivity extends AppCompatActivity {
             boolean failure = false;
             @Override
             protected String doInBackground(String... args) {
-                int success;
-                try{
-                    Map<String,String> params = new HashMap<>();
-                    //Auth is used by the server php file to determine whether it's being accessed
-                    //from an authorized source.
-                    params.put("auth", "qwepoi12332191827364");
-                    //Queries the database, in this case searching for the given username and its
-                    //associated info.
-                    params.put("query", "SELECT * FROM Users WHERE username='" + username + "'");
-                    JSONArray ar = jsonParser.makeHttpRequest(loginUrl, "POST", params);
-                    if(ar == null)
-                        return "";
-                    JSONObject json = ar.getJSONObject(0);
-                    if(json == null)
-                        return "";
-                    return json.toString(
+                RemoteDBHelper remDb = new RemoteDBHelper();
+                return remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                                  "SELECT * FROM Users WHERE username='" + username + "'",
+                                  loginUrl);
 
-                    );
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-
-
-                return null;
             }
             @Override
             protected void onPreExecute( ){
@@ -123,6 +109,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(pDialog != null)
                     pDialog.dismiss();
                 try{
+                    if(message == null)
+                        return;
                     if(message.equals("")) {
                         Toast.makeText(LoginActivity.this, "Your credentials....failed.",
                                 Toast.LENGTH_LONG).show();

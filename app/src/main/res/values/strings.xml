@@ -31,6 +31,7 @@
 
 
     <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
+    <string name="remotePass">qwepoi12332191827364</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>

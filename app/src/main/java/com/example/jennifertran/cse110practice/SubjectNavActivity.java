@@ -83,25 +83,8 @@ public class SubjectNavActivity extends Activity {
         subMath.add("Negative Numbers");
         subMath.add("Algebraic Expressions");
         subMath.add("Fractions");
+*/
 
-        List<String> subHistory = new ArrayList<>();
-        //subHistory.add("Presidents");
-        /*subHistory.add("Revolutonary War");
-        subHistory.add("Spanish American War");
-        subHistory.add("Civil War");
-        subHistory.add("World War I");
-        subHistory.add("World War II");
-
-        List<String> subScience = new ArrayList<>();
-        /*subScience.add("The Butterfly");
-        subScience.add("Magnetism");
-        subScience.add("Kinetic Forces");
-        //subScience.add("Basic Chemistry");
-        //subScience.add("Astronomy");
-
-        listDataChild.put(listDataHeader.get(0), subMath); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), subHistory);
-        listDataChild.put(listDataHeader.get(2), subScience); */
     }
 
     class AttemptLoadQuizzes extends AsyncTask<String,String,String> {

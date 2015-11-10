@@ -97,6 +97,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
                 quest.setOPTB(cursor.getString(cursor.getColumnIndex(KEY_OPTB)));
                 quest.setOPTC(cursor.getString(cursor.getColumnIndex(KEY_OPTC)));
                 quest.setMARKED(cursor.getString(cursor.getColumnIndex(KEY_MARKED)));
+
                 quesList.add(quest);
             } while (cursor.moveToNext());
         }
@@ -118,21 +119,21 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         Log.d("VAL", value.toString());
         Log.d("QID", id);
     }
-    public String queryMarkedAnswers( int id ) {
+    public String getQuestionEntry(String colName, int id ) {
         String marked;
-        String selectQuery = "SELECT " + KEY_MARKED + " FROM " + TABLE_QUEST
+        String selectQuery = "SELECT " + colName + " FROM " + TABLE_QUEST
                 + " WHERE " + KEY_ID + "=" + id;
         Log.d("QUERY", selectQuery);
         Cursor cursor = dbase.rawQuery(selectQuery, null);
 
         if  (cursor.moveToFirst()) {
-            marked = cursor.getString(cursor.getColumnIndex(KEY_MARKED));
+            marked = cursor.getString(cursor.getColumnIndex(colName));
             Log.d("moved", "cursor moved!!");
 
             return marked;
         }
         else {
-            return "help";
+            return "null";
         }
     }
 }

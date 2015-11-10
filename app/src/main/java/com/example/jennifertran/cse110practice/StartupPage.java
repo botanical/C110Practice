@@ -22,7 +22,6 @@ public class StartupPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup_page);
 
-
         // displaying subject text
         Intent intent = getIntent();
         String subMessage = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
