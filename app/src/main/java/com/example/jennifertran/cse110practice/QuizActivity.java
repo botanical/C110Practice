@@ -74,7 +74,7 @@ public class QuizActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
-        /* Set ListView for Fragment */
+        /* Set ListView for Fragment*/
         mDrawerList = (ListView)findViewById(R.id.navList);
 
         /* Add drawer items */
