@@ -8,6 +8,10 @@
     <string name="button_send">Send</string>
     <string name="title_activity_display_message">My Message</string>
 
+    <!--Fragment for Quiz Page-->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
     <!--Login Page-->
     <string name="login_page_login_button_text">LOGIN</string>
 
@@ -29,6 +33,17 @@
     <!--Startup Page-->
     <string name="instructions_title">Instructions</string>
 
+
     <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
+    <string name="remotePass">qwepoi12332191827364</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
 
 </resources>

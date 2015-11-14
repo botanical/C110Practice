@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,35 +55,26 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
         }
+
+
         class AttemptLogin extends AsyncTask<String,String,String> {
 
             boolean failure = false;
             @Override
             protected String doInBackground(String... args) {
-                int success;
-                try{
-                    Map<String,String> params = new HashMap<>();
-                    //Auth is used by the server php file to determine whether it's being accessed
-                    //from an authorized source.
-                    params.put("auth", "qwepoi12332191827364");
-                    //Queries the database, in this case searching for the given username and its
-                    //associated info.
-                    params.put("query", "SELECT * FROM Users WHERE username='" + username + "'");
-                    JSONArray ar = jsonParser.makeHttpRequest(loginUrl, "POST", params);
-                    if(ar == null)
-                        return "";
-                    JSONObject json = ar.getJSONObject(0);
-                    if(json == null)
-                        return "";
-                    return json.toString(
+                RemoteDBHelper remDb = new RemoteDBHelper();
+                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "SELECT * FROM Users WHERE username='" + username + "'",
+                        loginUrl);
+                try {
 
-                    );
-                }catch(Exception e){
+                    return  new JSONArray(table).getString(0); //Get first valid username entry
+                                                               //There should be only one.
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
                 return null;
+
             }
             @Override
             protected void onPreExecute( ){
@@ -96,12 +90,15 @@ public class LoginActivity extends AppCompatActivity {
                 if(pDialog != null)
                     pDialog.dismiss();
                 try{
+                    if(message == null)
+                        return;
                     if(message.equals("")) {
                         Toast.makeText(LoginActivity.this, "Your credentials....failed.",
                                 Toast.LENGTH_LONG).show();
                         this.failure = true;
                     }
                     else{
+
                         JSONObject args = new JSONObject(message);
                         if(args.getString("username").equals(username) &&
                                 args.getString("password").equals(password))
@@ -141,6 +138,8 @@ public class LoginActivity extends AppCompatActivity {
             password = passwordEdit.getText().toString();
             AttemptLogin log = new AttemptLogin();
             log.execute();
+
+
 
 
 
