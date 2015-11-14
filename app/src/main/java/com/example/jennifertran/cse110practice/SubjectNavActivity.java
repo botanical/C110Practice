@@ -113,9 +113,7 @@ public class SubjectNavActivity extends Activity {
             //Query for headers and children
             Map<String,String> params = new HashMap<>();
             params.put("auth","qwepoi12332191827364");
-
-            //'ORDER BY' orders Quiz headers by the column 'indexer'
-            params.put("query", "SELECT * FROM "+username+"Quizzes ORDER BY indexer ASC");
+            params.put("query", "SELECT * FROM subExListHeaders ORDER BY indexer ASC");
             JSONParser p = new JSONParser();
             JSONArray j = p.makeHttpRequest(getApplicationContext().getString(R.string.queryUrl),
                     "POST", params);
