@@ -102,6 +102,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         // return quest list
+        cursor.close();
         return quesList;
     }
     public int rowcount()
@@ -111,6 +112,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         row=cursor.getCount();
+        cursor.close();
         return row;
     }
     public void insertIntoDb(String id, ContentValues value) {
@@ -130,9 +132,11 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             marked = cursor.getString(cursor.getColumnIndex(colName));
             Log.d("moved", "cursor moved!!");
 
+            cursor.close();
             return marked;
         }
         else {
+            cursor.close();
             return "null";
         }
     }

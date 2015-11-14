@@ -3,17 +3,26 @@ package com.example.jennifertran.cse110practice;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -52,12 +61,33 @@ public class QuizActivity extends AppCompatActivity {
     final Animation anim = new AlphaAnimation(1, 0);
     int testTime = 20000; // 30 seconds by default for test
 
-
+    /* Adding member variables, strings, and booleans for fragments */
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    String open_drawer = "Question Navigation";
+    Boolean backClick = false;
+    Boolean nextClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+        /* Set ListView for Fragment */
+        mDrawerList = (ListView)findViewById(R.id.navList);
+
+        /* Add drawer items */
+        addDrawerItems();
+        setupDrawer();
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
         for(int i = 0; i < numOfQuestions; i++)
             yourAnswers[i] = "INCOMPLETE";
         // Set up the database
@@ -69,7 +99,7 @@ public class QuizActivity extends AppCompatActivity {
 
         //Update question number in ActionBar
         qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numOfQuestions);
-        setTitle(qid);
+        getSupportActionBar().setTitle(qid);
 
         testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);
 
@@ -110,7 +140,7 @@ public class QuizActivity extends AppCompatActivity {
 
                 question_id++;
                 qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(numOfQuestions);
-                setTitle(qid);
+                getSupportActionBar().setTitle(qid);
 
                 current_question = question_list.get(question_id);
                 grp.clearCheck();
@@ -207,7 +237,7 @@ public class QuizActivity extends AppCompatActivity {
                 RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 question_id--;
                 qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numOfQuestions);
-                setTitle(qid);
+                getSupportActionBar().setTitle(qid);
                 Log.d("newqid", String.valueOf(question_id));
                 marked = db.getQuestionEntry(colName, question_id);
                 Log.d("marked", "---:" + marked + ":---");
@@ -337,12 +367,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_quiz, menu);
-        return true;
-    }
     private void setQuestionView()
     {
         textQuestion.setText(current_question.getQUESTION());
@@ -394,6 +418,88 @@ public class QuizActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    /* Helper method called by onCreate to add drawer items to Drawer */
+    private void addDrawerItems() {
+        String[] osArray = { "Question 1", "Question 2", "Question 3", "Question 4", "Question 5" };
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, osArray);
+        mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(QuizActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    /* Helper method called by onCreate to set up drawer items to Drawer */
+    private void setupDrawer() {
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(open_drawer);
+                }
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle("Question: " + String.valueOf(question_id + 1)
+                            + "/" + String.valueOf(numOfQuestions));
+                }
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    /* Method is used for Fragment. Syncs the indicator to match current state */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+    /* Method is used for Fragment. Makes smooth transitioning for orientation change */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    /* Used for Inflating Activity Bar if Items are present */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_quiz, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        // Activate the navigation drawer toggle
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
