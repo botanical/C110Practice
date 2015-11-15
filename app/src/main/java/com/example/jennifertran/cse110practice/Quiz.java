@@ -64,5 +64,15 @@ public class Quiz {
     {
         this.answers = answers;
     }
+    public String toString()
+    {
+        String quizStr = "{ ";
+        for (int i = 0; i < questionList.size() -1; i++) {
+             quizStr += questionList.get(i).toString()+", ";
+        }
+        quizStr += questionList.get(questionList.size()-1).toString()+" }";
+        return quizStr;
+
+    }
 
 }

@@ -132,7 +132,10 @@ public class QuizActivity extends AppCompatActivity {
         textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
         submit = findViewById(R.id.button_submit);
-        submit.setVisibility(View.GONE);
+        if(numOfQuestions == 1)
+            submit.setVisibility(View.VISIBLE);
+        else
+            submit.setVisibility(View.GONE);
         back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
         grp = (RadioGroup)findViewById(R.id.radioGroup1);
@@ -154,9 +157,16 @@ public class QuizActivity extends AppCompatActivity {
 
                 current_question = question_list.get(question_id);
                 grp.clearCheck();
-                if (question_id == 4) {
+
+                if(numOfQuestions == 1)
+                {
                     submit.setVisibility(View.VISIBLE);
                     next_button.setVisibility(View.GONE);
+                }
+                if (question_id == numOfQuestions - 1 ) {
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                    back_button.setVisibility(View.VISIBLE);
                 } else if (question_id != 0) {
                     back_button.setVisibility(View.VISIBLE);
                     submit.setVisibility(View.GONE);
@@ -252,11 +262,13 @@ public class QuizActivity extends AppCompatActivity {
                 current_question = question_list.get(question_id);
                 grp.clearCheck();
 
-                if ((question_id + 1) == 4) {
+                if (question_id == 0) {
+                    back_button.setVisibility(View.GONE);
                     submit.setVisibility(View.GONE);
                     next_button.setVisibility(View.VISIBLE);
-                } else if (question_id == 0) {
-                    back_button.setVisibility(View.GONE);
+                } else if ((question_id + 1) == numOfQuestions-1) { //numofq used to be 4
+                    submit.setVisibility(View.GONE);
+                    next_button.setVisibility(View.VISIBLE);
                 }
 
                 setQuestionView();
