@@ -27,6 +27,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import java.util.ArrayList;
@@ -35,9 +39,9 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity {
 
     static CountDownTimer timer;
-    int numOfQuestions = 5;
-    String[] yourAnswers = new String[numOfQuestions];
-    String[] correctAnswers = new String[numOfQuestions];
+    int numOfQuestions;
+    ArrayList<String> yourAnswers;
+    ArrayList<String> correctAnswers;
 
     List<Question> question_list;
     int[] answerScore = new int[numOfQuestions];
@@ -67,51 +71,60 @@ public class QuizActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Question Navigation";
-    Boolean backClick = false;
-    Boolean nextClick = false;
+    String title;
+    Quiz quiz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+        textViewTime = (TextView) findViewById(R.id.textViewTimer);
+        Intent intentReceived = getIntent();
+        testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);//TODO add time to Quiz class
+        title = intentReceived.getStringExtra("title");
+        String colsString  = intentReceived.getStringExtra("columns");
+        ArrayList<String> cols = new ArrayList<>();
+        try{
+            JSONArray columns = new JSONArray(colsString);
+            for(int i = 0; i < columns.length(); i++)
+                cols.add(columns.getString(i));
+            System.out.println("JSON: " + columns.getString(0));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("COLS: "+colsString);
+        /*******************************  Initialize Quiz Object ****************************/
+        // for timer stuff
+        db =  new DbHelperQuiz(this,title,cols);
+        quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
+        question_list = quiz.getQuestions();
+        correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
+        numOfQuestions = quiz.getNumQuestions();
+        current_question = question_list.get(question_id);
 
+
+
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+        /******************************** Create Hamburger  ********************************/
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView)findViewById(R.id.navList);  /* Set ListView for Fragment */
 
-        /* Set ListView for Fragment */
-        mDrawerList = (ListView)findViewById(R.id.navList);
-
-        /* Add drawer items */
-        addDrawerItems();
+        addDrawerItems();         /* Add drawer items */
         setupDrawer();
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+
+
+        yourAnswers = new ArrayList<>();
         for(int i = 0; i < numOfQuestions; i++)
-            yourAnswers[i] = "INCOMPLETE";
+            yourAnswers.add("INCOMPLETE");
         // Set up the database
-        db = new DbHelperQuiz(this);
 
-        // for timer stuff
-        Intent intentReceived = getIntent();
-        textViewTime = (TextView) findViewById(R.id.textViewTimer);
-
-        //Update question number in ActionBar
-        qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numOfQuestions);
-        getSupportActionBar().setTitle(qid);
-
-        testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);
-
-        question_list = db.getAllQuestions();
-
-        //This code generates an array of strings in which each index corresponds to
-        //the correct Answer in the quiz.
-        for(int i = 0; i < correctAnswers.length; ++i){
-            correctAnswers[i] = question_list.get(i).getANSWER();
-        }
-
-        current_question = question_list.get(question_id);
         rda = (RadioButton)findViewById(R.id.radio0);
         rdb = (RadioButton)findViewById(R.id.radio1);
         rdc = (RadioButton)findViewById(R.id.radio2);
@@ -119,7 +132,10 @@ public class QuizActivity extends AppCompatActivity {
         textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
         submit = findViewById(R.id.button_submit);
-        submit.setVisibility(View.GONE);
+        if(numOfQuestions == 1)
+            submit.setVisibility(View.VISIBLE);
+        else
+            submit.setVisibility(View.GONE);
         back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
         grp = (RadioGroup)findViewById(R.id.radioGroup1);
@@ -128,9 +144,6 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set the questions on the page
         setQuestionView();
-
-
-
 
         // Call listener to check for next page request
         next_button.setOnClickListener(new View.OnClickListener() {
@@ -144,9 +157,16 @@ public class QuizActivity extends AppCompatActivity {
 
                 current_question = question_list.get(question_id);
                 grp.clearCheck();
-                if (question_id == 4) {
+
+                if(numOfQuestions == 1)
+                {
                     submit.setVisibility(View.VISIBLE);
                     next_button.setVisibility(View.GONE);
+                }
+                if (question_id == numOfQuestions - 1 ) {
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                    back_button.setVisibility(View.VISIBLE);
                 } else if (question_id != 0) {
                     back_button.setVisibility(View.VISIBLE);
                     submit.setVisibility(View.GONE);
@@ -157,11 +177,9 @@ public class QuizActivity extends AppCompatActivity {
 
 
 
-
-
-                    /* Check to see if previous question had radio buttons checked
-                     * and resets new question to have no buttons checked.
-                     */
+                /* Check to see if previous question had radio buttons checked
+                 * and resets new question to have no buttons checked.
+                 */
 
                 Log.d("QUESTION", String.valueOf(question_id));
 
@@ -224,8 +242,8 @@ public class QuizActivity extends AppCompatActivity {
                 b.putInt("score", score); //Your score
                 b.putInt("numOfQuestions", numOfQuestions);
 
-                b.putStringArray("correctAnswers", correctAnswers);
-                b.putStringArray("yourAnswers", yourAnswers);
+                b.putStringArrayList("correctAnswers", correctAnswers);
+                b.putStringArrayList("yourAnswers", yourAnswers);
 
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
@@ -244,11 +262,13 @@ public class QuizActivity extends AppCompatActivity {
                 current_question = question_list.get(question_id);
                 grp.clearCheck();
 
-                if ((question_id + 1) == 4) {
+                if (question_id == 0) {
+                    back_button.setVisibility(View.GONE);
                     submit.setVisibility(View.GONE);
                     next_button.setVisibility(View.VISIBLE);
-                } else if (question_id == 0) {
-                    back_button.setVisibility(View.GONE);
+                } else if ((question_id + 1) == numOfQuestions-1) { //numofq used to be 4
+                    submit.setVisibility(View.GONE);
+                    next_button.setVisibility(View.VISIBLE);
                 }
 
                 setQuestionView();
@@ -334,8 +354,8 @@ public class QuizActivity extends AppCompatActivity {
                 b.putInt("score", score); //Your score
                 b.putInt("numOfQuestions", numOfQuestions);
 
-                b.putStringArray("correctAnswers", correctAnswers);
-                b.putStringArray("yourAnswers", yourAnswers);
+                b.putStringArrayList("correctAnswers", correctAnswers);
+                b.putStringArrayList("yourAnswers", yourAnswers);
                 intent.putExtras(b); //Put your score to your next Intent
                 // submit quiz when time's up; just copied code
                 intent.putExtras(b); //Put your score to your next Intent
@@ -358,8 +378,8 @@ public class QuizActivity extends AppCompatActivity {
         b.putInt("score", score); //Your score
         b.putInt("numOfQuestions", numOfQuestions);
 
-        b.putStringArray("correctAnswers", correctAnswers);
-        b.putStringArray("yourAnswers", yourAnswers);
+        b.putStringArrayList("correctAnswers", correctAnswers);
+        b.putStringArrayList("yourAnswers", yourAnswers);
 
         intent.putExtras(b); //Put your score to your next Intent
         startActivity(intent);
@@ -383,7 +403,7 @@ public class QuizActivity extends AppCompatActivity {
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radio0:
-                yourAnswers[question_id] = rda.getText().toString();
+                yourAnswers.set(question_id, rda.getText().toString());
                 if (checked)
                     values.put(colName, rda.getText().toString());
                 if(current_question.getANSWER().equals(rda.getText().toString()))
@@ -394,7 +414,7 @@ public class QuizActivity extends AppCompatActivity {
                 Log.d("inserted", rda.getText().toString());
                 break;
             case R.id.radio1:
-                yourAnswers[question_id] = rdb.getText().toString();
+                yourAnswers.set(question_id, rdb.getText().toString());
                 if (checked)
                     values.put(colName, rdb.getText().toString());
                 if(current_question.getANSWER().equals(rdb.getText().toString()))
@@ -406,7 +426,7 @@ public class QuizActivity extends AppCompatActivity {
 
                 break;
             case R.id.radio2:
-                yourAnswers[question_id] = rdc.getText().toString();
+                yourAnswers.set(question_id, rdc.getText().toString());
                 if (checked)
                     values.put(colName, rdc.getText().toString());
                 if(current_question.getANSWER().equals(rdc.getText().toString()))
@@ -422,8 +442,19 @@ public class QuizActivity extends AppCompatActivity {
 
     /* Helper method called by onCreate to add drawer items to Drawer */
     private void addDrawerItems() {
-        String[] osArray = { "Question 1", "Question 2", "Question 3", "Question 4", "Question 5" };
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, osArray);
+
+        ArrayList<String> row;
+        Question currQuestion;
+        ArrayList<Question> questionList = quiz.getQuestions();
+        String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+
+        for (int i = 0; i < questionList.size(); i++) {
+            currQuestion = questionList.get(i);
+                                                            //Add 1 to zero indexed question number
+            questionNums[i] = "Question " + String.valueOf(currQuestion.getID()+1);
+        }
+
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, questionNums);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

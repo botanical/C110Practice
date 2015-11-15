@@ -23,7 +23,7 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "SubNav";
+    private static final String DATABASE_NAME = "SubNav.db";
     // tasks table name
     // tasks Table Columns names
     private static final String KEY_HEADER= "header";
@@ -44,27 +44,38 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.childrenCols = columns;
         this.table = tableName+"Quizzes";
-
     }
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        //Create sqlQuery in format col1 TEXT, col2 TEXT, col3 TEXT
-        //to add dynamic number of columns to database
-
+    public void createTable()
+    {
         String colQuery = "";
         for(int i = 0; i < childrenCols.size(); i++)
         {
             colQuery += childrenCols.get(i)+" TEXT, ";
         }
-//TODO ensure that orders quizzes by indexer
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
-                    KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER+" INTEGER)";
+                KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
+        SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(sql);
 
     }
     @Override
+    public void onCreate(SQLiteDatabase db) {
+        //Create sqlQuery in format col1 TEXT, col2 TEXT, col3 TEXT
+        //to add dynamic number of columns to database
+        String colQuery = "";
+        for(int i = 0; i < childrenCols.size(); i++)
+        {
+            colQuery += childrenCols.get(i)+" TEXT, ";
+        }
+        String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
+                KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
+        db.execSQL(sql);
+
+    }
+
+    @Override
     public void onOpen (SQLiteDatabase db){
+
     }
 
     /* createSubNav (Map<String, List<String>> headerChildPairs
@@ -74,12 +85,12 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
      * CreateSubNav fills the suBnav database from headerChildPairs in the format :
      * Row: header child0 child1 ....
      */
-    //TODO add support for 'indexer' column
     public void upgradeSubNav(Map<String,List<String>> headerChildPairs)
     {
         //The last child in the list of children for each header is actually that row's index
 
-        this.getWritableDatabase().delete(table, null, null); //Delete old table
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(table, null, null); //Delete entries in old table
         Iterator<?> keyIt = headerChildPairs.keySet().iterator();
         String currRow;
         List<String> currChildList;
@@ -98,10 +109,10 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
             }
             int indexer = Integer.valueOf(currChildList.get(currChildList.size()-1));
             colValuePairs.put("indexer",indexer);
-            this.getWritableDatabase().insert(table, null, colValuePairs);
+            db.insert(table, null, colValuePairs);
 
         }
-
+        db.close();
     }
 
     //TODO loadSubNav reads local database and returns  the table as a map <header, listChildren>
@@ -146,8 +157,8 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         System.out.println(headerChildPairs);
 
         return new Pair<>(headers,headerChildPairs);
-    }
 
+    }
 
 
     @Override
