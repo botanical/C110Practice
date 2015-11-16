@@ -120,18 +120,16 @@ public class QuizActivity extends AppCompatActivity {
                 if( r == null)
                     return;
 
-                System.out.println("RRRRRR " +r);
-                System.out.println(checkedId);
-                System.out.println(current_question);
                 current_question.setMarked(checkedId);
                 yourAnswers.set(question_id, r.getText().toString());
 
+
                 if(current_question.getAnswer().equals(r.getText().toString()))
                 {
-                    answerScore[question_id] = 1;
+                    answerScore[question_id] = 1; //Answer is correct
                 }
                 else
-                    answerScore[question_id] = 0;
+                    answerScore[question_id] = 0; //Answer is incorrect
             }
         });
         for(Question q : question_list)
@@ -364,7 +362,45 @@ public class QuizActivity extends AppCompatActivity {
             }
         }.start();
 
+
     }
+
+    public void goToQuestion(int num)
+    {
+        question_id = num ;
+
+        current_question = question_list.get(question_id);
+        grp.removeAllViews();
+        for(RadioButton r : current_question.getRadioButtons()) {
+            grp.addView(r);
+        }
+
+        if (numOfQuestions == 1)
+        {
+            back_button.setVisibility(View.GONE);
+            next_button.setVisibility(View.GONE);
+            submit.setVisibility(View.VISIBLE);
+        }
+        else if (question_id == 0) {
+            back_button.setVisibility(View.GONE);
+            submit.setVisibility(View.GONE);
+            next_button.setVisibility(View.VISIBLE);
+        }else if (question_id == numOfQuestions-1) { //numofq used to be 4
+            submit.setVisibility(View.VISIBLE);
+            next_button.setVisibility(View.GONE);
+            back_button.setVisibility(View.VISIBLE);
+        }else{
+            submit.setVisibility(View.GONE);
+            next_button.setVisibility(View.VISIBLE);
+            back_button.setVisibility(View.VISIBLE);
+        }
+
+        setQuestionView();
+        if(current_question.getMarked() != -1 )
+            grp.check(current_question.getMarked());
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -415,7 +451,8 @@ public class QuizActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(QuizActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+                goToQuestion(position);
+                mDrawerLayout.closeDrawers();
             }
         });
     }
