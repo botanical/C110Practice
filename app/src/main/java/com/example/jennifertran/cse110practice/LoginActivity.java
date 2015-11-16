@@ -57,42 +57,23 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        class AttemptUpdateQuizzes extends AsyncTask<String,String,String>{
-
-            protected void onPreExecute(){
-                super.onPreExecute();
-                pDialog = new ProgressDialog(LoginActivity.this);
-                pDialog.setMessage("Attempting Update");
-                pDialog.setIndeterminate(false);
-                pDialog.setCancelable(true);
-                pDialog.show();
-
-            }
-            @Override
-            protected String doInBackground(String... params) {
-                RemoteDBHelper remDb = new RemoteDBHelper();
-                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                        "SELECT * FROM Users WHERE username='" + username + "'",
-                        loginUrl);
-                return null;
-            }
-
-            protected void onPostExecute(String message){
-                if(pDialog != null)
-                    pDialog.dismiss();
-
-            }
-        }
-
         class AttemptLogin extends AsyncTask<String,String,String> {
 
             boolean failure = false;
             @Override
             protected String doInBackground(String... args) {
                 RemoteDBHelper remDb = new RemoteDBHelper();
-                return remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                                  "SELECT * FROM Users WHERE username='" + username + "'",
-                                  loginUrl);
+                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "SELECT * FROM Users WHERE username='" + username + "'",
+                        loginUrl);
+                try {
+
+                    return  new JSONArray(table).getString(0); //Get first valid username entry
+                                                               //There should be only one.
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
 
             }
             @Override

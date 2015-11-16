@@ -16,6 +16,7 @@ public class RemoteDBHelper {
 
     private JSONParser jsonParser = new JSONParser();
 
+    //CAN ONLY BE CALLED FROM AN ASYNC TASK
     public String queryRemote(String password, String query, String loginUrl){
         try{
             Map<String,String> params = new HashMap<>();
@@ -29,12 +30,11 @@ public class RemoteDBHelper {
             if(ar == null)
                 return "";
 
-            JSONObject json = ar.getJSONObject(0); //Get first row
-            if(json == null)
-                return "";
-            return json.toString(
+            //JSONObject json = ar.getJSONObject(0); //Get first row
+            //if(json == null)
+              //  return "";
+            return ar.toString();
 
-            );
         }catch(Exception e){
             e.printStackTrace();
         }
