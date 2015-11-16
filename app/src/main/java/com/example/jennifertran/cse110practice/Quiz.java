@@ -16,7 +16,6 @@ public class Quiz {
         setQuestions(questionList);
         setTitle(title);
         setNumQuestions(numQuestions);
-        System.out.println("QUIZ "+questionList);
         generateAnswers();
 
     }
@@ -29,7 +28,7 @@ public class Quiz {
     private void generateAnswers()
     {
         for(int i = 0; i < numQuestions; ++i){
-            answers.add(questionList.get(i).getANSWER());
+            answers.add(questionList.get(i).getAnswer());
         }
     }
 

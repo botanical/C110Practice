@@ -2,8 +2,6 @@ package com.example.jennifertran.cse110practice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +25,7 @@ public class ELATest extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition).TextEntry).get(childPosititon);
     }
 
     @Override
@@ -49,6 +46,8 @@ public class ELATest extends BaseExpandableListAdapter {
 
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
+        txtListChild.setText(entry.TextEntry);
+/*
         convertView.setBackgroundColor(entry.color);
 
         txtListChild.setText(entry.TextEntry);
@@ -62,13 +61,13 @@ public class ELATest extends BaseExpandableListAdapter {
                 txtListChild.setCompoundDrawablesWithIntrinsicBounds(R.drawable.questionmark, 0, 0, 0);
             }
         }
+*/
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 0;
-        //return this._listDataChild.get(this._listDataHeader.get(groupPosition).TextEntry).size();
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition).TextEntry).size();
     }
 
     @Override
@@ -104,11 +103,11 @@ public class ELATest extends BaseExpandableListAdapter {
         if(entry.image != "") {
             txtListHeader.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             if (entry.image == "xmark") {
-                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xmark, 0, 0, 0);
+                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xmark2, 0, 0, 0);
             } else if (entry.image == "checkmark") {
-                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0);
+                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check3, 0, 0, 0);
             } else {
-                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.questionmark, 0, 0, 0);
+                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.questionmark2, 0, 0, 0);
             }
         }
         return convertView;

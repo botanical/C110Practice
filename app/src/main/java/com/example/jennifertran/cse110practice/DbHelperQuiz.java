@@ -116,20 +116,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         db.execSQL(sql);
 
     }
-    private void addQuestions()
-    {
 
-        Question q1=new Question("What is 12*3?" ,"36", "15", "52", "36", "");
-        this.addQuestion(q1);
-        Question q2=new Question("What is 4*80?", "120", "420", "320", "320", "");
-        this.addQuestion(q2);
-        Question q3=new Question("What is 15/3?","5", "12","7","5", "");
-        this.addQuestion(q3);
-        Question q4=new Question("What is 64/8?", "8", "3", "11","8", "");
-        this.addQuestion(q4);
-        Question q5=new Question("What is 55/5?","11","50","14","11", "");
-        this.addQuestion(q5);
-    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
         // Drop older table if existed
@@ -142,16 +129,14 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     public void addQuestion(Question quest) {
         //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_QUES, quest.getQUESTION());
-        values.put(KEY_ANSWER, quest.getANSWER());
-        values.put(KEY_OPTA, quest.getOPTA());
-        values.put(KEY_OPTB, quest.getOPTB());
-        values.put(KEY_OPTC, quest.getOPTC());
-        values.put(KEY_MARKED, quest.getMARKED());
+        values.put(KEY_QUES, quest.getQuestion());
+        values.put(KEY_ANSWER, quest.getAnswer());
+        values.put(KEY_MARKED, quest.getMarked());
         //values.put(KEY_MARKED, quest.getMARKED());
         // Inserting Row
         dbase.insert(table, null, values);
     }
+    /*
     public List<Question> getAllQuestions() {
         List<Question> quesList = new ArrayList<>();
         // Select All Query
@@ -177,8 +162,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         cursor.close();
         return quesList;
     }
-
-
+*/
 
     ArrayList<ArrayList<String>> getQuestions (String tableName)
     {
