@@ -1,17 +1,29 @@
 package com.example.jennifertran.cse110practice;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.AbsListView;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class ResultActivity extends AppCompatActivity{
+    ELATest listAdapter;
+    ExpandableListView expListView;
+    ArrayList<ELAEntry> listDataHeader = new ArrayList<ELAEntry>();
+    HashMap<String, ArrayList<ELAEntry>> listDataChild = new HashMap<String, ArrayList<ELAEntry>>();
+
     /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +37,7 @@ public class ResultActivity extends AppCompatActivity{
         t.setText("Your score is %" + (percentage)*100);
     }
     */
-
+    /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,28 +45,6 @@ public class ResultActivity extends AppCompatActivity{
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_example);
         Bundle b = getIntent().getExtras();
 
-/*
-        // Add textview 1
-        TextView textView1 = new TextView(this);
-        textView1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        textView1.setText("programmatically created TextView1");
-        textView1.setBackgroundColor(0xff66ff66); // hex color 0xAARRGGBB
-        textView1.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
-        linearLayout.addView(textView1);
-
-        // Add textview 2
-        TextView textView2 = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.RIGHT;
-        layoutParams.setMargins(10, 10, 10, 10); // (left, top, right, bottom)
-        textView2.setLayoutParams(layoutParams);
-        textView2.setText("programmatically created TextView2");
-        textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        textView2.setBackgroundColor(0xffffdbdb); // hex color 0xAARRGGBB
-        linearLayout.addView(textView2);
-*/
         int questions = b.getInt("numOfQuestions"); // total number of textviews to add
 
         String[] answers = b.getStringArray("correctAnswers");
@@ -113,6 +103,65 @@ public class ResultActivity extends AppCompatActivity{
         linearLayout.addView(scoreResult);
 
     }
+    */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
+        //Recieve data from the quiz activity
+        Bundle b = getIntent().getExtras();
+        int questions = b.getInt("numOfQuestions"); // total number of textviews to add
+        //ArrayList<String> answers = b.getStringArrayList("correctAnswers");
+        //ArrayList<String> yourAnswers = b.getStringArrayList("yourAnswers");
+
+        //HARDCODE
+        ArrayList<String> answers = new ArrayList<>();
+        ArrayList<String> yourAnswers = new ArrayList<>();
+        answers.add("36");
+        yourAnswers.add("INCOMPLETE");
+        answers.add("10");
+        yourAnswers.add("10");
+
+        int score= b.getInt("score");
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+
+        for(int i = 0; i < questions; ++i){
+            ELAEntry entry = new ELAEntry();
+            if(yourAnswers.get(i) == "INCOMPLETE"){
+                entry.color = Color.BLUE;
+                entry.image = "quesmark";
+            }
+            else if(answers.get(i) != yourAnswers.get(i)){
+                entry.color = Color.RED;
+                entry.image = "xmark";
+            }
+            else{
+                entry.color = Color.GREEN;
+                entry.image = "checkmark";
+            }
+            entry.TextEntry = "Question " + (i+1);
+            listDataHeader.add(entry);
+        }
+/*
+        for (int i = 1; i <= questions; i++) {
+            ELAEntry headerEntry = listDataHeader.get(i-1);
+            ELAEntry yourAnswerEntry = headerEntry;
+            ELAEntry answerEntry = headerEntry;
+
+            answerEntry.TextEntry = "The answer was " + answers.get(i-1);
+            yourAnswerEntry.TextEntry = "Your answer was " + yourAnswers.get(i-1);
+
+            ArrayList<ELAEntry> childList = new ArrayList<ELAEntry>();
+            childList.add(answerEntry);
+            childList.add(yourAnswerEntry);
+            listDataChild.put(headerEntry.TextEntry, childList);
+        }
+*/
+        listAdapter = new ELATest(ResultActivity.this, listDataHeader, listDataChild);
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
