@@ -129,9 +129,7 @@ public class SubjectNavActivity extends Activity {
 
                 // sending intent to Startup Page
                 Intent intent = new Intent(getApplicationContext(), StartupPage.class);
-                String subjectMessage = listDataHeader.get(groupPosition)
-                        + " : "
-                        + listDataChild.get(
+                String subjectMessage = listDataChild.get(
                         listDataHeader.get(groupPosition)).get(
                         childPosition);
                 intent.putExtra("Subject", subjectMessage);

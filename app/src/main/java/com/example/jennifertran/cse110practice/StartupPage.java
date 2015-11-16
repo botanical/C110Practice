@@ -27,8 +27,10 @@ public class StartupPage extends AppCompatActivity {
         Intent intent = getIntent();
         String sourceString = intent.getStringExtra("Source");
         String subMessage = intent.getStringExtra("Subject");
-        TextView subText = (TextView) findViewById(R.id.subject_title_text);
-        subText.setText(subMessage);
+        // display subject in title bar
+        setTitle("Quiz: " + subMessage);
+        //TextView subText = (TextView) findViewById(R.id.subject_title_text);
+        //subText.setText(subMessage);
 
         if( sourceString.equals("ResultActivity") ) {
             quizTaken = true;
