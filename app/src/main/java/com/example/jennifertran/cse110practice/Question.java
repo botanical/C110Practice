@@ -12,6 +12,7 @@ public class Question {
     private ArrayList<RadioButton> radioButtons;
     private String answer;
     private int marked;
+    private boolean viewed;
 
 
     public Question()
@@ -21,13 +22,15 @@ public class Question {
         options= new ArrayList<>();
         answer="";
         marked=0;
+        viewed=false;
     }
     public Question(String question, ArrayList<String> options,
-                    String answer, int marked) {
+                    String answer, int marked, boolean viewed) {
         this.question = question;
         this.options = options;
         this.answer = answer;
         this.marked = marked;
+        this.viewed = viewed;
     }
     public int getId()
     {
@@ -44,6 +47,7 @@ public class Question {
     public int getMarked() {
         return marked;
     }
+    public boolean getViewed() { return viewed; }
     public void setId(int id)
     {
         this.id=id;
@@ -63,7 +67,7 @@ public class Question {
     public void setMarked(int marked) {
         this.marked = marked;
     }
-
+    public void setViewed(boolean viewed) { this.viewed = viewed; }
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
         //TODO add final variables corresponding to indexes
@@ -77,12 +81,13 @@ public class Question {
         }
         rowq.setOptions(options);
         rowq.setMarked(-1); //default marked value == -1
+        rowq.setViewed(false);
         return rowq;
     }
     public String toString (){
 
         return "[ "+ this.getId()+", "+this.getQuestion()+", "+this.getAnswer()+", " +
-                this.options.toString() + ", " + this.getMarked()+ " ]";
+                this.options.toString() + ", " + this.getMarked()+ "," + this.getViewed() + " ]";
     }
 
 

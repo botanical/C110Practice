@@ -19,6 +19,7 @@
     <color name="quiz_text_color">@android:color/black</color>"
     <color name="quiz_button_color">@android:color/white</color>
     <color name="quiz_next_button_color">#009bc0</color>
+    <color name="quiz_submit_button_color">@android:color/black</color>
 
 
     <!--Subject Navigation Colors-->
