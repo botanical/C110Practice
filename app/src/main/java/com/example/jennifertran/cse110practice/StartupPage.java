@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StartupPage extends AppCompatActivity {
     Button start_button;
+    boolean quizTaken = false;
     int testTimeSend = 70000;
     TextView startTime;
     public final static String EXTRA_TIME = "Time: ";
@@ -24,9 +25,14 @@ public class StartupPage extends AppCompatActivity {
 
         // displaying subject text
         Intent intent = getIntent();
-        String subMessage = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
+        String sourceString = intent.getStringExtra("Source");
+        String subMessage = intent.getStringExtra("Subject");
         TextView subText = (TextView) findViewById(R.id.subject_title_text);
         subText.setText(subMessage);
+
+        if( sourceString.equals("ResultActivity") ) {
+            quizTaken = true;
+        }
 
         // displaying time
         startTime = (TextView) findViewById(R.id.timer);
@@ -37,13 +43,29 @@ public class StartupPage extends AppCompatActivity {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(testTimeSend)));
         startTime.setText(timeText);
 
-        // set listener of start button to call startQuiz() on press
-        findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startQuiz();
-            }
-        });
+        start_button = (Button)findViewById(R.id.start_quiz_button);
+
+        if( quizTaken == false ) {
+            start_button.setText("START");
+            start_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startQuiz();
+                }
+            });
+        }
+        else {
+            start_button.setText("SEE RESULTS");
+            TextView instrucText = (TextView) findViewById(R.id.instruc_id);
+            instrucText.setText("You have already taken this quiz. You may view your results.");
+            start_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    seeResults();
+                }
+            });
+
+        }
     }
 
     private void startQuiz() {
@@ -51,5 +73,37 @@ public class StartupPage extends AppCompatActivity {
         intent.putExtra(EXTRA_TIME, testTimeSend);
         startActivity(intent);
     }
-}
 
+    private void seeResults() {
+        Intent intent = new Intent(this, ResultActivity.class);
+
+        // dummy info with null data
+        Bundle b = new Bundle();
+        int numOfQuestions = 1;
+        String[] stringArray = new String[numOfQuestions];
+        b.putInt("score", 0); //Your score
+        b.putInt("numOfQuestions", numOfQuestions);
+        b.putStringArray("correctAnswers", stringArray);
+        b.putStringArray("yourAnswers", stringArray);
+        intent.putExtras(b);
+
+        startActivity(intent);
+    }
+
+    // back button goes to SubjectNavActivity, NEED TO FIX
+    /*@Override
+    public void onBackPressed() {
+        Intent intent = new Intent(StartupPage.this, SubjectNavActivity.class);*/
+        /*Bundle b = new Bundle();
+
+        b.putInt("score", score); //Your score
+        b.putInt("numOfQuestions", questions);
+
+        b.putStringArray("correctAnswers", correctAnswers);
+        b.putStringArray("yourAnswers", yourAnswers);
+
+        intent.putExtras(b); //Put your score to your next Intent
+        intent.putExtra("Source", "ResultActivity");*/
+        /*startActivity(intent);
+    }*/
+}

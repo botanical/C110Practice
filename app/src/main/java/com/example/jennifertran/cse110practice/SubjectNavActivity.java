@@ -38,9 +38,6 @@ public class SubjectNavActivity extends Activity {
     ProgressDialog pDialog;
     private String loginUrl;
     private SQLiteDatabase loc;
-
-
-    public final static String EXTRA_MESSAGE = "extra message?"; // for sending intent
     public String username;
 
     @Override
@@ -137,7 +134,8 @@ public class SubjectNavActivity extends Activity {
                         + listDataChild.get(
                         listDataHeader.get(groupPosition)).get(
                         childPosition);
-                intent.putExtra(EXTRA_MESSAGE, subjectMessage);
+                intent.putExtra("Subject", subjectMessage);
+                intent.putExtra("Source", "SubjectNavActivity");
                 startActivity(intent);
                 return false;
             }

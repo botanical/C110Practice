@@ -1,6 +1,7 @@
 package com.example.jennifertran.cse110practice;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -120,4 +121,24 @@ public class ResultActivity extends AppCompatActivity{
         getMenuInflater().inflate(R.menu.activity_result, menu);
         return true;
     }
+
+    // for now, redirect to StartupPage
+    /*@Override
+    public void onBackPressed() {*/
+        /*for (int i = 0; i < (answerScore.length); i++) {
+            score = answerScore[i] + score;
+        }*/
+        //Intent intent = new Intent(ResultActivity.this, StartupPage.class);
+        /*Bundle b = new Bundle();
+
+        b.putInt("score", score); //Your score
+        b.putInt("numOfQuestions", questions);
+
+        b.putStringArray("correctAnswers", correctAnswers);
+        b.putStringArray("yourAnswers", yourAnswers);
+
+        intent.putExtras(b); //Put your score to your next Intent*/
+        /*intent.putExtra("Source", "ResultActivity");
+        startActivity(intent);
+    }*/
 }
