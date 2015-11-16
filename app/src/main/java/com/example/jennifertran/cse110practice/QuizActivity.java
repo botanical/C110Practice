@@ -54,6 +54,7 @@ public class QuizActivity extends AppCompatActivity {
     View submit, back_button;
     Button next_button;
     RadioButton answer;
+    String username;
 
     RadioButton rda, rdb, rdc;
     RadioGroup grp;
@@ -83,6 +84,7 @@ public class QuizActivity extends AppCompatActivity {
         Intent intentReceived = getIntent();
         testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);//TODO add time to Quiz class
         title = intentReceived.getStringExtra("title");
+        username = intentReceived.getStringExtra("username");
 
         /* Get list of columns from previous activity where the quiz was updated */
         String colsString  = intentReceived.getStringExtra("columns");
@@ -164,7 +166,6 @@ public class QuizActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-
 
 
 
@@ -264,6 +265,9 @@ public class QuizActivity extends AppCompatActivity {
                 b.putStringArrayList("correctAnswers", correctAnswers);
                 b.putStringArrayList("yourAnswers", yourAnswers);
 
+                DbHelperTaken db = new DbHelperTaken(QuizActivity.this,username+"Taken");
+                db.setTaken(1,title);
+                System.out.println(db.getIsTaken(title));
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();

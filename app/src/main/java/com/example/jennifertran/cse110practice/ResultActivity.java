@@ -33,6 +33,11 @@ public class ResultActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ll_example);
+        if( getIntent().getExtras() == null ) {
+            setTitle("Results!");
+
+            return;
+        }
         Bundle b = getIntent().getExtras();
 
 /*
