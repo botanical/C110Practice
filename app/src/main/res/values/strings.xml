@@ -36,6 +36,7 @@
         This quiz is timed and will automatically submit when time runs out.
         Please do not use your device\'s back button, as that will reset the time and quiz.</string>
 
+
     <string name="queryUrl">https://cse101-searchllc.rhcloud.com/receiveAndroidQuery.php</string>
     <string name="remotePass">qwepoi12332191827364</string>
     <string name="title_section1">Section 1</string>

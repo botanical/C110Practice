@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,14 +25,15 @@ import java.util.concurrent.TimeUnit;
 
 public class StartupPage extends AppCompatActivity {
     Button start_button;
-    boolean quizTaken = false;
     int testTimeSend = 70000;
     TextView startTime;
     private String title;
+    private String username;
     private ProgressDialog pDialog;
     private String loginUrl;
     private ArrayList<String> columns;
     public final static String EXTRA_TIME = "Time: ";
+    public boolean isTaken;
 
 
 
@@ -43,41 +45,51 @@ public class StartupPage extends AppCompatActivity {
         // displaying subject text
         Intent intent = getIntent();
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
+        username = intent.getStringExtra("username");
         //TextView subText = (TextView) findViewById(R.id.subject_title_text);
         //subText.setText(title);
-        title = intent.getStringExtra("title");
         setTitle("Quiz: " + title); // display subject in title bar
+        title = intent.getStringExtra("title");
         new AttemptUpdateQuiz().execute();
+    }
+
+    /* Check if quiz has been taken when this activity is restarted */
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+        int taken = dbTaken.getIsTaken(title);
+        if(taken == 1) {
+            isTaken = true;
+            Button b = (Button) findViewById(R.id.start_quiz_button);
+            b.setText("Results");
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(StartupPage.this, ResultActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+        else {
+            isTaken = false;
+
+        }
     }
 
     private void startQuiz() {
         Intent intent = new Intent(this, QuizActivity.class);
         intent.putExtra(EXTRA_TIME, testTimeSend);
         intent.putExtra("title",title);
+        intent.putExtra("username", username);
         //Can't pass object to a different activity so must pass object as a string
         JSONArray jA = new JSONArray(columns);
         try {
             System.out.println("STARTUP: " + jA.get(0));
-        }catch(Exception e){
+        }catch(Exception e) {
             e.printStackTrace();
         }
-        intent.putExtra("columns",jA.toString());
-        startActivity(intent);
-    }
-
-    private void seeResults() {
-        Intent intent = new Intent(this, ResultActivity.class);
-
-        // dummy info with null data
-        Bundle b = new Bundle();
-        int numOfQuestions = 1;
-        String[] stringArray = new String[numOfQuestions];
-        b.putInt("score", 0); //Your score
-        b.putInt("numOfQuestions", numOfQuestions);
-        b.putStringArray("correctAnswers", stringArray);
-        b.putStringArray("yourAnswers", stringArray);
-        intent.putExtras(b);
-
+        intent.putExtra("columns", jA.toString());
         startActivity(intent);
     }
 
@@ -98,9 +110,6 @@ public class StartupPage extends AppCompatActivity {
             String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                     "SELECT * FROM  " + "`"+title+"` ", loginUrl);//BACKTICKS ARE CRITICAL OMG
                                                                   //SAME KEY AS ~
-            System.out.println("TITLE: ---'"+title+"'----");
-            System.out.println("ATTEMPT UPDATE TABLE: "+table);
-
             /*
                 Update quiz to local quiz;
              */
@@ -152,11 +161,30 @@ public class StartupPage extends AppCompatActivity {
 
                  */
 
-
                 StartupPage.this.columns = columns;
                 DbHelperQuiz db = new DbHelperQuiz(StartupPage.this, title,columns);
                 db.createTable();
                 db.upgradeQuiz(questOpPairs); //store subNav.db locally
+
+
+                /*************** Get list of taken quizzes ********************************/
+
+
+                String takenTable = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "SELECT * FROM  " + "`"+username+"Taken` ", loginUrl);//BACKTICKS
+                                                                                // CRITICAL OMG
+                jTable = new JSONArray(takenTable);
+                HashMap<String, Integer> quizTakenPairs = new HashMap<>();
+                for(int i = 0; i < jTable.length(); i++)
+                {
+                    currRow = jTable.getJSONObject(i);
+                    System.out.println(currRow.getInt("taken"));
+                    quizTakenPairs.put(currRow.getString("title"),currRow.getInt("taken"));
+                }
+                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+                dbTaken.createTable();
+                dbTaken.upgradeTaken(quizTakenPairs);
+
 
 
             }catch(Exception e){
@@ -165,9 +193,16 @@ public class StartupPage extends AppCompatActivity {
             return null;
         }
 
+
         protected void onPostExecute(String message){
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
+
+            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+            int taken = dbTaken.getIsTaken(title);
+            if(taken == 1)
+                isTaken = true;
+
 
             //displaying time
             startTime = (TextView) findViewById(R.id.timer);
@@ -178,32 +213,23 @@ public class StartupPage extends AppCompatActivity {
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(testTimeSend)));
             startTime.setText(timeText);
 
-            // adjusting Start Button
-            start_button = (Button)findViewById(R.id.start_quiz_button);
-
-            if( quizTaken == false ) {
-                start_button.setText("START");
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            // set listener of start button to call startQuiz() on press
+            findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(isTaken)
+                    {
+                        Toast.makeText(getApplicationContext(),
+                                "You've taken this quiz already!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else
                         startQuiz();
-                    }
-                });
-            }
-            else {
-                start_button.setText("SEE RESULTS");
-                TextView instrucText = (TextView) findViewById(R.id.instruc_id);
-                instrucText.setText("You have already taken this quiz. You may view your results.");
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        seeResults();
-                    }
-                });
-
-            }
+                }
+            });
 
         }
     }
+
 }
 

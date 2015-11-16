@@ -41,30 +41,7 @@
             android:layout_weight="0.4"
             android:paddingLeft="40dp"
             android:paddingRight="40dp">
-            <!--<RadioButton
-                android:id="@+id/radio0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="RadioButton"
-                android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"
-                android:onClick="onRadioButtonClicked"/>
-            <RadioButton
-                android:id="@+id/radio1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="RadioButton"
-                android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"
-                android:onClick="onRadioButtonClicked"/>
-            <RadioButton
-                android:id="@+id/radio2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="RadioButton"
-                android:textSize="20dp"
-                android:textColor="@color/quiz_text_color"
-                android:onClick="onRadioButtonClicked"/> -->
+
         </RadioGroup>
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -106,7 +83,7 @@
                 android:text="SUBMIT"
                 android:textSize="20dp"
                 android:textColor="@color/quiz_button_color"
-                android:background="@color/quiz_background"
+                android:background="@color/quiz_submit_button_color"
                 android:weightSum="0.5"
                 android:layout_alignLeft="@id/fakeView"
                 android:layout_alignParentRight="true"/>

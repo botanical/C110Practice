@@ -135,6 +135,7 @@ public class SubjectNavActivity extends Activity {
 
                 intent.putExtra(EXTRA_MESSAGE, message);
                 intent.putExtra("title", quizTitle);
+                intent.putExtra("username", username);
                 startActivity(intent);
                 return false;
             }

@@ -29,7 +29,6 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
     private static final String KEY_HEADER= "header";
     private static final String KEY_INDEXER = "indexer";
     private List<String> childrenCols;
-    private SQLiteDatabase dbase;
     private String table;
     private static final int HEADER_INDEX = 0;
 
@@ -45,8 +44,7 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         this.childrenCols = columns;
         this.table = tableName+"Quizzes";
     }
-    public void createTable()
-    {
+    public void createTable(){
         String colQuery = "";
         for(int i = 0; i < childrenCols.size(); i++)
         {
@@ -154,7 +152,6 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         }
         while(dataCurs.moveToNext());
         dataCurs.close();
-        System.out.println(headerChildPairs);
 
         return new Pair<>(headers,headerChildPairs);
 

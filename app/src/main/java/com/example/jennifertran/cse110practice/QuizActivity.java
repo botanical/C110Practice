@@ -54,6 +54,7 @@ public class QuizActivity extends AppCompatActivity {
     View submit, back_button;
     Button next_button;
     RadioButton answer;
+    String username;
 
     RadioButton rda, rdb, rdc;
     RadioGroup grp;
@@ -67,12 +68,13 @@ public class QuizActivity extends AppCompatActivity {
 
     /* Adding member variables, strings, and booleans for fragments */
     private ListView mDrawerList;
-    private ArrayAdapter<String> mAdapter;
+    //private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Question Navigation";
     String title;
     Quiz quiz;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,7 @@ public class QuizActivity extends AppCompatActivity {
         Intent intentReceived = getIntent();
         testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);//TODO add time to Quiz class
         title = intentReceived.getStringExtra("title");
+        username = intentReceived.getStringExtra("username");
 
         /* Get list of columns from previous activity where the quiz was updated */
         String colsString  = intentReceived.getStringExtra("columns");
@@ -121,15 +124,17 @@ public class QuizActivity extends AppCompatActivity {
                     return;
 
                 current_question.setMarked(checkedId);
-                yourAnswers.set(question_id, r.getText().toString());
+                /* Update drawer item icons when radio button is clicked */
+                addDrawerItems();
 
+                yourAnswers.set(question_id, r.getText().toString());
 
                 if(current_question.getAnswer().equals(r.getText().toString()))
                 {
-                    answerScore[question_id] = 1; //Answer is correct
+                    answerScore[question_id] = 1;
                 }
                 else
-                    answerScore[question_id] = 0; //Answer is incorrect
+                    answerScore[question_id] = 0;
             }
         });
         for(Question q : question_list)
@@ -167,7 +172,6 @@ public class QuizActivity extends AppCompatActivity {
 
 
 
-
         // Set up question on page
         textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
@@ -182,6 +186,10 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set the questions on the page
         setQuestionView();
+        /* Update drawer icons to set viewed icon */
+        current_question.setViewed(true);
+        addDrawerItems();
+        // Set question to viewed
 
         // Call listener to check for next page request
         next_button.setOnClickListener(new View.OnClickListener() {
@@ -227,7 +235,9 @@ public class QuizActivity extends AppCompatActivity {
                     /* Uncheck all buttons so new page has no checked answer */
 
                 setQuestionView();
-
+                /* Set question to viewed and update drawer items */
+                current_question.setViewed(true);
+                addDrawerItems();
                 if(current_question.getMarked() != -1)
                     grp.check(current_question.getMarked());
 
@@ -264,6 +274,9 @@ public class QuizActivity extends AppCompatActivity {
                 b.putStringArrayList("correctAnswers", correctAnswers);
                 b.putStringArrayList("yourAnswers", yourAnswers);
 
+                DbHelperTaken db = new DbHelperTaken(QuizActivity.this,username+"Taken");
+                db.setTaken(1,title);
+                System.out.println(db.getIsTaken(title));
                 intent.putExtras(b); //Put your score to your next Intent
                 startActivity(intent);
                 finish();
@@ -289,8 +302,11 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 setQuestionView();
+                /* Update question to be viewed and set drawer items */
+                current_question.setViewed(true);
+                addDrawerItems();
                 if(current_question.getMarked() != -1 )
-                grp.check(current_question.getMarked());
+                    grp.check(current_question.getMarked());
 
             }
         });
@@ -362,9 +378,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         }.start();
 
-
     }
-
     public void goToQuestion(int num)
     {
         question_id = num ;
@@ -398,8 +412,10 @@ public class QuizActivity extends AppCompatActivity {
         setQuestionView();
         if(current_question.getMarked() != -1 )
             grp.check(current_question.getMarked());
-
+        this.current_question.setViewed(true);
+        addDrawerItems();
     }
+
 
 
     @Override
@@ -437,22 +453,52 @@ public class QuizActivity extends AppCompatActivity {
         ArrayList<String> row;
         Question currQuestion;
         ArrayList<Question> questionList = quiz.getQuestions();
-        String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+        FragmentNavigationAdapter mAdapter;
+        FragmentNavigationTitle navTitle[] = new FragmentNavigationTitle[questionList.size()];
+        //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+
 
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
                                                             //Add 1 to zero indexed question number
-            questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
+            //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
+
+
+            if (currQuestion.getViewed() == false && (currQuestion.getMarked() == -1)) {
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
+                        R.drawable.ic_unviewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+            else if (currQuestion.getViewed() == false && (currQuestion.getMarked() != -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
+                        R.drawable.ic_unviewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() == -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
+                        R.drawable.ic_viewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+
+            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() != -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
+                        R.drawable.ic_viewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
         }
 
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, questionNums);
+         mAdapter =
+                new FragmentNavigationAdapter(this, R.layout.fragment_navigation_titles, navTitle);
+
+        //mAdapter = new ArrayAdapter<>(this, R.layout.fragment_navigation_titles, questionNums);
+
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 goToQuestion(position);
-                mDrawerLayout.closeDrawers();
+                addDrawerItems();
             }
         });
     }
