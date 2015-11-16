@@ -74,6 +74,7 @@ public class QuizActivity extends AppCompatActivity {
     String title;
     Quiz quiz;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,10 +121,11 @@ public class QuizActivity extends AppCompatActivity {
                 if( r == null)
                     return;
 
-                System.out.println("RRRRRR " +r);
-                System.out.println(checkedId);
-                System.out.println(current_question);
                 current_question.setMarked(checkedId);
+                /* Update drawer item icons when radio button is clicked */
+
+                addDrawerItems();
+
                 yourAnswers.set(question_id, r.getText().toString());
 
                 if(current_question.getAnswer().equals(r.getText().toString()))
@@ -184,6 +186,10 @@ public class QuizActivity extends AppCompatActivity {
 
         // Set the questions on the page
         setQuestionView();
+        /* Update drawer icons to set viewed icon */
+        current_question.setViewed(true);
+        addDrawerItems();
+        // Set question to viewed
 
         // Call listener to check for next page request
         next_button.setOnClickListener(new View.OnClickListener() {
@@ -229,7 +235,9 @@ public class QuizActivity extends AppCompatActivity {
                     /* Uncheck all buttons so new page has no checked answer */
 
                 setQuestionView();
-
+                /* Set question to viewed and update drawer items */
+                current_question.setViewed(true);
+                addDrawerItems();
                 if(current_question.getMarked() != -1)
                     grp.check(current_question.getMarked());
 
@@ -291,8 +299,11 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 setQuestionView();
+                /* Update question to be viewed and set drawer items */
+                current_question.setViewed(true);
+                addDrawerItems();
                 if(current_question.getMarked() != -1 )
-                grp.check(current_question.getMarked());
+                    grp.check(current_question.getMarked());
 
             }
         });
@@ -411,9 +422,28 @@ public class QuizActivity extends AppCompatActivity {
                                                             //Add 1 to zero indexed question number
             //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
 
-             navTitle[i]= new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
-                                                        R.drawable.ic_unviewed_question_24px,
-                                    "Question " + String.valueOf(currQuestion.getId()+1 ));
+
+            if (currQuestion.getViewed() == false && (currQuestion.getMarked() == -1)) {
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
+                        R.drawable.ic_unviewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+            else if (currQuestion.getViewed() == false && (currQuestion.getMarked() != -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
+                        R.drawable.ic_unviewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() == -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
+                        R.drawable.ic_viewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
+
+            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() != -1)){
+                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
+                        R.drawable.ic_viewed_question_24px,
+                        "Question " + String.valueOf(currQuestion.getId() + 1));
+            }
         }
 
          mAdapter =
