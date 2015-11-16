@@ -1,7 +1,6 @@
 package com.example.jennifertran.cse110practice;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -11,6 +10,8 @@ import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity{
     /*
@@ -58,8 +59,8 @@ public class ResultActivity extends AppCompatActivity{
 */
         int questions = b.getInt("numOfQuestions"); // total number of textviews to add
 
-        String[] answers = b.getStringArray("correctAnswers");
-        String[] yourAnswers = b.getStringArray("yourAnswers");
+        ArrayList<String> answers = b.getStringArrayList("correctAnswers");
+        ArrayList<String> yourAnswers = b.getStringArrayList("yourAnswers");
 
         //final TextView[] questionNumView = new TextView[questions]; // create an empty array;
         final TextView[] correctAnswersView = new TextView[questions];
@@ -77,7 +78,7 @@ public class ResultActivity extends AppCompatActivity{
 
             final TextView correctAnswerView = new TextView(this);
             if(answers != null) {
-                correctAnswerView.setText(" The correct answer was: " + answers[i]);
+                correctAnswerView.setText(" The correct answer was: " + answers.get(i));
                 correctAnswerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             }
             else
@@ -87,7 +88,7 @@ public class ResultActivity extends AppCompatActivity{
 
             final TextView yourAnswerView = new TextView(this);
             if(yourAnswers != null) {
-                yourAnswerView.setText(" Your answer was: " + yourAnswers[i]);
+                yourAnswerView.setText(" Your answer was: " + yourAnswers.get(i));
                 yourAnswerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             }
             else
@@ -99,8 +100,8 @@ public class ResultActivity extends AppCompatActivity{
             //  questionNumView[i] = quesTextView;
         }
         int score= b.getInt("score");
-        double percentage = (((double)score)/5);
-        setTitle("Result: " + String.valueOf(score) + "/" + String.valueOf(5));
+        double percentage = (((double)score)/questions);
+        setTitle("Result: " + String.valueOf(score) + "/" + String.valueOf(questions));
 
         final TextView scoreResult = new TextView(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -121,24 +122,4 @@ public class ResultActivity extends AppCompatActivity{
         getMenuInflater().inflate(R.menu.activity_result, menu);
         return true;
     }
-
-    // for now, redirect to StartupPage
-    /*@Override
-    public void onBackPressed() {*/
-        /*for (int i = 0; i < (answerScore.length); i++) {
-            score = answerScore[i] + score;
-        }*/
-        //Intent intent = new Intent(ResultActivity.this, StartupPage.class);
-        /*Bundle b = new Bundle();
-
-        b.putInt("score", score); //Your score
-        b.putInt("numOfQuestions", questions);
-
-        b.putStringArray("correctAnswers", correctAnswers);
-        b.putStringArray("yourAnswers", yourAnswers);
-
-        intent.putExtras(b); //Put your score to your next Intent*/
-        /*intent.putExtra("Source", "ResultActivity");
-        startActivity(intent);
-    }*/
 }

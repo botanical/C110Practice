@@ -38,13 +38,15 @@ public class SubjectNavActivity extends Activity {
     ProgressDialog pDialog;
     private String loginUrl;
     private SQLiteDatabase loc;
+
+    public final static String EXTRA_MESSAGE = "extra message?"; // for sending intent
     public String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
-        //Recieve data from LoginActivity
+        //Receive data from LoginActivity
         Intent loginIntent = getIntent();
         username = loginIntent.getStringExtra("username");
 
@@ -84,13 +86,11 @@ public class SubjectNavActivity extends Activity {
 
 
     }
-    //TODO Implemet loadSubNav in dbhelper sub nav
     private void loadLocalQuizzes() {
         DbHelperSubNav db = new DbHelperSubNav(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);
         listDataHeader = pair.first;
         listDataChild  = pair.second;
-        System.out.println(listDataChild);
 
         listAdapter = new ExpandableListAdapter(SubjectNavActivity.this, listDataHeader,
                 listDataChild);
@@ -129,11 +129,12 @@ public class SubjectNavActivity extends Activity {
 
                 // sending intent to Startup Page
                 Intent intent = new Intent(getApplicationContext(), StartupPage.class);
-                String subjectMessage = listDataChild.get(
-                        listDataHeader.get(groupPosition)).get(
-                        childPosition);
-                intent.putExtra("Subject", subjectMessage);
-                intent.putExtra("Source", "SubjectNavActivity");
+                String subject = listDataHeader.get(groupPosition);
+                String quizTitle = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                String message = subject+ " : "+ quizTitle;
+
+                intent.putExtra(EXTRA_MESSAGE, message);
+                intent.putExtra("title", quizTitle);
                 startActivity(intent);
                 return false;
             }
@@ -202,7 +203,8 @@ public class SubjectNavActivity extends Activity {
                  */
 
                 DbHelperSubNav db = new DbHelperSubNav(SubjectNavActivity.this,username,columns);
-                db.upgradeSubNav(headerChildPairs); //store subnav db locally
+                db.createTable();
+                db.upgradeSubNav(headerChildPairs); //store subNav.db locally
 
 
             }catch(Exception e){
