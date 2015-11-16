@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ResultActivity extends AppCompatActivity{
     /*
     @Override
@@ -57,8 +59,8 @@ public class ResultActivity extends AppCompatActivity{
 */
         int questions = b.getInt("numOfQuestions"); // total number of textviews to add
 
-        String[] answers = b.getStringArray("correctAnswers");
-        String[] yourAnswers = b.getStringArray("yourAnswers");
+        ArrayList<String> answers = b.getStringArrayList("correctAnswers");
+        ArrayList<String> yourAnswers = b.getStringArrayList("yourAnswers");
 
         //final TextView[] questionNumView = new TextView[questions]; // create an empty array;
         final TextView[] correctAnswersView = new TextView[questions];
@@ -76,7 +78,7 @@ public class ResultActivity extends AppCompatActivity{
 
             final TextView correctAnswerView = new TextView(this);
             if(answers != null) {
-                correctAnswerView.setText(" The correct answer was: " + answers[i]);
+                correctAnswerView.setText(" The correct answer was: " + answers.get(i));
                 correctAnswerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             }
             else
@@ -86,7 +88,7 @@ public class ResultActivity extends AppCompatActivity{
 
             final TextView yourAnswerView = new TextView(this);
             if(yourAnswers != null) {
-                yourAnswerView.setText(" Your answer was: " + yourAnswers[i]);
+                yourAnswerView.setText(" Your answer was: " + yourAnswers.get(i));
                 yourAnswerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             }
             else
@@ -98,8 +100,8 @@ public class ResultActivity extends AppCompatActivity{
             //  questionNumView[i] = quesTextView;
         }
         int score= b.getInt("score");
-        double percentage = (((double)score)/5);
-        setTitle("Result: " + String.valueOf(score) + "/" + String.valueOf(5));
+        double percentage = (((double)score)/questions);
+        setTitle("Result: " + String.valueOf(score) + "/" + String.valueOf(questions));
 
         final TextView scoreResult = new TextView(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,

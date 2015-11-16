@@ -1,102 +1,88 @@
 package com.example.jennifertran.cse110practice;
 
 
+import android.widget.RadioButton;
+
 import java.util.ArrayList;
 
 public class Question {
-    private int ID;
-    private String QUESTION;
-    private String OPTA;
-    private String OPTB;
-    private String OPTC;
+    private int id;
+    private String question;
     private ArrayList<String> options;
-    private String ANSWER;
-    private String MARKED;
+    private ArrayList<RadioButton> radioButtons;
+    private String answer;
+    private int marked;
+
 
     public Question()
     {
-        ID=0;
-        QUESTION="";
-        OPTA="";
-        OPTB="";
-        OPTC="";
-        ANSWER="";
-        MARKED="";
+        id=0;
+        question="";
+        options= new ArrayList<>();
+        answer="";
+        marked=0;
     }
-    public Question(String question, String A, String B, String C,
-                    String answer, String marked) {
-        QUESTION = question;
-        OPTA = A;
-        OPTB = B;
-        OPTC = C;
-        ANSWER = answer;
+    public Question(String question, ArrayList<String> options,
+                    String answer, int marked) {
+        this.question = question;
+        this.options = options;
+        this.answer = answer;
+        this.marked = marked;
     }
-    public int getID()
+    public int getId()
     {
-        return ID;
+        return id;
     }
-    public String getQUESTION() {
-        return QUESTION;
+    public String getQuestion() {
+        return this.question;
     }
-    public String getOPTA() {
-        return OPTA;
+    public ArrayList<String> getOptions() {return this.options; }
+    public ArrayList<RadioButton> getRadioButtons() {return this.radioButtons; }
+    public String getAnswer() {
+        return answer;
     }
-    public String getOPTB() {
-        return OPTB;
+    public int getMarked() {
+        return marked;
     }
-    public String getOPTC() {
-        return OPTC;
-    }
-    public String getANSWER() {
-        return ANSWER;
-    }
-    public String getMARKED() {
-        return MARKED;
-    }
-    public void setID(int id)
+    public void setId(int id)
     {
-        ID=id;
+        this.id=id;
     }
-    public void setQUESTION(String question) {
-        QUESTION = question;
-    }
-    public void setOPTA(String A) {
-        OPTA = A;
-    }
-    public void setOPTB(String B) {
-        OPTB = B;
-    }
-    public void setOPTC(String C) {
-        OPTC = C;
+    public void setQuestion(String question) {
+        this.question = question;
     }
     public void setOptions(ArrayList<String> options) {
         this.options = options;
     }
-    public void setANSWER(String answer) {
-        ANSWER = answer;
+    public void setRadioButtons(ArrayList<RadioButton> radioButtons){
+        this.radioButtons = radioButtons;
     }
-    public void setMARKED(String marked) {
-        MARKED = marked;
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+    public void setMarked(int marked) {
+        this.marked = marked;
     }
 
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
         //TODO add final variables corresponding to indexes
         Question rowq = new Question();
-        rowq.setID(Integer.valueOf(row.get(0)));
-        rowq.setQUESTION(row.get(1));
-        rowq.setANSWER(row.get(2));
+        rowq.setId(Integer.valueOf(row.get(0)));
+        rowq.setQuestion(row.get(1));
+        rowq.setAnswer(row.get(2));
         ArrayList<String> options = new ArrayList<>();
         for(int i = (2 + 1); i < row.size()-1; i++){ // -1 to skip last column 'marked'
             options.add(row.get(i));
         }
         rowq.setOptions(options);
+        rowq.setMarked(-1); //default marked value == -1
         return rowq;
     }
     public String toString (){
 
-        return "[ "+ this.getID()+", "+this.getQUESTION()+", "+this.getANSWER()+", " +
-                this.options.toString() + ", " + this.getMARKED()+ " ]";
+        return "[ "+ this.getId()+", "+this.getQuestion()+", "+this.getAnswer()+", " +
+                this.options.toString() + ", " + this.getMarked()+ " ]";
     }
 
 

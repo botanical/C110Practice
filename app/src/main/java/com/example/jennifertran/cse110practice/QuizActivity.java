@@ -44,11 +44,11 @@ public class QuizActivity extends AppCompatActivity {
     ArrayList<String> correctAnswers;
 
     List<Question> question_list;
-    int[] answerScore = new int[numOfQuestions];
+    int[] answerScore;
     int score = 0;
     int question_id = 0;
     int answerCheck;
-    int prev_qid;
+    int prev;
     Question current_question;
     TextView textQuestion;
     View submit, back_button;
@@ -58,7 +58,7 @@ public class QuizActivity extends AppCompatActivity {
     RadioButton rda, rdb, rdc;
     RadioGroup grp;
     DbHelperQuiz db;
-    String marked;
+    int marked;
     String colName = "marked";
     String qid;
     TextView textViewTime;
@@ -78,35 +78,83 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
         textViewTime = (TextView) findViewById(R.id.textViewTimer);
         Intent intentReceived = getIntent();
         testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);//TODO add time to Quiz class
         title = intentReceived.getStringExtra("title");
+
+        /* Get list of columns from previous activity where the quiz was updated */
         String colsString  = intentReceived.getStringExtra("columns");
         ArrayList<String> cols = new ArrayList<>();
         try{
             JSONArray columns = new JSONArray(colsString);
             for(int i = 0; i < columns.length(); i++)
                 cols.add(columns.getString(i));
-            System.out.println("JSON: " + columns.getString(0));
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println("COLS: "+colsString);
         /*******************************  Initialize Quiz Object ****************************/
-        // for timer stuff
+
         db =  new DbHelperQuiz(this,title,cols);
         quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
         question_list = quiz.getQuestions();
         correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
         numOfQuestions = quiz.getNumQuestions();
         current_question = question_list.get(question_id);
-
-
+        answerScore = new int[numOfQuestions];
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-        /******************************** Create Hamburger  ********************************/
+        yourAnswers = new ArrayList<>();
+        for(int i = 0; i < numOfQuestions; i++)
+            yourAnswers.add("INCOMPLETE");
+
+        /***************************** Initialize Radio Buttons *****************************/
+
+        grp = (RadioGroup)findViewById(R.id.radioGroup1);
+        grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                RadioButton r = (RadioButton) findViewById(checkedId);
+                if( r == null)
+                    return;
+
+                System.out.println("RRRRRR " +r);
+                System.out.println(checkedId);
+                System.out.println(current_question);
+                current_question.setMarked(checkedId);
+                yourAnswers.set(question_id, r.getText().toString());
+                if(current_question.getAnswer().equals(r.getText().toString()))
+                {
+                    answerScore[question_id] = 1;
+                }
+                else
+                    answerScore[question_id] = 0;
+            }
+        });
+        for(Question q : question_list)
+        {
+            ArrayList<RadioButton> btns = new ArrayList<>();
+            ArrayList<String> opts = q.getOptions();
+            for(int i = 0; i < opts.size(); i++)
+            {
+                RadioButton b = new RadioButton(this);
+                b.setText(opts.get(i));
+                b.setId(View.generateViewId()); //Generate id for the radioButton
+                btns.add(b);
+            }
+            q.setRadioButtons(btns);
+        }
+
+        /* Set Radio Buttons for first page */
+        System.out.println("RADIO BTNS: "+question_list.get(0).getRadioButtons());
+        for(RadioButton r : question_list.get(0).getRadioButtons())
+                grp.addView(r);
+
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initialize Radio Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+        /******************************** Create Hamburger  *********************************/
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.navList);  /* Set ListView for Fragment */
 
@@ -120,14 +168,7 @@ public class QuizActivity extends AppCompatActivity {
 
 
 
-        yourAnswers = new ArrayList<>();
-        for(int i = 0; i < numOfQuestions; i++)
-            yourAnswers.add("INCOMPLETE");
-        // Set up the database
 
-        rda = (RadioButton)findViewById(R.id.radio0);
-        rdb = (RadioButton)findViewById(R.id.radio1);
-        rdc = (RadioButton)findViewById(R.id.radio2);
         // Set up question on page
         textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
@@ -138,8 +179,6 @@ public class QuizActivity extends AppCompatActivity {
             submit.setVisibility(View.GONE);
         back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
-        grp = (RadioGroup)findViewById(R.id.radioGroup1);
-
 
 
         // Set the questions on the page
@@ -149,14 +188,12 @@ public class QuizActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
-
                 question_id++;
-                qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(numOfQuestions);
-                getSupportActionBar().setTitle(qid);
-
                 current_question = question_list.get(question_id);
-                grp.clearCheck();
+                //grp.clearCheck();
+                grp.removeAllViews();
+                for(RadioButton r : current_question.getRadioButtons())
+                    grp.addView(r);
 
                 if(numOfQuestions == 1)
                 {
@@ -190,28 +227,12 @@ public class QuizActivity extends AppCompatActivity {
 
                     /* Uncheck all buttons so new page has no checked answer */
 
-                marked = db.getQuestionEntry(colName, question_id);
-
-                //Log.d("THIS", marked);
-
                 setQuestionView();
-                if (((rda.getText()).toString()).equals(marked)) {
-                    grp.check(R.id.radio0);
 
-                    Log.d("Banana1", rda.getText().toString());
-                }
-                if (((rdb.getText().toString()).equals(marked))) {
-                    grp.check(R.id.radio1);
-                    Log.d("Banana420 ", String.valueOf(rdb.isChecked()));
-                    Log.d("Banana2", rdb.getText().toString());
+                if(current_question.getMarked() != -1)
+                    grp.check(current_question.getMarked());
 
-                }
-                if (((rdc.getText()).toString()).equals(marked)) {
-
-                    grp.check(R.id.radio2);
-                    Log.d("Banana3", rdc.getText().toString());
-
-                }
+                /* Check the radioButton which was clicked previously */
 
                 findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
@@ -222,11 +243,11 @@ public class QuizActivity extends AppCompatActivity {
                 findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
+                        //RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                         // Save the user's answer
                         answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
 
-                        for (int i = 0; i < (answerScore.length); i++) {
+                        for (int i: answerScore) {
                             score = answerScore[i] + score;
                         }
                         submit();
@@ -241,7 +262,6 @@ public class QuizActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 b.putInt("score", score); //Your score
                 b.putInt("numOfQuestions", numOfQuestions);
-
                 b.putStringArrayList("correctAnswers", correctAnswers);
                 b.putStringArrayList("yourAnswers", yourAnswers);
 
@@ -252,15 +272,13 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             private void back() {
-                RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 question_id--;
-                qid = "Question: "+String.valueOf(question_id + 1)+"/"+String.valueOf(numOfQuestions);
-                getSupportActionBar().setTitle(qid);
-                Log.d("newqid", String.valueOf(question_id));
-                marked = db.getQuestionEntry(colName, question_id);
-                Log.d("marked", "---:" + marked + ":---");
+
                 current_question = question_list.get(question_id);
-                grp.clearCheck();
+                grp.removeAllViews();
+                for(RadioButton r : current_question.getRadioButtons()) {
+                    grp.addView(r);
+                }
 
                 if (question_id == 0) {
                     back_button.setVisibility(View.GONE);
@@ -272,28 +290,9 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 setQuestionView();
-                if (((rda.getText()).toString()).equals(marked)) {
-                    grp.check(R.id.radio0);
+                if(current_question.getMarked() != -1 )
+                grp.check(current_question.getMarked());
 
-                    Log.d("Checked", rda.getText().toString());
-
-                }
-                if (((rdb.getText()).toString()).equals(marked)) {
-                    grp.check(R.id.radio1);
-
-                    Log.d("Checked", rdb.getText().toString());
-
-                }
-                if (((rdc.getText()).toString()).equals(marked)) {
-                    grp.check(R.id.radio2);
-
-                    Log.d("Checked", rdc.getText().toString());
-
-                }
-
-                Log.d("BUTTON1", rda.getText().toString());
-                Log.d("BUTTON2", rdb.getText().toString());
-                Log.d("BUTTON3", rdc.getText().toString());
             }
         });
 
@@ -389,56 +388,11 @@ public class QuizActivity extends AppCompatActivity {
 
     private void setQuestionView()
     {
-        textQuestion.setText(current_question.getQUESTION());
-        rda.setText(current_question.getOPTA());
-        rdb.setText(current_question.getOPTB());
-        rdc.setText(current_question.getOPTC());
+        textQuestion.setText(current_question.getQuestion());
+        qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(numOfQuestions);
+        getSupportActionBar().setTitle(qid);
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-        ContentValues values = new ContentValues();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio0:
-                yourAnswers.set(question_id, rda.getText().toString());
-                if (checked)
-                    values.put(colName, rda.getText().toString());
-                if(current_question.getANSWER().equals(rda.getText().toString()))
-                {
-                    answerScore[question_id] = 1;
-                }
-                db.insertIntoDb(String.valueOf(question_id), values);
-                Log.d("inserted", rda.getText().toString());
-                break;
-            case R.id.radio1:
-                yourAnswers.set(question_id, rdb.getText().toString());
-                if (checked)
-                    values.put(colName, rdb.getText().toString());
-                if(current_question.getANSWER().equals(rdb.getText().toString()))
-                {
-                    answerScore[question_id] = 1;
-                }
-                db.insertIntoDb(String.valueOf(question_id), values);
-                Log.d("inserted", rdb.getText().toString());
-
-                break;
-            case R.id.radio2:
-                yourAnswers.set(question_id, rdc.getText().toString());
-                if (checked)
-                    values.put(colName, rdc.getText().toString());
-                if(current_question.getANSWER().equals(rdc.getText().toString()))
-                {
-                    answerScore[question_id] = 1;
-                }
-                db.insertIntoDb(String.valueOf(question_id), values);
-                Log.d("inserted", rdc.getText().toString());
-
-                break;
-        }
-    }
 
     /* Helper method called by onCreate to add drawer items to Drawer */
     private void addDrawerItems() {
@@ -451,7 +405,7 @@ public class QuizActivity extends AppCompatActivity {
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
                                                             //Add 1 to zero indexed question number
-            questionNums[i] = "Question " + String.valueOf(currQuestion.getID()+1);
+            questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
         }
 
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, questionNums);

@@ -41,7 +41,7 @@
             android:layout_weight="0.4"
             android:paddingLeft="40dp"
             android:paddingRight="40dp">
-            <RadioButton
+            <!--<RadioButton
                 android:id="@+id/radio0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:text="RadioButton"
                 android:textSize="20dp"
                 android:textColor="@color/quiz_text_color"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onRadioButtonClicked"/> -->
         </RadioGroup>
         <RelativeLayout
             android:layout_width="fill_parent"
