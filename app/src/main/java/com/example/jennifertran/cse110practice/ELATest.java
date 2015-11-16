@@ -107,7 +107,7 @@ public class ELATest extends BaseExpandableListAdapter {
             } else if (entry.image == "checkmark") {
                 txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check3, 0, 0, 0);
             } else {
-                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.questionmark2, 0, 0, 0);
+                txtListHeader.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quesmark2, 0, 0, 0);
             }
         }
         return convertView;

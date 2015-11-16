@@ -67,7 +67,7 @@ public class QuizActivity extends AppCompatActivity {
 
     /* Adding member variables, strings, and booleans for fragments */
     private ListView mDrawerList;
-    private ArrayAdapter<String> mAdapter;
+    //private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Question Navigation";
@@ -401,15 +401,26 @@ public class QuizActivity extends AppCompatActivity {
         ArrayList<String> row;
         Question currQuestion;
         ArrayList<Question> questionList = quiz.getQuestions();
-        String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+        FragmentNavigationAdapter mAdapter;
+        FragmentNavigationTitle navTitle[] = new FragmentNavigationTitle[questionList.size()];
+        //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+
 
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
                                                             //Add 1 to zero indexed question number
-            questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
+            //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
+
+             navTitle[i]= new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
+                                                        R.drawable.ic_unviewed_question_24px,
+                                    "Question " + String.valueOf(currQuestion.getId()+1 ));
         }
 
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, questionNums);
+         mAdapter =
+                new FragmentNavigationAdapter(this, R.layout.fragment_navigation_titles, navTitle);
+
+        //mAdapter = new ArrayAdapter<>(this, R.layout.fragment_navigation_titles, questionNums);
+
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
