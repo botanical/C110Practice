@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StartupPage extends AppCompatActivity {
     Button start_button;
+    boolean quizTaken = false;
     int testTimeSend = 70000;
     TextView startTime;
     private String title;
@@ -61,6 +62,22 @@ public class StartupPage extends AppCompatActivity {
             e.printStackTrace();
         }
         intent.putExtra("columns",jA.toString());
+        startActivity(intent);
+    }
+
+    private void seeResults() {
+        Intent intent = new Intent(this, ResultActivity.class);
+
+        // dummy info with null data
+        Bundle b = new Bundle();
+        int numOfQuestions = 1;
+        String[] stringArray = new String[numOfQuestions];
+        b.putInt("score", 0); //Your score
+        b.putInt("numOfQuestions", numOfQuestions);
+        b.putStringArray("correctAnswers", stringArray);
+        b.putStringArray("yourAnswers", stringArray);
+        intent.putExtras(b);
+
         startActivity(intent);
     }
 
@@ -161,13 +178,30 @@ public class StartupPage extends AppCompatActivity {
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(testTimeSend)));
             startTime.setText(timeText);
 
-            // set listener of start button to call startQuiz() on press
-            findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startQuiz();
-                }
-            });
+            // adjusting Start Button
+            start_button = (Button)findViewById(R.id.start_quiz_button);
+
+            if( quizTaken == false ) {
+                start_button.setText("START");
+                start_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startQuiz();
+                    }
+                });
+            }
+            else {
+                start_button.setText("SEE RESULTS");
+                TextView instrucText = (TextView) findViewById(R.id.instruc_id);
+                instrucText.setText("You have already taken this quiz. You may view your results.");
+                start_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        seeResults();
+                    }
+                });
+
+            }
 
         }
     }
