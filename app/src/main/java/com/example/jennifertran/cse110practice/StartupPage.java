@@ -42,9 +42,10 @@ public class StartupPage extends AppCompatActivity {
         // displaying subject text
         Intent intent = getIntent();
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
-        TextView subText = (TextView) findViewById(R.id.subject_title_text);
-        subText.setText(title);
+        //TextView subText = (TextView) findViewById(R.id.subject_title_text);
+        //subText.setText(title);
         title = intent.getStringExtra("title");
+        setTitle("Quiz: " + title); // display subject in title bar
         new AttemptUpdateQuiz().execute();
     }
 
