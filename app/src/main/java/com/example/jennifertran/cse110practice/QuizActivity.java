@@ -125,6 +125,7 @@ public class QuizActivity extends AppCompatActivity {
                 System.out.println(current_question);
                 current_question.setMarked(checkedId);
                 yourAnswers.set(question_id, r.getText().toString());
+
                 if(current_question.getAnswer().equals(r.getText().toString()))
                 {
                     answerScore[question_id] = 1;
