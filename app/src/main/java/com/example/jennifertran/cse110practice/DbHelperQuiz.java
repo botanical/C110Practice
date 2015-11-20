@@ -26,9 +26,6 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_QUES = "question";
     private static final String KEY_ANSWER = "answer"; //correct option
-    private static final String KEY_OPTA= "opta"; //option a
-    private static final String KEY_OPTB= "optb"; //option b
-    private static final String KEY_OPTC= "optc"; //option c
     private static final String KEY_MARKED = "marked"; //marked answer by user
     private ArrayList<String> optionCols;
 
@@ -51,7 +48,6 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
                 + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
 
-        System.out.println("CREATE TABLE QUERY "+sql);
         db.execSQL(sql);
         //db.close()
         //Sets question id's to start from 0 instead of 1
@@ -70,7 +66,6 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     {
         //The last child in the list of children for each header is actually that row's index
 
-        System.out.println("QUEST OP PAIRS:" + questOpPairs);
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table, null, null); //Delete entries in old table
         Iterator<?> keyIt = questOpPairs.keySet().iterator();
@@ -136,33 +131,6 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         // Inserting Row
         dbase.insert(table, null, values);
     }
-    /*
-    public List<Question> getAllQuestions() {
-        List<Question> quesList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + table;
-        dbase=this.getReadableDatabase();
-        Cursor cursor = dbase.rawQuery(selectQuery, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Question quest = new Question();
-                quest.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-                quest.setQUESTION(cursor.getString((cursor.getColumnIndex(KEY_QUES))));
-                quest.setANSWER(cursor.getString(cursor.getColumnIndex(KEY_ANSWER)));
-                quest.setOPTA(cursor.getString(cursor.getColumnIndex(KEY_OPTA)));
-                quest.setOPTB(cursor.getString(cursor.getColumnIndex(KEY_OPTB)));
-                quest.setOPTC(cursor.getString(cursor.getColumnIndex(KEY_OPTC)));
-                quest.setMARKED(cursor.getString(cursor.getColumnIndex(KEY_MARKED)));
-
-                quesList.add(quest);
-            } while (cursor.moveToNext());
-        }
-        // return quest list
-        cursor.close();
-        return quesList;
-    }
-*/
 
     ArrayList<ArrayList<String>> getQuestions (String tableName)
     {

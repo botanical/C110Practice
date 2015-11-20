@@ -1,18 +1,24 @@
 package com.example.jennifertran.cse110practice;
 
 
+import android.widget.EditText;
 import android.widget.RadioButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Question {
     private int id;
     private String question;
     private ArrayList<String> options;
     private ArrayList<RadioButton> radioButtons;
+    private EditText questionField;
+    private ArrayList<EditText> textFields;
     private String answer;
     private int marked;
     private boolean viewed;
+    private int numCols;
 
 
     public Question()
@@ -39,8 +45,10 @@ public class Question {
     public String getQuestion() {
         return this.question;
     }
-    public ArrayList<String> getOptions() {return this.options; }
-    public ArrayList<RadioButton> getRadioButtons() {return this.radioButtons; }
+    public ArrayList<String> getOptions() { return this.options; }
+    public ArrayList<RadioButton> getRadioButtons() { return this.radioButtons; }
+    public EditText getQuestionField() { return this.questionField;}
+    public ArrayList<EditText> getTextFields() { return this.textFields; }
     public String getAnswer() {
         return answer;
     }
@@ -61,6 +69,8 @@ public class Question {
     public void setRadioButtons(ArrayList<RadioButton> radioButtons){
         this.radioButtons = radioButtons;
     }
+    public void setQuestionField(EditText questionField) { this.questionField = questionField;}
+    public void setTextFields(ArrayList<EditText> textFields) { this.textFields = textFields;}
     public void setAnswer(String answer) {
         this.answer = answer;
     }
@@ -68,6 +78,8 @@ public class Question {
         this.marked = marked;
     }
     public void setViewed(boolean viewed) { this.viewed = viewed; }
+    public void setNumCols(int numCols){ this.numCols = numCols; }
+
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
         //TODO add final variables corresponding to indexes
@@ -86,8 +98,20 @@ public class Question {
     }
     public String toString (){
 
-        return "[ "+ this.getId()+", "+this.getQuestion()+", "+this.getAnswer()+", " +
-                this.options.toString() + ", " + this.getMarked()+ "," + this.getViewed() + " ]";
+        int extra = this.numCols - this.options.size();
+        String cols = "";
+        String maxCols = "";
+        for(String o : this.options)
+        {
+            cols += "'"+o+"', ";
+        }
+        /* Make empty columns for questions which don't use max number of columns */
+        for(int i = 0; i < extra; i++) {
+            cols += "'',";
+        }
+
+        return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
+                cols +"'"+this.getMarked() + "' )";
     }
 
 

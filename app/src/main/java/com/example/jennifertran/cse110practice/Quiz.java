@@ -10,6 +10,7 @@ public class Quiz {
     private ArrayList<String> answers = new ArrayList<>();
     private String title;
     private int numQuestions;
+    private int numCols;
 
 
     public Quiz(String title, ArrayList<Question> questionList, int numQuestions){
@@ -39,6 +40,20 @@ public class Quiz {
     public void setQuestions(ArrayList<Question> questionList)
     {
         this.questionList = questionList;
+
+
+        int max = 0;
+        for(Question q : questionList)
+        {
+            int tmp = q.getOptions().size();
+            if(tmp > max)
+                max = tmp;
+        }
+        numCols = max;
+
+        for (Question q : questionList) {
+            q.setNumCols(this.numCols);
+        }
     }
     public String getTitle()
     {
@@ -63,6 +78,7 @@ public class Quiz {
     {
         this.answers = answers;
     }
+    public int getNumCols() { return this.numCols; }
     public String toString()
     {
         String quizStr = "{ ";

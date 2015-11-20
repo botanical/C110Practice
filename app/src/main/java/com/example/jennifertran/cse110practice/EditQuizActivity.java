@@ -1,75 +1,68 @@
 package com.example.jennifertran.cse110practice;
 
-import android.app.Activity;
-import android.content.ContentValues;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class QuizActivity extends AppCompatActivity {
+public class EditQuizActivity extends AppCompatActivity {
 
-    static CountDownTimer timer;
     int numOfQuestions;
-    ArrayList<String> yourAnswers;
-    ArrayList<String> correctAnswers;
-
     List<Question> question_list;
-    int[] answerScore;
-    int score = 0;
-    int question_id = 0;
-    Boolean isTaken;
-
     Question current_question;
     TextView textQuestion;
-    TextView yourAns;
-    TextView rightAns;
-    TextView solution;
-    Button submit, back_button;
+    View submit, back_button;
     Button next_button;
     RadioButton answer;
     String username;
-    ArrayList<ArrayList<String>> response;
-
 
     RadioGroup grp;
+    ViewGroup editGrp;
     DbHelperQuiz db;
     int marked;
+    int question_id = 0;
     String colName = "marked";
     String qid;
-    TextView textViewTime;
-    final Animation anim = new AlphaAnimation(1, 0);
-    int testTime = 20000; // 30 seconds by default for test
+    ProgressDialog pDialog;
+    String loginUrl;
 
     /* Adding member variables, strings, and booleans for fragments */
     private ListView mDrawerList;
@@ -80,24 +73,15 @@ public class QuizActivity extends AppCompatActivity {
     String title;
     Quiz quiz;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        setContentView(R.layout.activity_edit_quiz);
+        loginUrl = getApplicationContext().getString(R.string.queryUrl);
 
-        textViewTime = (TextView) findViewById(R.id.textViewTimer);
         Intent intentReceived = getIntent();
-        testTime = intentReceived.getIntExtra(StartupPage.EXTRA_TIME, 60);//TODO add time to Quiz class
         title = intentReceived.getStringExtra("title");
         username = intentReceived.getStringExtra("username");
-        isTaken = intentReceived.getBooleanExtra("isTaken", false);
-        if(isTaken)
-            textViewTime.setVisibility(View.GONE);
-
-
-
-
 
         /* Get list of columns from previous activity where the quiz was updated */
         String colsString  = intentReceived.getStringExtra("columns");
@@ -114,64 +98,56 @@ public class QuizActivity extends AppCompatActivity {
         db =  new DbHelperQuiz(this,title,cols);
         quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
         question_list = quiz.getQuestions();
-        correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
         numOfQuestions = quiz.getNumQuestions();
         current_question = question_list.get(question_id);
-        answerScore = new int[numOfQuestions];
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-        yourAns = (TextView) findViewById(R.id.yourAnswer);
-        rightAns = (TextView) findViewById(R.id.correctAnswer);
-        solution = (TextView) findViewById(R.id.solution);
-        if(!isTaken)
-        {
-            yourAns.setVisibility(View.GONE);
-            rightAns.setVisibility(View.GONE);
-            solution.setVisibility(View.GONE);
-        }
-        else
-        {
-            DbHelperQuizResponse db = new DbHelperQuizResponse(this, username+"Answers");
-            response = db.getResponses();
-            yourAns.setText("Your answer was: "+response.get(0).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
-        }
-
-        yourAnswers = new ArrayList<>();
-        for(int i = 0; i < numOfQuestions; i++)
-            yourAnswers.add("INCOMPLETE");
-
         /***************************** Initialize Radio Buttons *****************************/
 
+
         grp = (RadioGroup)findViewById(R.id.radioGroup1);
+        grp.setClickable(true);
+        grp.setFocusable(true);
+        grp.setFocusableInTouchMode(true);
         grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(!isTaken) {
-                    RadioButton r = (RadioButton) findViewById(checkedId);
-                    if (r == null)
-                        return;
 
-                    current_question.setMarked(checkedId);
+                RadioButton r = (RadioButton) findViewById(checkedId);
+                if (r == null)
+                    return;
+                current_question.setMarked(checkedId);
                 /* Update drawer item icons when radio button is clicked */
-                    addDrawerItems();
-
-                    yourAnswers.set(question_id, r.getText().toString());
-
-                    if (current_question.getAnswer().equals(r.getText().toString())) {
-                        answerScore[question_id] = 1;
-                    } else
-                        answerScore[question_id] = 0;
-                }
+                addDrawerItems();
             }
         });
+
+        editGrp = (RadioGroup)findViewById(R.id.editGroup);
+
         for(Question q : question_list)
         {
+            EditText qField = new EditText(this);
+            qField.setHint(q.getQuestion());
+            q.setQuestionField(qField);
+            ArrayList<EditText> fields = new ArrayList<>();
             ArrayList<RadioButton> btns = new ArrayList<>();
             ArrayList<String> opts = q.getOptions();
             for(int i = 0; i < opts.size(); i++)
             {
                 if(opts.get(i) != null && (!opts.get(i).equals(""))) {
+                    EditText f = new EditText(this);
+                    f.setHint(opts.get(i));
+                    f.setId(View.generateViewId());
+
+                    /* Each EditText should submit when a user clicks out of it */
+                    f.setOnFocusChangeListener( new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            EditQuizActivity.this.tempSubmitEdit();
+                        }
+                    });
+                    fields.add(f);
+
                     RadioButton b = new RadioButton(this);
                     b.setText(opts.get(i));
                     b.setId(View.generateViewId()); //Generate id for the radioButton
@@ -179,11 +155,17 @@ public class QuizActivity extends AppCompatActivity {
                 }
             }
             q.setRadioButtons(btns);
+            q.setTextFields(fields);
         }
 
         /* Set Radio Buttons for first page */
-        for(RadioButton r : question_list.get(0).getRadioButtons())
-                grp.addView(r);
+        ArrayList<RadioButton> btns = question_list.get(0).getRadioButtons();
+        ArrayList<EditText> fields = question_list.get(0).getTextFields();
+        grp.addView(current_question.getQuestionField());
+        for(int i = 0; i < btns.size(); i++) {
+            grp.addView(btns.get(i));
+            editGrp.addView(fields.get(i));
+        }
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initialize Radio Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -204,14 +186,12 @@ public class QuizActivity extends AppCompatActivity {
         // Set up question on page
         textQuestion = (TextView)findViewById(R.id.textView1);
         next_button = (Button)findViewById(R.id.button_next);
-        submit = (Button)findViewById(R.id.button_submit);
-        if(isTaken)
-            submit.setText("RETURN");
+        submit = findViewById(R.id.button_submit);
         if(numOfQuestions == 1)
             submit.setVisibility(View.VISIBLE);
         else
             submit.setVisibility(View.GONE);
-        back_button = (Button) findViewById(R.id.button_back);
+        back_button = findViewById(R.id.button_back);
         back_button.setVisibility(View.GONE);
 
 
@@ -226,13 +206,66 @@ public class QuizActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToQuestion(question_id+1);
+                question_id++;
+                current_question = question_list.get(question_id);
+                //grp.clearCheck();
+                grp.removeAllViews();
+                editGrp.removeAllViews();
+
+                ArrayList<RadioButton> btns = current_question.getRadioButtons();
+                ArrayList<EditText> fields = current_question.getTextFields();
+                grp.addView(current_question.getQuestionField());
+                for(int i = 0; i < btns.size(); i++) {
+                    grp.addView(btns.get(i));
+                    editGrp.addView(fields.get(i));
+                }
+
+                if(numOfQuestions == 1)
+                {
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                }
+                if (question_id == numOfQuestions - 1 ) {
+                    submit.setVisibility(View.VISIBLE);
+                    next_button.setVisibility(View.GONE);
+                    back_button.setVisibility(View.VISIBLE);
+                } else if (question_id != 0) {
+                    back_button.setVisibility(View.VISIBLE);
+                    submit.setVisibility(View.GONE);
+                } else {
+                    back_button.setVisibility(View.GONE);
+                }
+                //Update question number in ActionBar
+
+
+
+                /* Check to see if previous question had radio buttons checked
+                 * and resets new question to have no buttons checked.
+                 */
+
+
+
+                /* Increments question_id to show new question
+                 * and set view accordingly
+                 */
+
+                /* Uncheck all buttons so new page has no checked answer */
+
+                setQuestionView();
+                /* Set question to viewed and update drawer items */
+                current_question.setViewed(true);
+                addDrawerItems();
+                if(current_question.getMarked() != -1)
+                    grp.check(current_question.getMarked());
+
+                /* Check the radioButton which was clicked previously */
+
             }
         });
 
         findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                goToQuestion(question_id-1);
+                back();
             }
         });
 
@@ -242,121 +275,51 @@ public class QuizActivity extends AppCompatActivity {
                 //RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 // Save the user's answer
                 answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
-
-                for (int i : answerScore) {
-                    score = answerScore[i] + score;
-                }
-                submit();
+                new QuizSaver().execute();
             }
         });
-        // setting up blinking timer animation
-        anim.setDuration(150);
-        anim.setRepeatMode(Animation.REVERSE);
-        anim.setRepeatCount(Animation.INFINITE);
-
-        // Instantiate quiz timer.
-        if(!isTaken) {
-
-            timer = new CountDownTimer(testTime, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    //textViewTime.setText("Time Remaining: " + millisUntilFinished/60000
-                    //+ ":" + (millisUntilFinished/1000) % 60 );
-
-                    String timeText = String.format("%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
-                                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
-                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
-
-                    textViewTime.setText(timeText);
-
-                    // 1 minute left warning
-                    if (millisUntilFinished <= 60000 && millisUntilFinished > 57000) {
-                        Toast.makeText(getApplicationContext(),
-                                "1 minute left!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    // 30 seconds left warning
-                    if (millisUntilFinished <= 30000 && millisUntilFinished > 27000) {
-                        Toast.makeText(getApplicationContext(),
-                                "30 seconds left!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    // 10 seconds left warning
-                    if (millisUntilFinished <= 10000 && millisUntilFinished > 7000) {
-                        Toast.makeText(getApplicationContext(),
-                                "10 seconds left!",
-                                Toast.LENGTH_SHORT).show();
-                        textViewTime.setTextColor(Color.RED);
-                        textViewTime.startAnimation(anim);
-                    }
-                }
 
 
-                public void onFinish() {
-                    textViewTime.setText("Time's up!");
-                    textViewTime.clearAnimation();
-                    for (int i = 0; i < (answerScore.length); i++) {
-                        score = answerScore[i] + score;
-                    }
-                    // submit quiz when time's up; just copied code
-                    Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
-                    Bundle b = new Bundle();
-
-                    b.putInt("score", score); //Your score
-                    b.putInt("numOfQuestions", numOfQuestions);
-
-                    b.putStringArrayList("correctAnswers", correctAnswers);
-                    b.putStringArrayList("yourAnswers", yourAnswers);
-                    intent.putExtras(b); //Put your score to your next Intent
-                    // submit quiz when time's up; just copied code
-                    intent.putExtras(b); //Put your score to your next Intent
-                    startActivity(intent);
-                    finish();
-                }
-            }.start();
-        }
     }
     public void submit() {
-        if(!isTaken) {
+        Intent openAdminActivity= new Intent(EditQuizActivity.this, AdminActivity.class);
+        openAdminActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(openAdminActivity);
+        finish();
+    }
 
-            timer.cancel();
-            Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
-            Bundle b = new Bundle();
-            b.putInt("score", score); //Your score
-            b.putInt("numOfQuestions", numOfQuestions);
-            b.putStringArrayList("correctAnswers", correctAnswers);
-            b.putStringArrayList("yourAnswers", yourAnswers);
 
-            //Set the current quiz to 'taken' for the current user
-            DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username + "Taken");
-            db.setTaken(1, title);
-            intent.putExtras(b); //Put your score to your next Intent
+    public void back() {
+        question_id--;
 
-            //submit the current user's responses to the current quiz
-            ArrayList<ArrayList<String>> responses = new ArrayList<>();
+        current_question = question_list.get(question_id);
+        grp.removeAllViews();
+        editGrp.removeAllViews();
 
-            for (int i = 0; i < yourAnswers.size(); i++) {
-                ArrayList<String> row = new ArrayList<>();
-                row.add(String.valueOf(i));
-                row.add(question_list.get(i).getQuestion());
-                row.add(yourAnswers.get(i));
-                row.add(String.valueOf(answerScore[i]));
-                responses.add(row);
-            }
-            DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username + "Answers");
-            dbase.upgradeResponse(responses);
 
-            startActivity(intent);
-            finish();
-        }else{
-            Intent openSubNavActivity= new Intent(QuizActivity.this, SubjectNavActivity.class);
-            openSubNavActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(openSubNavActivity);
-            finish();
+        ArrayList<RadioButton> btns = current_question.getRadioButtons();
+        ArrayList<EditText> fields = current_question.getTextFields();
+        grp.addView(current_question.getQuestionField());
+        for(int i = 0; i < btns.size(); i++) {
+            grp.addView(btns.get(i));
+            editGrp.addView(fields.get(i));
         }
+
+        if (question_id == 0) {
+            back_button.setVisibility(View.GONE);
+            submit.setVisibility(View.GONE);
+            next_button.setVisibility(View.VISIBLE);
+        } else if ((question_id + 1) == numOfQuestions-1) { //numofq used to be 4
+            submit.setVisibility(View.GONE);
+            next_button.setVisibility(View.VISIBLE);
+        }
+
+        setQuestionView();
+                /* Update question to be viewed and set drawer items */
+        current_question.setViewed(true);
+        addDrawerItems();
+        if(current_question.getMarked() != -1 )
+            grp.check(current_question.getMarked());
 
     }
     public void goToQuestion(int num)
@@ -365,8 +328,14 @@ public class QuizActivity extends AppCompatActivity {
 
         current_question = question_list.get(question_id);
         grp.removeAllViews();
-        for(RadioButton r : current_question.getRadioButtons()) {
-            grp.addView(r);
+        editGrp.removeAllViews();
+
+        ArrayList<RadioButton> btns = current_question.getRadioButtons();
+        ArrayList<EditText> fields = current_question.getTextFields();
+        grp.addView(current_question.getQuestionField());
+        for(int i = 0; i < btns.size(); i++) {
+            grp.addView(btns.get(i));
+            editGrp.addView(fields.get(i));
         }
 
         if (numOfQuestions == 1)
@@ -394,19 +363,42 @@ public class QuizActivity extends AppCompatActivity {
             grp.check(current_question.getMarked());
         this.current_question.setViewed(true);
         addDrawerItems();
+    }
 
-        if(isTaken)
-        {
-            //TODO make magic number into final variable (2 represents the yourAns index)
-            yourAns.setText("Your answer was: "+response.get(current_question.getId()).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
-            //solution.setText("");
-
+    /* Change question objects that are local to this activity, but don't save to
+     * local or remote databases
+     */
+    public void tempSubmitEdit(){
+        String newQuestion = current_question.getQuestionField().getText().toString();
+        if(!newQuestion.equals("")) {
+            current_question.setQuestion(newQuestion);
         }
+
+        ArrayList<RadioButton> r = current_question.getRadioButtons();
+        ArrayList<String> butText = new ArrayList<String>();
+
+        for(int i = 0; i < r.size(); i++)
+        {
+            butText.add(r.get(i).getText().toString());
+        }
+        for(int i = 0; i < r.size(); i++ ) {
+            String newButtonText = current_question.getTextFields().get(i).getText().toString();
+            if(!newButtonText.equals("")) {
+                r.get(i).setText(newButtonText);
+                butText.set(i, newButtonText);
+            }
+        }
+        current_question.setOptions(butText);
+    }
+
+    public void saveQuiz(){
+
     }
 
     @Override
     public void onBackPressed() {
+
+        saveQuiz();
         submit();
     }
 
@@ -427,12 +419,11 @@ public class QuizActivity extends AppCompatActivity {
         ArrayList<Question> questionList = quiz.getQuestions();
         FragmentNavigationAdapter mAdapter;
         FragmentNavigationTitle navTitle[] = new FragmentNavigationTitle[questionList.size()];
-        //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
 
 
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
-                                                            //Add 1 to zero indexed question number
+            //Add 1 to zero indexed question number
             //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
 
 
@@ -459,7 +450,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
 
-         mAdapter =
+        mAdapter =
                 new FragmentNavigationAdapter(this, R.layout.fragment_navigation_titles, navTitle);
 
         //mAdapter = new ArrayAdapter<>(this, R.layout.fragment_navigation_titles, questionNums);
@@ -543,4 +534,79 @@ public class QuizActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /*********** Hide keyboard and unfocus currently focused EditText ********************/
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View mEditText = getCurrentFocus();
+            if (mEditText != null) {
+                Rect outRect = new Rect();
+                mEditText.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    mEditText.clearFocus();
+                    //
+                    // Hide keyboard
+                    //
+                    InputMethodManager imm = (InputMethodManager) mEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+    class QuizSaver extends AsyncTask<String,String,String> {
+
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog = new ProgressDialog(EditQuizActivity.this);
+            pDialog.setMessage("Attempting To Save Quiz");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+
+        //Delete the current table
+        //Insert the current quiz
+        @Override
+        protected String doInBackground(String... params) {
+            RemoteDBHelper remDb = new RemoteDBHelper();
+            ArrayList<Question> questions = (ArrayList<Question>) question_list;
+            System.out.println(questions);
+            //Delete old quiz
+            String delete = "DELETE FROM `"+title+"`";
+            remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                    delete, loginUrl);
+
+            //Replace with new quiz
+            String sql = "INSERT INTO "+"`"+title+"` VALUES ";
+            for(Question q : questions)
+            {
+                String tmp = sql;
+                tmp += q.toString();
+                System.out.println(tmp);
+               String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                       tmp, loginUrl);
+            }
+
+            /* Testing what I would write to query solutionMulitiplication And Division Table
+             *
+             * String solution = "SELECT 'solution' FROM 'solutionMultiplication And Division'
+              * WHERE id = " + question_id;
+              * remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+              *   solution, loginUrl);
+             */
+
+
+            return null;
+        }
+
+        protected void onPostExecute(String message){
+            if(pDialog != null && pDialog.isShowing())
+                pDialog.dismiss();
+            submit();
+        }
+    }
 }
+

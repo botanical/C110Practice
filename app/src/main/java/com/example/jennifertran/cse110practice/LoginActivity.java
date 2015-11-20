@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
                         login();
                     }
                 });
-
         }
 
 
@@ -100,7 +99,14 @@ public class LoginActivity extends AppCompatActivity {
                     else{
 
                         JSONObject args = new JSONObject(message);
-                        if(args.getString("username").equals(username) &&
+                        if(args.getString("is_admin").equals(String.valueOf(1))) //isAdmin
+                        {
+                            Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
+                            adminIntent.putExtra("username", username);
+                            startActivity(adminIntent);
+
+                        }
+                        else if(args.getString("username").equals(username) &&
                                 args.getString("password").equals(password))
                         {
                             Toast.makeText(LoginActivity.this,"You've logged in!",
@@ -131,8 +137,6 @@ public class LoginActivity extends AppCompatActivity {
             mLoginPreferences.edit()
                     .putBoolean(LOGGED_IN, true)
                     .apply();
-
-
 
             username = usernameEdit.getText().toString();
             password = passwordEdit.getText().toString();

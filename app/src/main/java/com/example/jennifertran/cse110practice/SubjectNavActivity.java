@@ -86,63 +86,6 @@ public class SubjectNavActivity extends Activity {
 
 
     }
-    private void loadLocalQuizzes() {
-        DbHelperSubNav db = new DbHelperSubNav(this);
-        Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);
-        listDataHeader = pair.first;
-        listDataChild  = pair.second;
-
-        listAdapter = new ExpandableListAdapter(SubjectNavActivity.this, listDataHeader,
-                listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-
-        // Listview Group click listener
-        expListView.setOnGroupClickListener(new OnGroupClickListener() {
-
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
-                // Toast.makeText(getApplicationContext(),
-                // "Group Clicked " + listDataHeader.get(groupPosition),
-                // Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        // Listview on child click listener
-        expListView.setOnChildClickListener(new OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-
-                Toast.makeText(
-                        getApplicationContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
-
-                // sending intent to Startup Page
-                Intent intent = new Intent(getApplicationContext(), StartupPage.class);
-                String subject = listDataHeader.get(groupPosition);
-                String quizTitle = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
-                String message = subject+ " : "+ quizTitle;
-
-                intent.putExtra(EXTRA_MESSAGE, message);
-                intent.putExtra("title", quizTitle);
-                intent.putExtra("username", username);
-                startActivity(intent);
-                return false;
-            }
-        });
-
-
-    }
     class AttemptUpdateQuizzes extends AsyncTask<String,String,String>{
 
         protected void onPreExecute(){
@@ -158,7 +101,7 @@ public class SubjectNavActivity extends Activity {
         protected String doInBackground(String... params) {
             RemoteDBHelper remDb = new RemoteDBHelper();
             String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                    "SELECT * FROM  " + username + "Quizzes ORDER BY indexer ASC",
+                    "SELECT * FROM  `" + username + "Quizzes` ORDER BY indexer ASC",
                     loginUrl);
 
             /*
@@ -222,118 +165,50 @@ public class SubjectNavActivity extends Activity {
 
         }
     }
+    private void loadLocalQuizzes() {
+        DbHelperSubNav db = new DbHelperSubNav(this);
+        Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);
+        listDataHeader = pair.first;
+        listDataChild  = pair.second;
 
-    /*class AttemptLoadQuizzes extends AsyncTask<String,String,String> {
-        protected void onPreExecute(){
-            super.onPreExecute();
-            pDialog = new ProgressDialog(SubjectNavActivity.this);
-            pDialog.setMessage("Loading Quizzes...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        }
-        @Override
-        protected String doInBackground(String... args) {
-            //Query for headers and children
-            Map<String,String> params = new HashMap<>();
-            params.put("auth","qwepoi12332191827364");
-            //Sql queries quizes for a particular user. The sql database names the user
-            // specific list of headers and quizzes: usernameQuizzes
-            params.put("query", "SELECT * FROM "+username+"Quizzes ORDER BY indexer ASC");
-            JSONParser p = new JSONParser();
-            JSONArray j = p.makeHttpRequest(getApplicationContext().getString(R.string.queryUrl),
-                    "POST", params);
-            return j.toString();
+        listAdapter = new ExpandableListAdapter(SubjectNavActivity.this, listDataHeader,
+                listDataChild);
 
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
 
+        // Listview Group click listener
+        expListView.setOnGroupClickListener(new OnGroupClickListener() {
 
-        }
-        protected void onPostExecute(String message) {
-            if (pDialog != null)
-                pDialog.dismiss();
-
-            try {
-                JSONArray j = new JSONArray(message);
-                    for (int i = 0; i < j.length(); i++) {
-                        try {
-                            JSONObject jO = j.getJSONObject(i); //jO represents a row
-                            //Add headers to header list then remove from keys
-                            listDataHeader.add(jO.getString("header"));
-                            jO.remove("header");
-                            jO.remove("indexer");
-                            Iterator<?> keyIt = jO.keys();
-
-                            //Create subList to store children of current header
-                            List<String> childList = new ArrayList<>();
-
-                            //Iterate over remaining keys which at this point should be our childList
-                            //entries.
-                            while (keyIt.hasNext()) {
-                                String k = (String) keyIt.next();
-                                if (!jO.getString(k).equals(""))
-                                    childList.add(jO.getString(k));
-                            }
-                            listDataChild.put(listDataHeader.get(i), childList);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-            }catch(Exception e){
-                e.printStackTrace();
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                return false;
             }
+        });
 
-            listAdapter = new ExpandableListAdapter(SubjectNavActivity.this, listDataHeader,
-                    listDataChild);
+        // Listview on child click listener
+        expListView.setOnChildClickListener(new OnChildClickListener() {
 
-            // setting list adapter
-            expListView.setAdapter(listAdapter);
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
 
-            // Listview Group click listener
-            expListView.setOnGroupClickListener(new OnGroupClickListener() {
+                // sending intent to Startup Page
+                Intent intent = new Intent(getApplicationContext(), StartupPage.class);
+                String subject = listDataHeader.get(groupPosition);
+                String quizTitle = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                String message = subject+ " : "+ quizTitle;
 
-                @Override
-                public boolean onGroupClick(ExpandableListView parent, View v,
-                                            int groupPosition, long id) {
-                    // Toast.makeText(getApplicationContext(),
-                    // "Group Clicked " + listDataHeader.get(groupPosition),
-                    // Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            });
+                intent.putExtra(EXTRA_MESSAGE, message);
+                intent.putExtra("title", quizTitle);
+                intent.putExtra("username", username);
+                startActivity(intent);
+                return false;
+            }
+        });
 
-            // Listview on child click listener
-            expListView.setOnChildClickListener(new OnChildClickListener() {
 
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v,
-                                            int groupPosition, int childPosition, long id) {
-                    /*
-                    Toast.makeText(
-                            getApplicationContext(),
-                            listDataHeader.get(groupPosition)
-                                    + " : "
-                                    + listDataChild.get(
-                                    listDataHeader.get(groupPosition)).get(
-                                    childPosition), Toast.LENGTH_SHORT)
-                            .show();
-                    *
-                    // sending intent to Startup Page
-                    Intent intent = new Intent(getApplicationContext(), StartupPage.class);
-                    String subjectMessage = listDataHeader.get(groupPosition)
-                            + " : "
-                            + listDataChild.get(
-                            listDataHeader.get(groupPosition)).get(
-                            childPosition);
-                    intent.putExtra(EXTRA_MESSAGE, subjectMessage);
-                    startActivity(intent);
-                    return false;
-                }
-            });
-            System.out.println(listDataChild.toString());
-        }*/
-
+    }
 
 }
