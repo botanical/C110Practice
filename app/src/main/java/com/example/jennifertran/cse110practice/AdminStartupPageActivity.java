@@ -59,6 +59,7 @@ public class AdminStartupPageActivity extends AppCompatActivity {
         JSONArray jA = new JSONArray(columns);
         intent.putExtra("columns", jA.toString());
         startActivity(intent);
+        finish();
     }
 
     class AttemptUpdateQuiz extends AsyncTask<String,String,String> {

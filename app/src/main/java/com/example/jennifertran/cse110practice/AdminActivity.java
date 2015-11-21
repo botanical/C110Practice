@@ -47,6 +47,8 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_admin);
         setTitle(DEFAULT_TITLE);
         expListView = (ExpandableListView) findViewById(R.id.expListAdmin);
@@ -69,6 +71,15 @@ public class AdminActivity extends AppCompatActivity {
         if(username != null)
             new AttemptUpdateClasses().execute();
 
+        findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent logingOut = new Intent(AdminActivity.this, LoginActivity.class);
+                logingOut.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(logingOut);
+                finish();
+            }
+        });
     }
 
     class AttemptUpdateClasses extends AsyncTask<String,String,String> {
