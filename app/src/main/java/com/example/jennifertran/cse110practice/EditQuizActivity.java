@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 
@@ -82,6 +83,18 @@ public class EditQuizActivity extends AppCompatActivity {
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
+        /******************************** Create Hamburger  *********************************/
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView)findViewById(R.id.navList);  /* Set ListView for Fragment */
+
+        addDrawerItems();         /* Add drawer items */
+        setupDrawer();
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
         /***************************** Initialize Radio Buttons *****************************/
 
 
@@ -96,6 +109,8 @@ public class EditQuizActivity extends AppCompatActivity {
                 if (r == null)
                     return;
                 quiz.getCurrentQuestion().setMarked(checkedId);
+                //Set new quiz answer
+                quiz.getCurrentQuestion().setAnswer(r.getText().toString());
                 /* Update drawer item icons when radio button is clicked */
                 addDrawerItems();
             }
@@ -125,7 +140,7 @@ public class EditQuizActivity extends AppCompatActivity {
                     f.setId(View.generateViewId());
 
                     /* Each EditText should submit when a user clicks out of it */
-                    f.setOnFocusChangeListener( new View.OnFocusChangeListener() {
+                    f.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             EditQuizActivity.this.tempSubmitEdit();
@@ -136,12 +151,17 @@ public class EditQuizActivity extends AppCompatActivity {
                     RadioButton b = new RadioButton(this);
                     b.setText(opts.get(i));
                     b.setId(View.generateViewId()); //Generate id for the radioButton
+                    if(b.getText().toString().equals(q.getAnswer()))
+                    {
+                        q.setMarked(b.getId());
+                    }
                     btns.add(b);
                 }
             }
             q.setRadioButtons(btns);
             q.setTextFields(fields);
         }
+        System.out.println("QUIZ: "+quiz);
 
         /* Set Radio Buttons for first page */
         ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
@@ -151,20 +171,10 @@ public class EditQuizActivity extends AppCompatActivity {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
         }
+        grp.check(quiz.getCurrentQuestion().getMarked());
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initialize Radio Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-        /******************************** Create Hamburger  *********************************/
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView)findViewById(R.id.navList);  /* Set ListView for Fragment */
-
-        addDrawerItems();         /* Add drawer items */
-        setupDrawer();
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        }
-        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
 
@@ -191,60 +201,7 @@ public class EditQuizActivity extends AppCompatActivity {
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                question_id++;
-                quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
-                //grp.clearCheck();
-                grp.removeAllViews();
-                editGrp.removeAllViews();
-
-                ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
-                ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
-                grp.addView(quiz.getCurrentQuestion().getQuestionField());
-                for(int i = 0; i < btns.size(); i++) {
-                    grp.addView(btns.get(i));
-                    editGrp.addView(fields.get(i));
-                }
-
-                if(quiz.getNumQuestions() == 1)
-                {
-                    submit.setVisibility(View.VISIBLE);
-                    next_button.setVisibility(View.GONE);
-                }
-                if (question_id == quiz.getNumQuestions() - 1 ) {
-                    submit.setVisibility(View.VISIBLE);
-                    next_button.setVisibility(View.GONE);
-                    back_button.setVisibility(View.VISIBLE);
-                } else if (question_id != 0) {
-                    back_button.setVisibility(View.VISIBLE);
-                    submit.setVisibility(View.GONE);
-                } else {
-                    back_button.setVisibility(View.GONE);
-                }
-                //Update question number in ActionBar
-
-
-
-                /* Check to see if previous question had radio buttons checked
-                 * and resets new question to have no buttons checked.
-                 */
-
-
-
-                /* Increments question_id to show new question
-                 * and set view accordingly
-                 */
-
-                /* Uncheck all buttons so new page has no checked answer */
-
-                setQuestionView();
-                /* Set question to viewed and update drawer items */
-                quiz.getCurrentQuestion().setViewed(true);
-                addDrawerItems();
-                if(quiz.getCurrentQuestion().getMarked() != -1)
-                    grp.check(quiz.getCurrentQuestion().getMarked());
-
-                /* Check the radioButton which was clicked previously */
-
+                next();
             }
         });
 
@@ -260,7 +217,15 @@ public class EditQuizActivity extends AppCompatActivity {
                 //RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 // Save the user's answer
                 answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
-                saveQuiz();
+
+                int btnId = quiz.getCurrentQuestion().getMarked();
+                if(btnId == -1)
+                {
+                    Toast.makeText(EditQuizActivity.this,
+                            "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+                }
+                else
+                    saveQuiz();
             }
         });
     }
@@ -272,38 +237,28 @@ public class EditQuizActivity extends AppCompatActivity {
     }
 
 //TODO startup page instances don't delete themselves properly and so show up when using back button
+    public void next() {
+        int btnId = quiz.getCurrentQuestion().getMarked();
+        if(btnId == -1)
+        {
+            Toast.makeText(EditQuizActivity.this,
+                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+        }
+        else {
+            question_id++;
+            goToQuestion(question_id);
+        }
+    }
     public void back() {
-        question_id--;
-
-        quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
-        grp.removeAllViews();
-        editGrp.removeAllViews();
-
-
-        ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
-        ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
-        grp.addView(quiz.getCurrentQuestion().getQuestionField());
-        for(int i = 0; i < btns.size(); i++) {
-            grp.addView(btns.get(i));
-            editGrp.addView(fields.get(i));
+        int btnId = quiz.getCurrentQuestion().getMarked();
+        if(btnId == -1)
+        {
+            Toast.makeText(EditQuizActivity.this,
+                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+        }else {
+            question_id--;
+            goToQuestion(question_id);
         }
-
-        if (question_id == 0) {
-            back_button.setVisibility(View.GONE);
-            submit.setVisibility(View.GONE);
-            next_button.setVisibility(View.VISIBLE);
-        } else if ((question_id + 1) == quiz.getNumQuestions()-1) { //numofq used to be 4
-            submit.setVisibility(View.GONE);
-            next_button.setVisibility(View.VISIBLE);
-        }
-
-        setQuestionView();
-                /* Update question to be viewed and set drawer items */
-        quiz.getCurrentQuestion().setViewed(true);
-        addDrawerItems();
-        if(quiz.getCurrentQuestion().getMarked() != -1 )
-            grp.check(quiz.getCurrentQuestion().getMarked());
-
     }
     public void goToQuestion(int num)
     {
@@ -320,6 +275,8 @@ public class EditQuizActivity extends AppCompatActivity {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
         }
+        grp.check(quiz.getCurrentQuestion().getMarked());
+
 
         if (quiz.getNumQuestions() == 1)
         {
@@ -352,27 +309,43 @@ public class EditQuizActivity extends AppCompatActivity {
      * local or remote databases
      */
     public void tempSubmitEdit(){
-        String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-        if(!newQuestion.equals("")) {
-            quiz.getCurrentQuestion().setQuestion(newQuestion);
-            textQuestion.setText(newQuestion);
-        }
-
-        ArrayList<RadioButton> r = quiz.getCurrentQuestion().getRadioButtons();
-        ArrayList<String> butText = new ArrayList<String>();
-
-        for(int i = 0; i < r.size(); i++)
+        //Set questionAnswer to answer of the currently marked answer.
+        int btnId = quiz.getCurrentQuestion().getMarked();
+        if(btnId == -1)
         {
-            butText.add(r.get(i).getText().toString());
+            Toast.makeText(EditQuizActivity.this,
+                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
         }
-        for(int i = 0; i < r.size(); i++ ) {
-            String newButtonText = quiz.getCurrentQuestion().getTextFields().get(i).getText().toString();
-            if(!newButtonText.equals("")) {
-                r.get(i).setText(newButtonText);
-                butText.set(i, newButtonText);
+        else {
+            RadioButton markedRad = (RadioButton) findViewById(quiz.getCurrentQuestion().getMarked());
+            quiz.getCurrentQuestion().setAnswer(markedRad.getText().toString());
+
+            //Set new Question title
+            String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
+            if (!newQuestion.equals("")) {
+                quiz.getCurrentQuestion().setQuestion(newQuestion);
+                textQuestion.setText(newQuestion);
             }
+
+            //Set new Question radioButtons
+            ArrayList<RadioButton> r = quiz.getCurrentQuestion().getRadioButtons();
+            ArrayList<String> butText = new ArrayList<String>();
+
+            for (int i = 0; i < r.size(); i++) {
+                butText.add(r.get(i).getText().toString());
+            }
+            for (int i = 0; i < r.size(); i++) {
+                String newButtonText = quiz.getCurrentQuestion().getTextFields().get(i).getText().toString();
+                if (!newButtonText.equals("")) {
+                    r.get(i).setText(newButtonText);
+                    butText.set(i, newButtonText);
+                }
+            }
+            quiz.getCurrentQuestion().setOptions(butText);
         }
-        quiz.getCurrentQuestion().setOptions(butText);
+
+
+
     }
 
     public void saveQuiz(){
@@ -570,10 +543,6 @@ public class EditQuizActivity extends AppCompatActivity {
         quiz.addQuestion(q);
         goToQuestion(quiz.getNumQuestions()-1); //go to last question.
         //Add new question to quiz && list of currentquestions
-
-
-
-
 
     }
 

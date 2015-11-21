@@ -109,9 +109,17 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject args = new JSONObject(message);
                         if(args.getString("is_admin").equals(String.valueOf(1))) //isAdmin
                         {
-                            Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
-                            adminIntent.putExtra("username", username);
-                            startActivity(adminIntent);
+                            if(args.getString("username").equals(username) &&
+                                    args.getString("password").equals(password)) {
+                                Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
+                                adminIntent.putExtra("username", username);
+                                startActivity(adminIntent);
+                            }
+                            else
+                            {
+                                Toast.makeText(LoginActivity.this,"Your credentials....failed.",
+                                        Toast.LENGTH_LONG).show();
+                            }
 
                         }
                         else if(args.getString("username").equals(username) &&
