@@ -3,6 +3,8 @@ package com.example.jennifertran.cse110practice;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.widget.ExpandableListView;
 import java.util.ArrayList;
@@ -11,16 +13,22 @@ import java.util.HashMap;
 public class ResultActivity extends AppCompatActivity{
     ELATest listAdapter;
     ExpandableListView expListView;
-    ArrayList<ELAEntry> listDataHeader = new ArrayList<ELAEntry>();
-    HashMap<String, ArrayList<ELAEntry>> listDataChild = new HashMap<String, ArrayList<ELAEntry>>();
+    ArrayList<ELAEntry> listDataHeader = new ArrayList<>();
+    HashMap<String, ArrayList<ELAEntry>> listDataChild = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if( getIntent().getExtras() == null ) {
+            setTitle("Results!");
+
+            return;
+        }
         setContentView(R.layout.activity_result);
         //Recieve data from the quiz activity
         Bundle b = getIntent().getExtras();
         int questions = b.getInt("numOfQuestions"); // total number of textviews to add
+
         ArrayList<String> answers = b.getStringArrayList("correctAnswers");
         ArrayList<String> yourAnswers = b.getStringArrayList("yourAnswers");
 
@@ -57,7 +65,7 @@ public class ResultActivity extends AppCompatActivity{
             answerEntry.TextEntry = " The answer was " + answers.get(i);
             yourAnswerEntry.TextEntry = " Your answer was " + yourAnswers.get(i);
 
-            ArrayList<ELAEntry> childList = new ArrayList<ELAEntry>();
+            ArrayList<ELAEntry> childList = new ArrayList<>();
             childList.add(answerEntry);
             childList.add(yourAnswerEntry);
             listDataChild.put(headerEntry.TextEntry, childList);
