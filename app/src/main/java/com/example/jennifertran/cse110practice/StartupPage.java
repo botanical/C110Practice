@@ -57,7 +57,7 @@ public class StartupPage extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
         int taken = dbTaken.getIsTaken(title);
         if(taken == 1) {
             isTaken = true;
@@ -188,7 +188,7 @@ public class StartupPage extends AppCompatActivity {
                     System.out.println(currRow.getInt("taken"));
                     quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
                 }
-                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username + "Taken");
+                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
                 dbTaken.createTable();
                 dbTaken.upgradeTaken(quizTakenPairs);
 
@@ -206,7 +206,7 @@ public class StartupPage extends AppCompatActivity {
             TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
             numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
 
-            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
             int taken = dbTaken.getIsTaken(title);
             if(taken == 1)
                 isTaken = true;
@@ -237,6 +237,10 @@ public class StartupPage extends AppCompatActivity {
             });
 
         }
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }

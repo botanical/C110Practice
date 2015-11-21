@@ -128,6 +128,12 @@ public class EditQuizActivity extends AppCompatActivity {
         {
             EditText qField = new EditText(this);
             qField.setHint(q.getQuestion());
+            qField.setOnFocusChangeListener( new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditQuizActivity.this.tempSubmitEdit();
+                }
+            });
             q.setQuestionField(qField);
             ArrayList<EditText> fields = new ArrayList<>();
             ArrayList<RadioButton> btns = new ArrayList<>();
@@ -275,11 +281,9 @@ public class EditQuizActivity extends AppCompatActivity {
                 //RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 // Save the user's answer
                 answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
-                new QuizSaver().execute();
+                saveQuiz();
             }
         });
-
-
     }
     public void submit() {
         Intent openAdminActivity= new Intent(EditQuizActivity.this, AdminActivity.class);
@@ -288,7 +292,7 @@ public class EditQuizActivity extends AppCompatActivity {
         finish();
     }
 
-
+//TODO startup page instances don't delete themselves properly and so show up when using back button
     public void back() {
         question_id--;
 
@@ -372,6 +376,7 @@ public class EditQuizActivity extends AppCompatActivity {
         String newQuestion = current_question.getQuestionField().getText().toString();
         if(!newQuestion.equals("")) {
             current_question.setQuestion(newQuestion);
+            textQuestion.setText(newQuestion);
         }
 
         ArrayList<RadioButton> r = current_question.getRadioButtons();
@@ -392,14 +397,13 @@ public class EditQuizActivity extends AppCompatActivity {
     }
 
     public void saveQuiz(){
-
+        new QuizSaver().execute();
     }
 
     @Override
     public void onBackPressed() {
-
-        saveQuiz();
         submit();
+        //saveQuiz();
     }
 
 
@@ -562,7 +566,7 @@ public class EditQuizActivity extends AppCompatActivity {
             pDialog = new ProgressDialog(EditQuizActivity.this);
             pDialog.setMessage("Attempting To Save Quiz");
             pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
+            pDialog.setCancelable(false);
             pDialog.show();
 
         }
@@ -585,7 +589,6 @@ public class EditQuizActivity extends AppCompatActivity {
             {
                 String tmp = sql;
                 tmp += q.toString();
-                System.out.println(tmp);
                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                        tmp, loginUrl);
             }

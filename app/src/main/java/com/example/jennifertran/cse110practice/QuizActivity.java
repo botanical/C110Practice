@@ -96,9 +96,6 @@ public class QuizActivity extends AppCompatActivity {
             textViewTime.setVisibility(View.GONE);
 
 
-
-
-
         /* Get list of columns from previous activity where the quiz was updated */
         String colsString  = intentReceived.getStringExtra("columns");
         ArrayList<String> cols = new ArrayList<>();
@@ -132,7 +129,7 @@ public class QuizActivity extends AppCompatActivity {
         }
         else
         {
-            DbHelperQuizResponse db = new DbHelperQuizResponse(this, username+"Answers");
+            DbHelperQuizResponse db = new DbHelperQuizResponse(this, username);
             response = db.getResponses();
             yourAns.setText("Your answer was: "+response.get(0).get(2));
             rightAns.setText("The correct answer was: "+current_question.getAnswer());
@@ -331,7 +328,7 @@ public class QuizActivity extends AppCompatActivity {
             b.putStringArrayList("yourAnswers", yourAnswers);
 
             //Set the current quiz to 'taken' for the current user
-            DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username + "Taken");
+            DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username);
             db.setTaken(1, title);
             intent.putExtras(b); //Put your score to your next Intent
 
@@ -346,7 +343,7 @@ public class QuizActivity extends AppCompatActivity {
                 row.add(String.valueOf(answerScore[i]));
                 responses.add(row);
             }
-            DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username + "Answers");
+            DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username);
             dbase.upgradeResponse(responses);
 
             startActivity(intent);

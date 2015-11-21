@@ -59,6 +59,7 @@ public class AdminStartupPageActivity extends AppCompatActivity {
         JSONArray jA = new JSONArray(columns);
         intent.putExtra("columns", jA.toString());
         startActivity(intent);
+        finish();
     }
 
     class AttemptUpdateQuiz extends AsyncTask<String,String,String> {
@@ -151,11 +152,14 @@ public class AdminStartupPageActivity extends AppCompatActivity {
             findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                        startQuiz();
+                    startQuiz();
                 }
             });
 
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

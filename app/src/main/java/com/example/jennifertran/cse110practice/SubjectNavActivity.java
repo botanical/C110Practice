@@ -108,37 +108,37 @@ public class SubjectNavActivity extends Activity {
                 Update list of subjects and their associated quizzes to local database;
              */
             try {
-                JSONArray jTable = new JSONArray(table);
-                JSONObject currRow;
-                List<String> columns = new ArrayList<>();
-                currRow = jTable.getJSONObject(0);
-                Iterator<?> keyIt = currRow.keys();
-                while(keyIt.hasNext()) //get column names for new local database
-                {
-                    String n = (String) keyIt.next();
-
-                    //Add all child columns to columns
-                    if((!n.equals("header")) && (!n.equals("indexer")))
-                        columns.add(n);
-                }
-                Map<String,List<String>> headerChildPairs = new HashMap<>();
-
-                for (int i = 0; i < jTable.length(); i++) {
-                    //
-                    List<String> children = new ArrayList<>();
-                    currRow = jTable.getJSONObject(i);
-                    String header = currRow.getString("header");
-                    String indexer = currRow.getString("indexer");
-                    currRow.remove("header");
-                    currRow.remove("indexer");
-                    keyIt = currRow.keys();
-                    while(keyIt.hasNext())
+                if(!table.equals("")) {
+                    JSONArray jTable = new JSONArray(table);
+                    JSONObject currRow;
+                    List<String> columns = new ArrayList<>();
+                    currRow = jTable.getJSONObject(0);
+                    Iterator<?> keyIt = currRow.keys();
+                    while (keyIt.hasNext()) //get column names for new local database
                     {
-                        children.add(currRow.getString((String) keyIt.next()));
+                        String n = (String) keyIt.next();
+
+                        //Add all child columns to columns
+                        if ((!n.equals("header")) && (!n.equals("indexer")))
+                            columns.add(n);
                     }
-                    children.add(String.valueOf(indexer)); //Put indexer as last child.
-                    headerChildPairs.put(header, children);
-                }
+                    Map<String, List<String>> headerChildPairs = new HashMap<>();
+
+                    for (int i = 0; i < jTable.length(); i++) {
+                        //
+                        List<String> children = new ArrayList<>();
+                        currRow = jTable.getJSONObject(i);
+                        String header = currRow.getString("header");
+                        String indexer = currRow.getString("indexer");
+                        currRow.remove("header");
+                        currRow.remove("indexer");
+                        keyIt = currRow.keys();
+                        while (keyIt.hasNext()) {
+                            children.add(currRow.getString((String) keyIt.next()));
+                        }
+                        children.add(String.valueOf(indexer)); //Put indexer as last child.
+                        headerChildPairs.put(header, children);
+                    }
 
                 /*
                     Create local subject nav table to hold subjects and their respective
@@ -146,15 +146,16 @@ public class SubjectNavActivity extends Activity {
 
                  */
 
-                DbHelperSubNav db = new DbHelperSubNav(SubjectNavActivity.this,username,columns);
-                db.createTable();
-                db.upgradeSubNav(headerChildPairs); //store subNav.db locally
+                    DbHelperSubNav db = new DbHelperSubNav(SubjectNavActivity.this, username, columns);
+                    db.createTable();
+                    db.upgradeSubNav(headerChildPairs); //store subNav.db locally
 
-
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }
             return null;
+
         }
 
         protected void onPostExecute(String message){
@@ -168,6 +169,11 @@ public class SubjectNavActivity extends Activity {
     private void loadLocalQuizzes() {
         DbHelperSubNav db = new DbHelperSubNav(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);
+
+        //TODO add behavior for this user has no quizzes
+        if(pair == null) {
+            return;
+        }
         listDataHeader = pair.first;
         listDataChild  = pair.second;
 

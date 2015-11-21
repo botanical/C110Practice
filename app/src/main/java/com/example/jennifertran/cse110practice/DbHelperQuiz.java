@@ -68,6 +68,8 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table, null, null); //Delete entries in old table
+        db.rawQuery("DROP TABLE "+table, null);
+        createTable();
         Iterator<?> keyIt = questOpPairs.keySet().iterator();
         String currRow;
         ArrayList<String> currOptions;

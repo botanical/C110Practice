@@ -25,7 +25,7 @@ public class DbHelperTaken extends SQLiteOpenHelper {
 
         public DbHelperTaken(Context context, String table) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            this.table = "`"+table+"`";
+            this.table = "`"+table+"Taken`";
 
         }
 
