@@ -53,16 +53,20 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             ContentValues colValuePairs = new ContentValues();
 
             for(Map.Entry<String, Integer> next : QTPairs.entrySet()){
+                System.out.println(next.getKey());
+                System.out.println(next.getValue());
                 colValuePairs.put(KEY_QUIZ, next.getKey());
                 colValuePairs.put(KEY_TAKEN, next.getValue());
+                db.insert(table, null, colValuePairs);
+
             }
-            db.insert(table, null, colValuePairs);
         }
 
         public int getIsTaken(String title)
         {
             SQLiteDatabase db = this.getReadableDatabase();
-            String sql = "SELECT * FROM "+this.table+" WHERE title=\""+title+"\"";
+
+            String sql = "SELECT * FROM "+this.table+" WHERE title='"+title+"'"; //quotes
             Cursor dataCurs = db.rawQuery(sql, null);
             dataCurs.moveToFirst();
             int result = dataCurs.getInt(dataCurs.getColumnIndex(KEY_TAKEN)); //HardCoded location of 'taken' column

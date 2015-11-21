@@ -1,26 +1,19 @@
 package com.example.jennifertran.cse110practice;
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -30,8 +23,6 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import java.util.ArrayList;
@@ -517,7 +508,7 @@ public class QuizActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
         return true;
     }
 

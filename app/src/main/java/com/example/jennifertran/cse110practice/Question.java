@@ -20,6 +20,11 @@ public class Question {
     private boolean viewed;
     private int numCols;
     private String solution;
+    private static final int KEY_ID = 0;
+    private static final int KEY_QUESTION = 1;
+    private static final int KEY_ANSWER = 2;
+    private static final int DEFAULT_MARKED = -1;
+    private static final int SOLUTION_OFFSET = 2;
 
 
     public Question()
@@ -27,9 +32,13 @@ public class Question {
         id=0;
         question="";
         options= new ArrayList<>();
+        options.add("");
+        options.add("");
         answer="";
-        marked=0;
+        solution="";
+        marked=-1;
         viewed=false;
+
     }
     public Question(String question, ArrayList<String> options,
                     String answer, int marked, boolean viewed) {
@@ -86,18 +95,22 @@ public class Question {
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
         //TODO add final variables corresponding to indexes
+
         Question rowq = new Question();
-        rowq.setId(Integer.valueOf(row.get(0)));
-        rowq.setQuestion(row.get(1));
-        rowq.setAnswer(row.get(2));
+        rowq.setId(Integer.valueOf(row.get(KEY_ID)));
+        rowq.setQuestion(row.get(KEY_QUESTION));
+        rowq.setAnswer(row.get(KEY_ANSWER));
         ArrayList<String> options = new ArrayList<>();
-        /* Grabs the answer options from the row in the table*/
-        for(int i = (2 + 1); i < row.size()-2; i++){ // -1 to skip last column 'marked'
+        /* Grabs the answer options from the row in the table
+         * and starts at the column after key answer. We index up to row size - 2
+         * because we want to only go through the option columns. The last two columns
+         * and 'solution' and 'marked'. */
+        for(int i = (KEY_ANSWER + 1); i < row.size()-SOLUTION_OFFSET; i++){ // -1 to skip last column 'marked'
             options.add(row.get(i));
         }
         rowq.setOptions(options);
-        rowq.setSolution(row.get(row.size()-2));
-        rowq.setMarked(-1); //default marked value == -1
+        rowq.setSolution(row.get(row.size()-SOLUTION_OFFSET));
+        rowq.setMarked(DEFAULT_MARKED); //default marked value == -1
         rowq.setViewed(false);
         return rowq;
     }

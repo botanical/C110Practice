@@ -53,7 +53,6 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
                 KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
         SQLiteDatabase db = this.getWritableDatabase();
-        System.out.println("SUBNAV SQL: "+sql);
 
         db.execSQL(sql);
 

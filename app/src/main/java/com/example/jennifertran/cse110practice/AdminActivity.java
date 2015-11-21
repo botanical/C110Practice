@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -295,7 +294,7 @@ public class AdminActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
         return true;
     }
 

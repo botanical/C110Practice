@@ -146,6 +146,7 @@ public class StartupPage extends AppCompatActivity {
 
                     ArrayList<String> options = new ArrayList<>();
                     currRow = jTable.getJSONObject(i);
+                    System.out.println("CURR ROW: "+currRow);
                     String id = currRow.getString("id");
                     String question = currRow.getString("question");
                     String answer = currRow.getString("answer");
@@ -184,6 +185,7 @@ public class StartupPage extends AppCompatActivity {
                 String takenTable = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                         "SELECT * FROM  " + "`" + username + "Taken` ", loginUrl);//BACKTICKS
                 // CRITICAL OMG
+
                 jTable = new JSONArray(takenTable);
                 HashMap<String, Integer> quizTakenPairs = new HashMap<>();
                 for (int i = 0; i < jTable.length(); i++) {
@@ -193,6 +195,7 @@ public class StartupPage extends AppCompatActivity {
                 }
                 DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
                 dbTaken.createTable();
+                System.out.println("QT PAIRS: "+quizTakenPairs);
                 dbTaken.upgradeTaken(quizTakenPairs);
 
 
