@@ -19,6 +19,7 @@ public class Question {
     private int marked;
     private boolean viewed;
     private int numCols;
+    private String solution;
 
 
     public Question()
@@ -56,6 +57,7 @@ public class Question {
         return marked;
     }
     public boolean getViewed() { return viewed; }
+    public String getSolution() { return this.solution; }
     public void setId(int id)
     {
         this.id=id;
@@ -79,6 +81,7 @@ public class Question {
     }
     public void setViewed(boolean viewed) { this.viewed = viewed; }
     public void setNumCols(int numCols){ this.numCols = numCols; }
+    public void setSolution(String solution){ this.solution = solution; }
 
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
@@ -111,7 +114,7 @@ public class Question {
         }
 
         return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
-                cols +"'"+this.getMarked() + "' )";
+                cols +"'"+this.getMarked() + "', '"+this.getSolution()+"' )";
     }
 
 

@@ -160,7 +160,6 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
 
     }
 
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
         // Drop older table if existed

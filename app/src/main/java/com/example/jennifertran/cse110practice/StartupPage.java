@@ -151,14 +151,17 @@ public class StartupPage extends AppCompatActivity {
                     String answer = currRow.getString("answer");
                     Pair<String, String> quesAns = new Pair<>(question, answer);
                     String marked = currRow.getString("marked");
+                    String solution = currRow.getString("solution");
                     currRow.remove("id");
                     currRow.remove("question");
                     currRow.remove("answer");
                     currRow.remove("marked");
+                    currRow.remove("solution");
                     keyIt = currRow.keys();
                     while (keyIt.hasNext()) {
                         options.add(currRow.getString((String) keyIt.next()));
                     }
+                    options.add(solution);
                     options.add(String.valueOf(marked)); //Put indexer as last child.
                     questOpPairs.put(id, new Pair<>(quesAns, options));
                 }
