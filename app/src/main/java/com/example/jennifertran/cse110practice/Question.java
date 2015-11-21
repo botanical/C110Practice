@@ -91,10 +91,12 @@ public class Question {
         rowq.setQuestion(row.get(1));
         rowq.setAnswer(row.get(2));
         ArrayList<String> options = new ArrayList<>();
-        for(int i = (2 + 1); i < row.size()-1; i++){ // -1 to skip last column 'marked'
+        /* Grabs the answer options from the row in the table*/
+        for(int i = (2 + 1); i < row.size()-2; i++){ // -1 to skip last column 'marked'
             options.add(row.get(i));
         }
         rowq.setOptions(options);
+        rowq.setSolution(row.get(row.size()-2));
         rowq.setMarked(-1); //default marked value == -1
         rowq.setViewed(false);
         return rowq;

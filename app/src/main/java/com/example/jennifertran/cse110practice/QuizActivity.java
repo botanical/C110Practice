@@ -132,7 +132,9 @@ public class QuizActivity extends AppCompatActivity {
             DbHelperQuizResponse db = new DbHelperQuizResponse(this, username);
             response = db.getResponses();
             yourAns.setText("Your answer was: "+response.get(0).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
+            rightAns.setText("The correct answer is: "+current_question.getAnswer());
+            //TODO
+            solution.setText("Solution: " + current_question.getSolution());
         }
 
         yourAnswers = new ArrayList<>();
@@ -396,8 +398,8 @@ public class QuizActivity extends AppCompatActivity {
         {
             //TODO make magic number into final variable (2 represents the yourAns index)
             yourAns.setText("Your answer was: "+response.get(current_question.getId()).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
-            //solution.setText("");
+            rightAns.setText("The correct answer is: "+current_question.getAnswer());
+            solution.setText("Solution: " + current_question.getSolution());
 
         }
     }
