@@ -53,8 +53,6 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             ContentValues colValuePairs = new ContentValues();
 
             for(Map.Entry<String, Integer> next : QTPairs.entrySet()){
-                System.out.println(next.getKey());
-                System.out.println(next.getValue());
                 colValuePairs.put(KEY_QUIZ, next.getKey());
                 colValuePairs.put(KEY_TAKEN, next.getValue());
                 db.insert(table, null, colValuePairs);
@@ -62,6 +60,7 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             }
         }
 
+        //Gets whether the given quiz is taken
         public int getIsTaken(String title)
         {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -78,12 +77,7 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             String sql = "UPDATE "+table+" SET "+KEY_TAKEN+"="+String.valueOf(n)+" WHERE "+KEY_QUIZ+"=\""+title+"\"";
             db.execSQL(sql);
-            /*ContentValues colVal = new ContentValues();
-            colVal.put(KEY_TAKEN, n);
-            String where = KEY_QUIZ+"=\""+title+"\"";
-            String[] whereArgs = {};
-            db.update(table,colVal, where, whereArgs);
-            */
+
         }
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

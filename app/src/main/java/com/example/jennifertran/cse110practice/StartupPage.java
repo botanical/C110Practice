@@ -190,12 +190,10 @@ public class StartupPage extends AppCompatActivity {
                 HashMap<String, Integer> quizTakenPairs = new HashMap<>();
                 for (int i = 0; i < jTable.length(); i++) {
                     currRow = jTable.getJSONObject(i);
-                    System.out.println(currRow.getInt("taken"));
                     quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
                 }
                 DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
                 dbTaken.createTable();
-                System.out.println("QT PAIRS: "+quizTakenPairs);
                 dbTaken.upgradeTaken(quizTakenPairs);
 
 
