@@ -105,8 +105,7 @@ public class QuizActivity extends AppCompatActivity {
         question_list = quiz.getQuestions();
         correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
         numOfQuestions = quiz.getNumQuestions();
-        current_question = question_list.get(question_id);
-        quiz.setCurrentQuestion(current_question);
+        quiz.setCurrentQuestion(question_list.get(question_id));
         answerScore = new int[numOfQuestions];
 
         questionText = new ArrayList<>();
@@ -362,10 +361,10 @@ public class QuizActivity extends AppCompatActivity {
     {
         question_id = num ;
 
-        current_question = question_list.get(question_id);
-        quiz.setCurrentQuestion(current_question);
+
+        quiz.setCurrentQuestion(question_list.get(question_id));
         grp.removeAllViews();
-        for(RadioButton r : current_question.getRadioButtons()) {
+        for(RadioButton r : quiz.getCurrentQuestion().getRadioButtons()) {
             grp.addView(r);
         }
 
@@ -390,17 +389,17 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         setQuestionView();
-        if(current_question.getMarked() != -1 )
-            grp.check(current_question.getMarked());
-        this.current_question.setViewed(true);
+        if(quiz.getCurrentQuestion().getMarked() != -1 )
+            grp.check(quiz.getCurrentQuestion().getMarked());
+        this.quiz.getCurrentQuestion().setViewed(true);
         addDrawerItems();
 
         if(isTaken)
         {
             //TODO make magic number into final variable (2 represents the yourAns index)
-            yourAns.setText("Your answer was: "+response.get(current_question.getId()).get(2));
-            rightAns.setText("The correct answer is: "+current_question.getAnswer());
-            solution.setText("Solution: " + current_question.getSolution());
+            yourAns.setText("Your answer was: "+response.get(quiz.getCurrentQuestion().getId()).get(2));
+            rightAns.setText("The correct answer is: "+quiz.getCurrentQuestion().getAnswer());
+            solution.setText("Solution: " + quiz.getCurrentQuestion().getSolution());
 
         }
     }
@@ -413,7 +412,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private void setQuestionView()
     {
-        textQuestion.setText(current_question.getQuestion());
+        textQuestion.setText(quiz.getCurrentQuestion().getQuestion());
         qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(numOfQuestions);
         getSupportActionBar().setTitle(qid);
     }
