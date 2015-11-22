@@ -106,6 +106,7 @@ public class QuizActivity extends AppCompatActivity {
         correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
         numOfQuestions = quiz.getNumQuestions();
         current_question = question_list.get(question_id);
+        quiz.setCurrentQuestion(current_question);
         answerScore = new int[numOfQuestions];
 
         questionText = new ArrayList<>();
@@ -128,9 +129,9 @@ public class QuizActivity extends AppCompatActivity {
             DbHelperQuizResponse db = new DbHelperQuizResponse(this, username);
             response = db.getResponses();
             yourAns.setText("Your answer was: "+response.get(0).get(2));
-            rightAns.setText("The correct answer is: "+current_question.getAnswer());
+            rightAns.setText("The correct answer is: "+quiz.getCurrentQuestion().getAnswer());
             //TODO
-            solution.setText("Solution: " + current_question.getSolution());
+            solution.setText("Solution: " + quiz.getCurrentQuestion().getSolution());
         }
 
         yourAnswers = new ArrayList<>();
@@ -147,13 +148,13 @@ public class QuizActivity extends AppCompatActivity {
                     if (r == null)
                         return;
 
-                    current_question.setMarked(checkedId);
+                    quiz.getCurrentQuestion().setMarked(checkedId);
                 /* Update drawer item icons when radio button is clicked */
                     addDrawerItems();
 
                     yourAnswers.set(question_id, r.getText().toString());
 
-                    if (current_question.getAnswer().equals(r.getText().toString())) {
+                    if (quiz.getCurrentQuestion().getAnswer().equals(r.getText().toString())) {
                         answerScore[question_id] = 1;
                     } else
                         answerScore[question_id] = 0;
@@ -213,7 +214,7 @@ public class QuizActivity extends AppCompatActivity {
         // Set the questions on the page
         setQuestionView();
         /* Update drawer icons to set viewed icon */
-        current_question.setViewed(true);
+        quiz.getCurrentQuestion().setViewed(true);
         addDrawerItems();
         // Set question to viewed
 
@@ -362,6 +363,7 @@ public class QuizActivity extends AppCompatActivity {
         question_id = num ;
 
         current_question = question_list.get(question_id);
+        quiz.setCurrentQuestion(current_question);
         grp.removeAllViews();
         for(RadioButton r : current_question.getRadioButtons()) {
             grp.addView(r);
