@@ -42,7 +42,6 @@ public class QuizActivity extends AppCompatActivity {
     int question_id = 0;
     Boolean isTaken;
 
-    Question current_question;
     TextView textQuestion;
     TextView yourAns;
     TextView rightAns;

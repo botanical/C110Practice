@@ -79,6 +79,7 @@ public class EditQuizActivity extends AppCompatActivity {
         /*******************************  Initialize Quiz Object ****************************/
 
         db =  new DbHelperQuiz(this,title,cols);
+        System.out.println("QUESTIONS: "+db.getQuestionsAsQuestionArray());
         quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -222,7 +223,7 @@ public class EditQuizActivity extends AppCompatActivity {
                 if(btnId == -1)
                 {
                     Toast.makeText(EditQuizActivity.this,
-                            "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+                            "Select which option should be the correct answer.", Toast.LENGTH_SHORT).show();
                 }
                 else
                     saveQuiz();
@@ -236,13 +237,12 @@ public class EditQuizActivity extends AppCompatActivity {
         finish();
     }
 
-//TODO startup page instances don't delete themselves properly and so show up when using back button
     public void next() {
         int btnId = quiz.getCurrentQuestion().getMarked();
         if(btnId == -1)
         {
             Toast.makeText(EditQuizActivity.this,
-                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+                    "Select which option should be the correct answer.", Toast.LENGTH_SHORT).show();
         }
         else {
             question_id++;
@@ -254,7 +254,7 @@ public class EditQuizActivity extends AppCompatActivity {
         if(btnId == -1)
         {
             Toast.makeText(EditQuizActivity.this,
-                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
+                    "Select which option should be the correct answer.", Toast.LENGTH_SHORT).show();
         }else {
             question_id--;
             goToQuestion(question_id);
@@ -524,7 +524,6 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> rads = new ArrayList<>();
         RadioButton r = new RadioButton(this);
         r.setText("Add an Option!");
-
         r.setId(View.generateViewId());
         rads.add(r);
         q.setRadioButtons(rads);
@@ -556,6 +555,7 @@ public class EditQuizActivity extends AppCompatActivity {
             textFields.add(e);
         }
         q.setTextFields(textFields);
+        q.setNumCols(quiz.getNumCols());
         quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
         goToQuestion(quiz.getCurrentQuestion().getId()+1); //go to last question.
         //Add new question to quiz && list of currentquestions

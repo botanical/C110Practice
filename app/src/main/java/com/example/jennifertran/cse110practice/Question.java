@@ -94,7 +94,6 @@ public class Question {
 
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
-        //TODO add final variables corresponding to indexes
 
         Question rowq = new Question();
         rowq.setId(Integer.valueOf(row.get(KEY_ID)));

@@ -19,8 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,8 +48,10 @@ public class AdminActivity extends AppCompatActivity {
     ProgressDialog pDialog;
     String username;
     String loginUrl;
+    String newQuiz;
     final String DEFAULT_TITLE = "Classes";
     boolean addQuizMode = false;
+
 
     final Context context = this;
 
@@ -195,23 +199,30 @@ public class AdminActivity extends AppCompatActivity {
                     addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_white_48dp, null));
 
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
                     // set title
-                    alertDialogBuilder.setTitle("Your Title");
+                    alertDialogBuilder.setTitle("Add New Quiz");
+                    final EditText input = new EditText(AdminActivity.this);
+                    input.setHint("Input the name of a new class");
+                    alertDialogBuilder.setView(input);
 
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Would you like to add a new quiz to " + listAdapter.getGroup(groupPosition))
+                            .setMessage("Adding a new quiz to \"" +
+                                    listAdapter.getGroup(groupPosition)+"\" .")
                             .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // if this button is clicked, close
                                     // current activity
+                                newQuiz = input.getText().toString();
+
+
                                     //TODO add yes stuff
                                 }
                             })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
@@ -221,7 +232,6 @@ public class AdminActivity extends AppCompatActivity {
 
                     // create alert dialog
                     AlertDialog alertDialog = alertDialogBuilder.create();
-
                     // show it
                     alertDialog.show();
                 }
@@ -391,6 +401,7 @@ public class AdminActivity extends AppCompatActivity {
         else{
             ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
             addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_white_48dp, null));
+            Toast.makeText(this, "Select a class you want to add a quiz to.", Toast.LENGTH_SHORT).show();
         }
     }
 

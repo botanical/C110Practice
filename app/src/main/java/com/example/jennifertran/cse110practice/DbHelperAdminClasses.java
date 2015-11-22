@@ -111,13 +111,12 @@ public class DbHelperAdminClasses extends SQLiteOpenHelper {
         db.close();
     }
 
-    //TODO loadSubNav reads local database and returns  the table as a map <header, listChildren>
 
     /*
-     * loadSubNav (String table)
-     * loadSubNav is a helper class which mimics the SQL format of quizzes that is used
+     * loadAdminClasses (String table)
+     * dbHelperAdminClasses is a helper class which mimics the SQL format of quizzes that is used
      * on our remote database.
-     * Parameters: String table - 'table' should be the username of the currently logged user
+     * Parameters: String username - 'username' should be the username of the currently logged user
      * Returns: Pair<ArrayList<String>, HashMap<String,List<String>>> - Returns
      *              1. An ArrayList representing the headers of each quiz topic
      *              2. A HashMap that that pairs header keys with a List of that header's children
