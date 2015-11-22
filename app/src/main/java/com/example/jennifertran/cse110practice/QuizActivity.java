@@ -516,7 +516,7 @@ public class QuizActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_quiz, menu);
         return true;
     }
 
