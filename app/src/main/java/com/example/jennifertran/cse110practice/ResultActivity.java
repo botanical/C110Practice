@@ -52,7 +52,7 @@ public class ResultActivity extends AppCompatActivity{
                 entry.color = Color.parseColor("#CCFFCC");
                 entry.image = "checkmark";
             }
-            entry.TextEntry = questionText.get(i);
+            entry.TextEntry = "   "+questionText.get(i);
             listDataHeader.add(entry);
         }
 

@@ -478,7 +478,7 @@ public class EditQuizActivity extends AppCompatActivity {
             return true;
         }
 
-        // Activate the navigation drawer tonoggle
+        // Activate the navigation drawer toggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -527,10 +527,6 @@ public class EditQuizActivity extends AppCompatActivity {
 
         r.setId(View.generateViewId());
         rads.add(r);
-        r = new RadioButton(this);
-        r.setText("Add an Option!");
-        r.setId(View.generateViewId());
-        rads.add(r);
         q.setRadioButtons(rads);
 
         //Add text fields to new Question to match radio buttons.
@@ -561,7 +557,7 @@ public class EditQuizActivity extends AppCompatActivity {
         }
         q.setTextFields(textFields);
         quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
-        goToQuestion(quiz.getNumQuestions()-1); //go to last question.
+        goToQuestion(quiz.getCurrentQuestion().getId()+1); //go to last question.
         //Add new question to quiz && list of currentquestions
 
     }

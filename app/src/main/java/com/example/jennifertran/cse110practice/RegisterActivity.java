@@ -22,10 +22,6 @@ import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
     ProgressDialog pDialog;
-    EditText usernameE;
-    EditText passwordE;
-    EditText companyE;
-    EditText emailE;
     String username;
     String password;
     String company;
@@ -138,9 +134,9 @@ public class RegisterActivity extends AppCompatActivity {
                         Intent intent = new Intent(RegisterActivity.this, SubjectNavActivity.class);
                         intent.putExtra("username", username);
                         startActivity(intent);
-                    }
+                        finish();
 
-
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }

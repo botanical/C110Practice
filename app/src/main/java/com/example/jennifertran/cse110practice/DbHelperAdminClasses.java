@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
 
@@ -130,27 +131,33 @@ public class DbHelperAdminClasses extends SQLiteOpenHelper {
         this.table = "`"+username + "Classes`";
 
         String selectionQuery = "SELECT * FROM "+this.table+" ORDER BY indexer";
-        Cursor dataCurs = this.getWritableDatabase().rawQuery(selectionQuery, null);
-        dataCurs.moveToFirst();
-        HashMap<String, List<String>> headerChildPairs = new HashMap<>();
-        ArrayList<String> headers = new ArrayList<>();
-        do{
-            List<String> children = new ArrayList<>();
-            String header = dataCurs.getString(CLASS_INDEX);//Get Header
-            headers.add(header);
+        try {
+            Cursor dataCurs = this.getWritableDatabase().rawQuery(selectionQuery, null);
+            dataCurs.moveToFirst();
+            HashMap<String, List<String>> headerChildPairs = new HashMap<>();
+            ArrayList<String> headers = new ArrayList<>();
+            do{
+                List<String> children = new ArrayList<>();
+                String header = dataCurs.getString(CLASS_INDEX);//Get Header
+                headers.add(header);
 
-            //Iterate starts after header and ends before indexer.
-            for(int i = CLASS_INDEX + 1; i < dataCurs.getColumnCount() -1; i++) {
-                if(dataCurs.getString(i) != null)  //If child isn't null, or "" add to list of child
-                    if(!dataCurs.getString(i).equals(""))
-                        children.add(dataCurs.getString(i));
+                //Iterate starts after header and ends before indexer.
+                for(int i = CLASS_INDEX + 1; i < dataCurs.getColumnCount() -1; i++) {
+                    if(dataCurs.getString(i) != null)  //If child isn't null, or "" add to list of child
+                        if(!dataCurs.getString(i).equals(""))
+                            children.add(dataCurs.getString(i));
+                }
+                headerChildPairs.put(header, children);
             }
-            headerChildPairs.put(header, children);
-        }
-        while(dataCurs.moveToNext());
-        dataCurs.close();
+            while(dataCurs.moveToNext());
+            dataCurs.close();
 
-        return new Pair<>(headers,headerChildPairs);
+            return new Pair<>(headers,headerChildPairs);
+        }catch(SQLiteException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 

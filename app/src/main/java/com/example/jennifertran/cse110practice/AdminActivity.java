@@ -172,7 +172,9 @@ public class AdminActivity extends AppCompatActivity {
 
         DbHelperAdminClasses db = new DbHelperAdminClasses(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadAdminClasses(username);
-
+        if(pair == null){
+            return;
+        }
         listDataClass = pair.first;
         listDataChild = pair.second;
         listAdapter = new ExpandableListAdapter(AdminActivity.this, listDataClass,
@@ -327,7 +329,7 @@ public class AdminActivity extends AppCompatActivity {
                      //       + "/" + String.valueOf(numOfQuestions));
                 }
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                setTitle(DEFAULT_TITLE);
+               getSupportActionBar().setTitle(DEFAULT_TITLE);
             }
         };
 
