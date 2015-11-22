@@ -566,7 +566,7 @@ public class EditQuizActivity extends AppCompatActivity {
             textFields.add(e);
         }
         q.setTextFields(textFields);
-        quiz.addQuestion(q);
+        quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
         goToQuestion(quiz.getNumQuestions()-1); //go to last question.
         //Add new question to quiz && list of currentquestions
 
