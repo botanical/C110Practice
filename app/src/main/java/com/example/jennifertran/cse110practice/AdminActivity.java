@@ -1,14 +1,20 @@
 package com.example.jennifertran.cse110practice;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +36,7 @@ public class AdminActivity extends AppCompatActivity {
     /* Adding member variables, strings, and booleans for fragments */
     private ListView mDrawerList;
     //private ArrayAdapter<String> mAdapter;
+
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Current Section";
@@ -41,7 +48,9 @@ public class AdminActivity extends AppCompatActivity {
     String username;
     String loginUrl;
     final String DEFAULT_TITLE = "Classes";
-    
+    boolean addQuizMode = false;
+
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +74,7 @@ public class AdminActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
 
 
         if(username != null)
@@ -179,7 +189,44 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
+                if (addQuizMode) {
+                    addQuizMode = false;
+                    ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+                    addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_control_point_white_24dp, null));
+
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                    // set title
+                    alertDialogBuilder.setTitle("Your Title");
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Would you like to add a new quiz to " + listAdapter.getGroup(groupPosition))
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, close
+                                    // current activity
+                                    //TODO add yes stuff
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                }
                 return false;
+
             }
         });
 
@@ -302,6 +349,7 @@ public class AdminActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -326,8 +374,25 @@ public class AdminActivity extends AppCompatActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+        switch (item.getItemId()) {
+            case R.id.action_add_question:
+                addNewQuizDialogue();
+                return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
+    }
+    public void addNewQuizDialogue(){
+        addQuizMode = !addQuizMode;
+        if(!addQuizMode){
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_control_point_white_24dp, null));
+        }
+        else{
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_white_24dp, null));
+        }
     }
 
 }
