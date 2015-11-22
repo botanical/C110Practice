@@ -27,7 +27,7 @@ public class DbHelperQuizResponse extends SQLiteOpenHelper {
     private SQLiteDatabase dbase;
     public DbHelperQuizResponse(Context context, String tableName) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.table = "`"+tableName+"`"; //need backticks in case table name has spaces
+        this.table = "`"+tableName+"Answers`"; //need backticks in case table name has spaces
 
     }
     @Override

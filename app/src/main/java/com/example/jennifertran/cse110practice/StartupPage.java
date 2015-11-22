@@ -57,7 +57,7 @@ public class StartupPage extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
         int taken = dbTaken.getIsTaken(title);
         if(taken == 1) {
             isTaken = true;
@@ -146,19 +146,23 @@ public class StartupPage extends AppCompatActivity {
 
                     ArrayList<String> options = new ArrayList<>();
                     currRow = jTable.getJSONObject(i);
+                    System.out.println("CURR ROW: "+currRow);
                     String id = currRow.getString("id");
                     String question = currRow.getString("question");
                     String answer = currRow.getString("answer");
                     Pair<String, String> quesAns = new Pair<>(question, answer);
                     String marked = currRow.getString("marked");
+                    String solution = currRow.getString("solution");
                     currRow.remove("id");
                     currRow.remove("question");
                     currRow.remove("answer");
                     currRow.remove("marked");
+                    currRow.remove("solution");
                     keyIt = currRow.keys();
                     while (keyIt.hasNext()) {
                         options.add(currRow.getString((String) keyIt.next()));
                     }
+                    options.add(solution);
                     options.add(String.valueOf(marked)); //Put indexer as last child.
                     questOpPairs.put(id, new Pair<>(quesAns, options));
                 }
@@ -181,6 +185,7 @@ public class StartupPage extends AppCompatActivity {
                 String takenTable = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                         "SELECT * FROM  " + "`" + username + "Taken` ", loginUrl);//BACKTICKS
                 // CRITICAL OMG
+
                 jTable = new JSONArray(takenTable);
                 HashMap<String, Integer> quizTakenPairs = new HashMap<>();
                 for (int i = 0; i < jTable.length(); i++) {
@@ -188,8 +193,9 @@ public class StartupPage extends AppCompatActivity {
                     System.out.println(currRow.getInt("taken"));
                     quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
                 }
-                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username + "Taken");
+                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
                 dbTaken.createTable();
+                System.out.println("QT PAIRS: "+quizTakenPairs);
                 dbTaken.upgradeTaken(quizTakenPairs);
 
 
@@ -206,7 +212,7 @@ public class StartupPage extends AppCompatActivity {
             TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
             numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
 
-            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
             int taken = dbTaken.getIsTaken(title);
             if(taken == 1)
                 isTaken = true;
@@ -237,6 +243,10 @@ public class StartupPage extends AppCompatActivity {
             });
 
         }
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }

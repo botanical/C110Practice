@@ -16,6 +16,9 @@
     <string name="login_page_login_button_text">LOGIN</string>
     <string name="login_page_register_button_text">REGISTER</string>
 
+    <!--Register Page-->
+    <string name="registration">REGISTRATION</string>
+
     <!--Quiz Page-->
     <string name="quiz_question_prompt_text">TEXT</string>
     <string name="quiz_next">NEXT</string>

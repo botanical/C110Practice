@@ -152,11 +152,14 @@ public class AdminStartupPageActivity extends AppCompatActivity {
             findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                        startQuiz();
+                    startQuiz();
                 }
             });
 
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

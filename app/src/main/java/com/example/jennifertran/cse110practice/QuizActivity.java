@@ -41,7 +41,6 @@ public class QuizActivity extends AppCompatActivity {
 
     static CountDownTimer timer;
     int numOfQuestions;
-
     ArrayList<String> yourAnswers;
     ArrayList<String> correctAnswers;
     ArrayList<String> questionText;
@@ -138,10 +137,12 @@ public class QuizActivity extends AppCompatActivity {
         }
         else
         {
-            DbHelperQuizResponse db = new DbHelperQuizResponse(this, username+"Answers");
+            DbHelperQuizResponse db = new DbHelperQuizResponse(this, username);
             response = db.getResponses();
             yourAns.setText("Your answer was: "+response.get(0).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
+            rightAns.setText("The correct answer is: "+current_question.getAnswer());
+            //TODO
+            solution.setText("Solution: " + current_question.getSolution());
         }
 
         yourAnswers = new ArrayList<>();
@@ -339,7 +340,7 @@ public class QuizActivity extends AppCompatActivity {
             b.putStringArrayList("questionText", questionText);
 
             //Set the current quiz to 'taken' for the current user
-            DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username + "Taken");
+            DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username);
             db.setTaken(1, title);
             intent.putExtras(b); //Put your score to your next Intent
 
@@ -354,7 +355,7 @@ public class QuizActivity extends AppCompatActivity {
                 row.add(String.valueOf(answerScore[i]));
                 responses.add(row);
             }
-            DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username + "Answers");
+            DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username);
             dbase.upgradeResponse(responses);
 
             startActivity(intent);
@@ -407,8 +408,9 @@ public class QuizActivity extends AppCompatActivity {
         {
             //TODO make magic number into final variable (2 represents the yourAns index)
             yourAns.setText("Your answer was: "+response.get(current_question.getId()).get(2));
-            rightAns.setText("The correct answer was: "+current_question.getAnswer());
-            //solution.setText("");
+            rightAns.setText("The correct answer is: "+current_question.getAnswer());
+            solution.setText("Solution: " + current_question.getSolution());
+
         }
     }
 
@@ -525,7 +527,7 @@ public class QuizActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
         return true;
     }
 

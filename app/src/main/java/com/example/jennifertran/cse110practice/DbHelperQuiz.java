@@ -27,6 +27,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     private static final String KEY_QUES = "question";
     private static final String KEY_ANSWER = "answer"; //correct option
     private static final String KEY_MARKED = "marked"; //marked answer by user
+    private static final String KEY_SOLUTION = "solution";
     private ArrayList<String> optionCols;
 
     private SQLiteDatabase dbase;
@@ -69,7 +70,12 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         //The last child in the list of children for each header is actually that row's index
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(table, null, null); //Delete entries in old table
+        //db.delete(table, null, null); //Delete entries in old table
+        db.execSQL("DROP TABLE " + table);
+        createTable();
+        Cursor cur = db.rawQuery("SELECT * FROM "+table,null);
+        DatabaseUtils.dumpCursor(cur);
+
         Iterator<?> keyIt = questOpPairs.keySet().iterator();
         String currRow;
         ArrayList<String> currOptions;
@@ -85,12 +91,14 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             colValuePairs.put("answer", questOpPairs.get(currRow).first.second);
 
             //Iterate until last child. The last child is actually the index of the row.
-            for(int i = 0; i < currOptions.size()-1; i++)
+            for(int i = 0; i < currOptions.size()-2; i++) //TODO make final instance const
             {
                 colValuePairs.put(optionCols.get(i),  currOptions.get(i));
             }
-            String marked = currOptions.get(currOptions.size() - 1);
+            String solution = currOptions.get(currOptions.size() -2); //gets Solution
+            String marked = currOptions.get(currOptions.size() - 1);  //gets Marked
             colValuePairs.put("marked", marked);
+            colValuePairs.put("solution", solution);
             db.insert(table, null, colValuePairs);
         }
         //db.close();
@@ -106,7 +114,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
+                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT )";
 
         System.out.println("CREATE TABLE QUERY "+sql);
         SQLiteDatabase db = this.getWritableDatabase();
