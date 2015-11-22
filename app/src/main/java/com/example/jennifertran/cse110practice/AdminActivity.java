@@ -190,7 +190,7 @@ public class AdminActivity extends AppCompatActivity {
                 if (addQuizMode) {
                     addQuizMode = false;
                     ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
-                    addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_control_point_white_24dp, null));
+                    addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_white_48dp, null));
 
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);

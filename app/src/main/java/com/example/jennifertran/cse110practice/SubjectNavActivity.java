@@ -175,6 +175,79 @@ public class SubjectNavActivity extends Activity {
 
         }
     }
+
+    class AttemptGetClass extends AsyncTask<String,String,String>
+    {
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SubjectNavActivity.this);
+            pDialog.setMessage("Getting Classes");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            RemoteDBHelper remDb = new RemoteDBHelper();
+            String sqlSelect = "SELECT username FROM Users WHERE is_admin=1";
+            String tableAdmins = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                    sqlSelect, loginUrl);
+            try {
+                if(!tableAdmins.equals("")) {
+                    JSONArray jTable = new JSONArray(tableAdmins);
+                    JSONObject currRow = jTable.getJSONObject(0);
+                    ArrayList<String> adminNames = new ArrayList<>();
+                    for(int i = 0; i < jTable.length(); i++){
+                        adminNames.add(currRow.getString("username"));
+                    }
+
+                    ArrayList<Pair<String,String>> classes = new ArrayList<>();
+                    for(String admin : adminNames)
+                    {
+                        String sqlSelectClasses = "SELECT class FROM "+admin+"Classes";
+                        String tableClasses = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                                sqlSelectClasses, loginUrl);
+                        if(!tableClasses.equals(""))
+                        {
+                            JSONArray jTableClasses = new JSONArray(tableClasses);
+                            for (int i = 0; i < jTableClasses.length(); i++){
+
+                                JSONObject j = jTableClasses.getJSONObject(i);
+                                Pair<String,String> adminClassPair =
+                                        new Pair<>(admin,j.getString("class"));
+                                classes.add(adminClassPair);
+                            }
+                        }
+                    }
+                    //TODO save classes so register button can display them.
+
+
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String message)
+        {
+            if(pDialog != null && pDialog.isShowing())
+                pDialog.dismiss();
+
+
+        }
+
+
+    }
+
     private void loadLocalQuizzes() {
         DbHelperSubNav db = new DbHelperSubNav(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);

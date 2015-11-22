@@ -34,6 +34,7 @@ public class QuizActivity extends AppCompatActivity {
     int numOfQuestions;
     ArrayList<String> yourAnswers;
     ArrayList<String> correctAnswers;
+    ArrayList<String> questionText;
 
     List<Question> question_list;
     int[] answerScore;
@@ -107,6 +108,10 @@ public class QuizActivity extends AppCompatActivity {
         current_question = question_list.get(question_id);
         answerScore = new int[numOfQuestions];
 
+        questionText = new ArrayList<>();
+        for(int i = 0; i < question_list.size();++i){
+            questionText.add(question_list.get(i).getQuestion());
+        }
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
         yourAns = (TextView) findViewById(R.id.yourAnswer);
@@ -300,6 +305,7 @@ public class QuizActivity extends AppCompatActivity {
 
                     b.putStringArrayList("correctAnswers", correctAnswers);
                     b.putStringArrayList("yourAnswers", yourAnswers);
+                    b.putStringArrayList("questionText", questionText);
                     intent.putExtras(b); //Put your score to your next Intent
                     // submit quiz when time's up; just copied code
                     intent.putExtras(b); //Put your score to your next Intent
@@ -319,6 +325,7 @@ public class QuizActivity extends AppCompatActivity {
             b.putInt("numOfQuestions", numOfQuestions);
             b.putStringArrayList("correctAnswers", correctAnswers);
             b.putStringArrayList("yourAnswers", yourAnswers);
+            b.putStringArrayList("questionText", questionText);
 
             //Set the current quiz to 'taken' for the current user
             DbHelperTaken db = new DbHelperTaken(QuizActivity.this, username);
@@ -337,6 +344,7 @@ public class QuizActivity extends AppCompatActivity {
                 responses.add(row);
             }
             DbHelperQuizResponse dbase = new DbHelperQuizResponse(this, username);
+            dbase.createTable();
             dbase.upgradeResponse(responses);
 
             startActivity(intent);
