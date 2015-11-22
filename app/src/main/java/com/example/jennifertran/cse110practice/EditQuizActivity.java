@@ -487,11 +487,34 @@ public class EditQuizActivity extends AppCompatActivity {
             case R.id.action_add_question:
                 addNewQuestion();
                 return true;
+            case R.id.action_delete_question:
+                deleteQuestion(quiz.getCurrentQuestion().getId());
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
+    /* Method name: deleteQuestion
+       * Parameter(s): Question object named q
+       * Description: this method will delete the current question from the quiz
+       *              and make updates to the database accordingly
+       */
+    public void deleteQuestion(int id) {
+        if (id == 0 && quiz.getNumQuestions() == 1) {
+            addNewQuestion();
+        } else if (id == 0) {
+            quiz.deleteQuestion(id);
+            goToQuestion(id);
+        } else {
+            quiz.deleteQuestion(id);
+            goToQuestion(id-1);
+        }
+    }
+    /* Method name: addNewQuestion()
+     * Parameter(s): none
+     * Description: This method will add a new question to the quiz and
+     *              make updates to the database accordingly.
+     */
     public void addNewQuestion(){
         Question q = new Question();
         q.setId(quiz.getNumQuestions()); //set new question id to last question id plus 1
@@ -501,6 +524,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> rads = new ArrayList<>();
         RadioButton r = new RadioButton(this);
         r.setText("Add an Option!");
+
         r.setId(View.generateViewId());
         rads.add(r);
         r = new RadioButton(this);
@@ -536,19 +560,9 @@ public class EditQuizActivity extends AppCompatActivity {
             textFields.add(e);
         }
         q.setTextFields(textFields);
-
-
-        //Update num cols of all questions if the new question has a greater num cols
-        //Update num cols of new question if new question has fewer num cols
-        if(q.getRadioButtons().size() > quiz.getNumCols())
-        {
-            quiz.setNumCols(q.getRadioButtons().size()); //also sets question.
-        }
-        else
-            q.setNumCols(quiz.getNumCols());
-
-        quiz.addQuestion(q);
+        quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
         goToQuestion(quiz.getNumQuestions()-1); //go to last question.
+        //Add new question to quiz && list of currentquestions
 
     }
 
