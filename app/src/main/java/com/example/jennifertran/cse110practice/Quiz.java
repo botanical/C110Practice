@@ -47,8 +47,6 @@ public class Quiz {
     public void setQuestions(ArrayList<Question> questionList)
     {
         this.questionList = questionList;
-
-
         int max = 0;
         for(Question q : questionList)
         {
@@ -79,6 +77,14 @@ public class Quiz {
 
 
     public int getNumCols() { return this.numCols; }
+    public void setNumCols(int numCols) { this.numCols = numCols; }
+
+    public void updateNumColsOfQuestions(int numCols) {
+        for(Question q : questionList)
+        {
+            setNumCols(numCols);
+        }
+    }
 
 
     public String toString()
