@@ -27,6 +27,7 @@ public class RemoteDBHelper {
             //associated info.
             params.put("query", query);
             JSONArray ar = jsonParser.makeHttpRequest(loginUrl, "POST", params);
+            System.out.println("Params is " + params);
             if(ar == null)
                 return "";
 

@@ -41,7 +41,7 @@ public class AdminActivity extends AppCompatActivity {
     String username;
     String loginUrl;
     final String DEFAULT_TITLE = "Classes";
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,9 @@ public class AdminActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+
+
+
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 
@@ -294,7 +297,7 @@ public class AdminActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_menu_admin_subject_nav, menu);
         return true;
     }
 

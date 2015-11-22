@@ -118,7 +118,6 @@ public class Question {
 
         int extra = this.numCols - this.options.size();
         String cols = "";
-        String maxCols = "";
         for(String o : this.options)
         {
             cols += "'"+o+"', ";
