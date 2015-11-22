@@ -311,14 +311,12 @@ public class EditQuizActivity extends AppCompatActivity {
     public void tempSubmitEdit(){
         //Set questionAnswer to answer of the currently marked answer.
         int btnId = quiz.getCurrentQuestion().getMarked();
-        if(btnId == -1)
+        if(btnId != -1)
         {
-            Toast.makeText(EditQuizActivity.this,
-                    "Select which option should be the correct answer.", Toast.LENGTH_LONG).show();
-        }
-        else {
             RadioButton markedRad = (RadioButton) findViewById(quiz.getCurrentQuestion().getMarked());
             quiz.getCurrentQuestion().setAnswer(markedRad.getText().toString());
+        }
+
 
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
@@ -342,9 +340,6 @@ public class EditQuizActivity extends AppCompatActivity {
                 }
             }
             quiz.getCurrentQuestion().setOptions(butText);
-        }
-
-
 
     }
 
@@ -501,7 +496,6 @@ public class EditQuizActivity extends AppCompatActivity {
         Question q = new Question();
         q.setId(quiz.getNumQuestions()); //set new question id to last question id plus 1
         // Add Radio Buttons to new Question. Default is 2
-
 
 
         ArrayList<RadioButton> rads = new ArrayList<>();

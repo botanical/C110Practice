@@ -64,6 +64,15 @@ public class SubjectNavActivity extends Activity {
         // preparing list data
         prepareListData();
 
+        findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent loggingOut = new Intent(SubjectNavActivity.this, LoginActivity.class);
+                loggingOut.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(loggingOut);
+                finish();
+            }
+        });
     }
 
     /*

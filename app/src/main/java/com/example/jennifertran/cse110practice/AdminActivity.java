@@ -1,14 +1,20 @@
 package com.example.jennifertran.cse110practice;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +47,9 @@ public class AdminActivity extends AppCompatActivity {
     String username;
     String loginUrl;
     final String DEFAULT_TITLE = "Classes";
-    
+    boolean addQuizMode = false;
+
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +76,15 @@ public class AdminActivity extends AppCompatActivity {
         if(username != null)
             new AttemptUpdateClasses().execute();
 
+        findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent logingOut = new Intent(AdminActivity.this, LoginActivity.class);
+                logingOut.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(logingOut);
+                finish();
+            }
+        });
     }
 
     class AttemptUpdateClasses extends AsyncTask<String,String,String> {
@@ -170,7 +187,44 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
+                if (addQuizMode) {
+                    addQuizMode = false;
+                    ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+                    addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_control_point_white_24dp, null));
+
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                    // set title
+                    alertDialogBuilder.setTitle("Your Title");
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Would you like to add a new quiz to " + listAdapter.getGroup(groupPosition))
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, close
+                                    // current activity
+                                    //TODO add yes stuff
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                }
                 return false;
+
             }
         });
 
@@ -205,6 +259,7 @@ public class AdminActivity extends AppCompatActivity {
                 navTitle[0] = new FragmentNavigationTitle (R.drawable.ic_answered_question_24px
                         , R.drawable.ic_unviewed_question_24px, "TEST");
         //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
+
         /*
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
@@ -295,7 +350,7 @@ public class AdminActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
+        getMenuInflater().inflate(R.menu.activity_menu_admin_subject_nav, menu);
         return true;
     }
 
@@ -319,16 +374,22 @@ public class AdminActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_add_question:
-                addNewQuiz();
+                addNewQuizDialogue();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void addNewQuiz()
-    {
-
+    public void addNewQuizDialogue(){
+        addQuizMode = !addQuizMode;
+        if(!addQuizMode){
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_control_point_white_24dp, null));
+        }
+        else{
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_white_24dp, null));
+        }
     }
 
 }

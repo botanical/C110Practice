@@ -52,5 +52,7 @@
 
     <string name="action_example">Example action</string>
 
-
+    <!--Edit Quiz Activity Page-->
+    <string name="add_question">Add a question</string>
+    <string name="delete_question">Delete the question</string>
 </resources>

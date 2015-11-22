@@ -37,10 +37,30 @@ public class Quiz {
         }
     }
 
-    public void addQuestion(Question q){
-        questionList.add(q);
+    public void addQuestion(Question q, int id){
+        // Adds question at index
+        questionList.add(id+1, q);
         numQuestions++;
         answers.add(q.getAnswer());
+
+        for (int i = 0; i < numQuestions; i++) {
+            questionList.get(i).setId(i);
+        }
+    }
+
+
+    /* Method name: deleteQuestion
+     * Parameter(s): Question object named q
+     * Description: this method will delete the current question from the quiz
+     *              and make updates to the database accordingly
+     */
+    public void deleteQuestion(int id) {
+        questionList.remove(id);
+        answers.remove(id);
+        numQuestions--;
+        for ( int i = 0; i < numQuestions; i++) {
+            questionList.get(i).setId(i);
+        }
     }
 
    //Setters
