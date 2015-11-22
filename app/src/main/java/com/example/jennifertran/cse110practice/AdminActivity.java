@@ -110,6 +110,8 @@ public class AdminActivity extends AppCompatActivity {
                 }
                 Map<String,List<String>> classChildPairs = new HashMap<>();
 
+
+                //Handle Dynamic Number of Children
                 for (int i = 0; i < jTable.length(); i++) {
                     //
                     List<String> children = new ArrayList<>();
@@ -206,7 +208,6 @@ public class AdminActivity extends AppCompatActivity {
                 navTitle[0] = new FragmentNavigationTitle (R.drawable.ic_answered_question_24px
                         , R.drawable.ic_unviewed_question_24px, "TEST");
         //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
-
         /*
         for (int i = 0; i < questionList.size(); i++) {
             currQuestion = questionList.get(i);
@@ -319,7 +320,18 @@ public class AdminActivity extends AppCompatActivity {
             return true;
         }
 
+        switch (item.getItemId()) {
+            case R.id.action_add_question:
+                addNewQuiz();
+                return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addNewQuiz()
+    {
+
     }
 
 }

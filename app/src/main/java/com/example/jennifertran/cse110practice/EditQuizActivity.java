@@ -483,7 +483,7 @@ public class EditQuizActivity extends AppCompatActivity {
             return true;
         }
 
-        // Activate the navigation drawer toggle
+        // Activate the navigation drawer tonoggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -523,8 +523,10 @@ public class EditQuizActivity extends AppCompatActivity {
     public void addNewQuestion(){
         Question q = new Question();
         q.setId(quiz.getNumQuestions()); //set new question id to last question id plus 1
-
         // Add Radio Buttons to new Question. Default is 2
+
+
+
         ArrayList<RadioButton> rads = new ArrayList<>();
         RadioButton r = new RadioButton(this);
         r.setText("Add an Option!");
@@ -564,19 +566,8 @@ public class EditQuizActivity extends AppCompatActivity {
             textFields.add(e);
         }
         q.setTextFields(textFields);
-
-
-        //Update num cols of all questions if the new question has a greater num cols
-        //Update num cols of new question if new question has fewer num cols
-        if(q.getRadioButtons().size() > quiz.getNumCols())
-        {
-            quiz.setNumCols(q.getRadioButtons().size()); //also sets question.
-        }
-        else
-            q.setNumCols(quiz.getNumCols());
-
-        quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
-        goToQuestion(quiz.getCurrentQuestion().getId()+1); //go to last question.
+        quiz.addQuestion(q);
+        goToQuestion(quiz.getNumQuestions()-1); //go to last question.
         //Add new question to quiz && list of currentquestions
 
     }
@@ -629,7 +620,6 @@ public class EditQuizActivity extends AppCompatActivity {
             String sql = "INSERT INTO "+"`"+title+"` VALUES ";
             for(Question q : questions)
             {
-                System.out.println("Question is " + q.toString());
                 String tmp = sql;
                 tmp += q.toString();
                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
