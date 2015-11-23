@@ -79,7 +79,6 @@ public class EditQuizActivity extends AppCompatActivity {
         /*******************************  Initialize Quiz Object ****************************/
 
         db =  new DbHelperQuiz(this,title,cols);
-        System.out.println("QUESTIONS: "+db.getQuestionsAsQuestionArray());
         quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -129,7 +128,18 @@ public class EditQuizActivity extends AppCompatActivity {
                     EditQuizActivity.this.tempSubmitEdit();
                 }
             });
+
+            EditText sField = new EditText(this);
+            sField.setHint("Solution is: " + q.getSolution());
+            sField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditQuizActivity.this.tempSubmitEdit();
+                }
+            });
+
             q.setQuestionField(qField);
+            q.setSolutionField(sField);
             ArrayList<EditText> fields = new ArrayList<>();
             ArrayList<RadioButton> btns = new ArrayList<>();
             ArrayList<String> opts = q.getOptions();
@@ -168,6 +178,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
         ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
+        grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -271,6 +282,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
         ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
+        grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -317,12 +329,15 @@ public class EditQuizActivity extends AppCompatActivity {
             quiz.getCurrentQuestion().setAnswer(markedRad.getText().toString());
         }
 
-
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-            if (!newQuestion.equals("")) {
+            String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
+
+
+        if (!newQuestion.equals("") && !newSolution.equals("")) {
                 quiz.getCurrentQuestion().setQuestion(newQuestion);
-                textQuestion.setText(newQuestion);
+                quiz.getCurrentQuestion().setSolution(newSolution);
+            textQuestion.setText(newQuestion);
             }
 
             //Set new Question radioButtons
@@ -330,7 +345,7 @@ public class EditQuizActivity extends AppCompatActivity {
             ArrayList<String> butText = new ArrayList<String>();
 
             for (int i = 0; i < r.size(); i++) {
-                butText.add(r.get(i).getText().toString());
+                butText.add(r.get(i).getText().toString()); //get current buttonText
             }
             for (int i = 0; i < r.size(); i++) {
                 String newButtonText = quiz.getCurrentQuestion().getTextFields().get(i).getText().toString();
@@ -502,6 +517,9 @@ public class EditQuizActivity extends AppCompatActivity {
     public void deleteQuestion(int id) {
         if (id == 0 && quiz.getNumQuestions() == 1) {
             addNewQuestion();
+            quiz.deleteQuestion(0);
+            goToQuestion(0);
+
         } else if (id == 0) {
             quiz.deleteQuestion(id);
             goToQuestion(id);
@@ -521,6 +539,7 @@ public class EditQuizActivity extends AppCompatActivity {
         // Add Radio Buttons to new Question. Default is 2
 
 
+
         ArrayList<RadioButton> rads = new ArrayList<>();
         RadioButton r = new RadioButton(this);
         r.setText("Add an Option!");
@@ -528,19 +547,35 @@ public class EditQuizActivity extends AppCompatActivity {
         rads.add(r);
         q.setRadioButtons(rads);
 
+        ArrayList<String> opts = new ArrayList<>();
+        opts.add(r.getText().toString());
+        q.setOptions(opts);
+
         //Add text fields to new Question to match radio buttons.
 
         EditText question = new EditText(this);
-        question.setHint("Add a new Question!");
+        question.setHint("Add a question!");
         question.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 EditQuizActivity.this.tempSubmitEdit();
             }
         });
+        EditText solution = new EditText(this);
+        solution.setHint("Add a solution!");
+        solution.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                EditQuizActivity.this.tempSubmitEdit();
+            }
+        });
 
+        q.setSolutionField(solution);
         q.setQuestionField(question);
-        
+        q.setQuestion("Add a question!");
+
+
+
         ArrayList<EditText> textFields = new ArrayList<>();
         for(int i = 0; i < rads.size(); i++)
         {
@@ -554,12 +589,12 @@ public class EditQuizActivity extends AppCompatActivity {
             });
             textFields.add(e);
         }
+
         q.setTextFields(textFields);
         q.setNumCols(quiz.getNumCols());
         quiz.addQuestion(q, quiz.getCurrentQuestion().getId());
         goToQuestion(quiz.getCurrentQuestion().getId()+1); //go to last question.
         //Add new question to quiz && list of currentquestions
-
     }
 
 
@@ -608,6 +643,7 @@ public class EditQuizActivity extends AppCompatActivity {
 
             //Replace with new quiz
             String sql = "INSERT INTO "+"`"+title+"` VALUES ";
+            //Variable column number already handled by toString of Question
             for(Question q : questions)
             {
                 String tmp = sql;

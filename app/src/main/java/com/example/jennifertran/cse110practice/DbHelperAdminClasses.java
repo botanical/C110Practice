@@ -87,6 +87,8 @@ public class DbHelperAdminClasses extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table, null, null); //Delete entries in old table
+        db.execSQL("DROP TABLE "+table);
+        createTable();
         Iterator<?> keyIt = headerChildPairs.keySet().iterator();
         String currRow;
         List<String> currChildList;

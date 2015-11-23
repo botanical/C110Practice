@@ -48,6 +48,8 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
                 + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
+        //SOLUTION Column is currently included with colQuery
+        //TODO remove solution from colQuery
 
         db.execSQL(sql);
         //db.close()

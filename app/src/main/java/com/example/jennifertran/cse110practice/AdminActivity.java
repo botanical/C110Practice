@@ -49,8 +49,12 @@ public class AdminActivity extends AppCompatActivity {
     String username;
     String loginUrl;
     String newQuiz;
+    String newClass;
+    String selectedClass;
+    String selectedItem;
     final String DEFAULT_TITLE = "Classes";
     boolean addQuizMode = false;
+    boolean deleteMode  = false;
 
 
     final Context context = this;
@@ -87,6 +91,51 @@ public class AdminActivity extends AppCompatActivity {
                 logingOut.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(logingOut);
                 finish();
+            }
+        });
+
+        findViewById(R.id.button_new_class).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                // set title
+                alertDialogBuilder.setTitle("Add New Class");
+                final EditText input = new EditText(AdminActivity.this);
+                input.setHint("Input the name of a new class");
+                alertDialogBuilder.setView(input);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Adding a new class.")
+                        .setCancelable(false)
+                        .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                newClass = input.getText().toString();
+                                new AttemptAddClass().execute();
+
+                                //TODO add yes stuff
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+
+                        });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+
+                /*
+                listAdapter.addHeader("TEST");
+                listAdapter.notifyDataSetChanged(); */
             }
         });
     }
@@ -204,7 +253,8 @@ public class AdminActivity extends AppCompatActivity {
                     // set title
                     alertDialogBuilder.setTitle("Add New Quiz");
                     final EditText input = new EditText(AdminActivity.this);
-                    input.setHint("Input the name of a new class");
+                    selectedClass = (String) listAdapter.getGroup(groupPosition);
+                    input.setHint("Input the name of a new quiz");
                     alertDialogBuilder.setView(input);
 
                     // set dialog message
@@ -216,8 +266,8 @@ public class AdminActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // if this button is clicked, close
                                     // current activity
-                                newQuiz = input.getText().toString();
-
+                                    newQuiz = input.getText().toString();
+                                new AttemptAddQuiz().execute();
 
                                     //TODO add yes stuff
                                 }
@@ -228,6 +278,37 @@ public class AdminActivity extends AppCompatActivity {
                                     // the dialog box and do nothing
                                     dialog.cancel();
                                 }
+
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }else if( deleteMode)
+                {
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    // set title
+                    alertDialogBuilder.setTitle("Deleting Item");
+                    selectedItem = (String) listAdapter.getGroup(groupPosition);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("You are about to delete: \"" +
+                                    listAdapter.getGroup(groupPosition)+"\" ")
+                            .setCancelable(false)
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //deleteSelectedItem
+                                    //new AttemptDeleteItem().execute();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+
                             });
 
                     // create alert dialog
@@ -362,7 +443,7 @@ public class AdminActivity extends AppCompatActivity {
     /* Used for Inflating Activity Bar if Items are present */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_menu_admin_subject_nav, menu);
+        getMenuInflater().inflate(R.menu.activity_edit_quiz, menu);
         return true;
     }
 
@@ -388,12 +469,21 @@ public class AdminActivity extends AppCompatActivity {
             case R.id.action_add_question:
                 addNewQuizDialogue();
                 return true;
+            case R.id.action_delete_question:
+                deleteClassOrQuizDialogue();
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);
     }
     public void addNewQuizDialogue(){
-        addQuizMode = !addQuizMode;
+        if(!deleteMode) {
+            addQuizMode = !addQuizMode;
+        }
+        else{
+            Toast.makeText(this, "Tap the stop sign to exit delete mode.", Toast.LENGTH_SHORT).show();
+        }
         if(!addQuizMode){
             ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
             addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_white_48dp, null));
@@ -401,8 +491,211 @@ public class AdminActivity extends AppCompatActivity {
         else{
             ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_add_question);
             addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_white_48dp, null));
-            Toast.makeText(this, "Select a class you want to add a quiz to.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Tap a class you want to add a quiz to.", Toast.LENGTH_SHORT).show();
         }
     }
 
+    public void deleteClassOrQuizDialogue(){
+        if(!addQuizMode) {
+            deleteMode = !deleteMode;
+        }
+        else{
+            Toast.makeText(this, "Tap the X to exit add quiz mode.", Toast.LENGTH_SHORT).show();
+        }
+        if(!deleteMode){
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_delete_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete_white_48dp, null));
+        }
+        else{
+            ActionMenuItemView addQuizButton  = (ActionMenuItemView)findViewById(R.id.action_delete_question);
+            addQuizButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_remove_circle_white_48dp, null));
+            Toast.makeText(this, "Select a class or quiz you would like to delete.", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    class AttemptAddQuiz extends AsyncTask<String, String, String>{
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog = new ProgressDialog(AdminActivity.this);
+            pDialog.setMessage("Adding Quiz");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            RemoteDBHelper remDb = new RemoteDBHelper();
+            String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                    "SELECT * FROM "+username+"Classes WHERE class='"+selectedClass+"'",
+                    loginUrl);
+            try {
+                JSONArray jTable = new JSONArray(table);
+                JSONObject currRow;
+                List<String> columns = new ArrayList<>();
+                currRow = jTable.getJSONObject(0);
+                Iterator<?> keyIt = currRow.keys();
+                String colString="";
+                int numColsFilled = 0;
+                while(keyIt.hasNext()) //get column names for new local database
+                {
+                    String n = (String) keyIt.next();
+                    String nEntry = (String) currRow.get(n);
+                    //Add all child columns to columns
+
+                    if((!n.equals("class")) && (!n.equals("indexer"))) {
+                        columns.add(n);
+                        colString += "'',";
+                        if(!nEntry.equals(""))
+                        {
+                            numColsFilled++;
+                        }
+                    }
+                }
+
+                int numColsLeft = columns.size() - numColsFilled;
+
+                System.out.println("COLUMNS: "+columns.size());
+                System.out.println("NUMCOLSLEFT: "+numColsLeft);
+                System.out.println("NUMCOLSFILLED: "+numColsFilled);
+
+
+                //If we need another column in order for the current row to hold a new quiz, add
+                //a new column.
+                if(numColsLeft == 0)
+                {
+
+                    //Add new Column
+                    String addColQuery =
+                            "ALTER TABLE `"+username+"Classes` ADD child"+
+                                    columns.size()+" TEXT AFTER child"+(columns.size()-1);
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            addColQuery,
+                            loginUrl);
+
+                    //Update value of new column in selectedClass to newQuiz
+                    String updateColQuery = "UPDATE `" + username
+                            + "Classes` SET child"+columns.size()+"='"+newQuiz+
+                            "' WHERE class='"+selectedClass+"'";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            updateColQuery, loginUrl);
+
+                    //Update value of new column in NOT selectedClass to ''
+                    String updateRestOfColumnsToEmpty = "UPDATE `" + username
+                            + "Classes` SET child"+columns.size()+ "='' " +
+                            "WHERE class<>'"+selectedClass+"'"; //<> equals !=
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            updateRestOfColumnsToEmpty, loginUrl);
+
+
+                }else
+                {
+                    //Update column which already exists in selectedClass to newQuiz
+                    String addToColQuery = "UPDATE `" + username
+                            + "Classes` SET child"+(numColsFilled)+"='"+newQuiz+"' " +
+                            "WHERE class='"+selectedClass+"'";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            addToColQuery, loginUrl);
+
+                }
+
+                String testIfExistsTable = "SELECT * FROM `"+newQuiz+"`";
+                String newQuizExists = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        testIfExistsTable,
+                        loginUrl);
+                if(newQuizExists.equals("")) //newQuizExists == "" if newQuiz didn't exist
+                {
+                    //Create a quiz which supports by default, 3 radio buttons.
+                    String createQuizStr = "CREATE TABLE IF NOT EXISTS `" + newQuiz + "` " +
+                            "( id INTEGER, question TEXT, answer TEXT, " +
+                            "option0 TEXT, solution TEXT, " +
+                            "marked VARCHAR(50) )";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            createQuizStr,
+                            loginUrl);
+
+                    //TODO Doesn't currently create default question
+                    //Create a default question in the form:
+                    //(id, question, answer, option0, option1, option2, solution, marked)
+                    String createDefault = "INSERT INTO `"+newQuiz+"` VALUES ('0', 'Add a question!'," +
+                            "'','Add an option!', 'Add a solution!', '')";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            createDefault,
+                            loginUrl);
+
+                }
+
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String message){
+            if(pDialog != null && pDialog.isShowing())
+                pDialog.dismiss();
+
+            new AttemptUpdateClasses().execute();
+        }
+
+
+    }
+
+    class AttemptAddClass extends AsyncTask<String, String, String>{
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog = new ProgressDialog(AdminActivity.this);
+            pDialog.setMessage("Adding Quiz");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            RemoteDBHelper remDb = new RemoteDBHelper();
+            String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                    "SELECT * FROM "+username+"Classes",
+                    loginUrl);
+            try {
+                JSONArray jTable = new JSONArray(table);
+                JSONObject currRow;
+                List<String> columns = new ArrayList<>();
+                currRow = jTable.getJSONObject(0);
+                Iterator<?> keyIt = currRow.keys();
+                String colString="";
+                while(keyIt.hasNext()) //get column names for new local database
+                {
+                    String n = (String) keyIt.next();
+
+                    //Add all child columns to columns
+                    if((!n.equals("class")) && (!n.equals("indexer"))) {
+                        columns.add(n);
+                        colString += "'',";
+                    }
+                }
+                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "INSERT INTO `" + username + "Classes` VALUES ( '"+newClass+"', "+colString+" '')",
+                        loginUrl);
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String message){
+            if(pDialog != null && pDialog.isShowing())
+                pDialog.dismiss();
+
+            new AttemptUpdateClasses().execute();
+        }
+    }
 }

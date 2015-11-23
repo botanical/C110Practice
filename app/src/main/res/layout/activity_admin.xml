@@ -5,41 +5,62 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-      <TextView
-          android:id="@+id/textView1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:background="@android:color/black"
-          android:padding="10dp"
-          android:text="Admin's Subject Navigator!"
-          android:textColor="@android:color/white"
-          android:textSize="22sp" />
-    <ExpandableListView
-        android:id="@+id/expListAdmin"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        >
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/black"
+            android:padding="10dp"
+            android:text="Admin's Subject Navigator!"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+        <ExpandableListView
+            android:id="@+id/expListAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
 
-    </ExpandableListView>
-      <Button
-          android:id="@+id/logout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="LOGOUT"
-          android:textColor="@color/quiz_button_color"
-          android:textSize="20dp"
-          android:background="@color/quiz_next_button_color"
-          android:weightSum="0.5"
-          android:layout_gravity="bottom"
-          android:layout_weight="0"
-          />
-  </LinearLayout>
+        </ExpandableListView>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <View android:id="@+id/fakeView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"/>
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOGOUT"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_next_button_color"
+                android:weightSum="0.5"
+                android:layout_alignRight="@id/fakeView"
+                android:layout_alignParentLeft="true"
+                />
+            <Button
+                android:id="@+id/button_new_class"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NEW CLASS"
+                android:textSize="20dp"
+                android:textColor="@color/quiz_button_color"
+                android:background="@color/quiz_submit_button_color"
+                android:weightSum="0.5"
+                android:layout_alignLeft="@id/fakeView"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+    </LinearLayout>
     <ListView
         android:id="@+id/navList"
         android:layout_width="200dp"

@@ -107,7 +107,12 @@ public class LoginActivity extends AppCompatActivity {
                     else{
 
                         JSONObject args = new JSONObject(message);
-                        if(args.getString("is_admin").equals(String.valueOf(1))) //isAdmin
+                        if(args.getString("username").equals(""))
+                        {
+                            Toast.makeText(LoginActivity.this,"Please enter your username.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else if(args.getString("is_admin").equals(String.valueOf(1))) //isAdmin
                         {
                             if(args.getString("username").equals(username) &&
                                     args.getString("password").equals(password)) {

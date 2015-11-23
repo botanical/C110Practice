@@ -38,19 +38,18 @@
             android:layout_weight="1.48" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="@android:dimen/thumbnail_width"
+            android:layout_height="120dp"
 
-            android:layout_weight="5"
-            android:src="@mipmap/ross"
-            android:scaleType="fitCenter"/>
+            android:src="@drawable/ross"
+            android:scaleType="fitCenter" />
 
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
 
-            android:layout_weight=".75" />
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -62,6 +61,13 @@
             android:textSize="@dimen/login_page_title_text_size"
             android:textColor="@color/login_page_fg"
             android:text="@string/app_name" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:background="@color/login_page_bg"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -126,12 +132,6 @@
             android:textColor="@color/app_text"
 
             />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:background="@color/login_page_bg"
-            />
     </LinearLayout>
 
     <LinearLayout android:id="@+id/login_page_login_button"
@@ -192,13 +192,14 @@
 
         android:orientation="horizontal"
 
-        android:background="@color/app_button_bg">
+        android:background="#00a9d6">
 
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
 
-            android:layout_weight="8.5" />
+            android:layout_weight="8.5"
+            android:background="#00a9d6" />
 
         <TextView
             android:layout_width="0dp"
@@ -208,28 +209,21 @@
 
             android:gravity="center"
             android:textSize="@dimen/app_button_text_size"
-            android:textColor="@color/app_text"
-            android:text="@string/login_page_register_button_text" />
+            android:textColor="#ffffff"
+            android:text="@string/login_page_register_button_text"
+            android:background="#00a9d6" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-
-            android:layout_weight="0.7"
-
-            android:scaleType="center"
-
-            android:src="@drawable/ic_keyboard_arrow_right_white_24dp" />
+            android:layout_weight="1"
+            android:background="#00a9d6" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6.5" />
+            android:layout_weight="6.5"
+            android:background="#00a9d6" />
 
     </LinearLayout>
 

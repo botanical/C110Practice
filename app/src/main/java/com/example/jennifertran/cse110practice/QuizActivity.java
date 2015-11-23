@@ -33,7 +33,6 @@ public class QuizActivity extends AppCompatActivity {
     static CountDownTimer timer;
     int numOfQuestions;
     ArrayList<String> yourAnswers;
-    ArrayList<String> correctAnswers;
     ArrayList<String> questionText;
 
     List<Question> question_list;
@@ -101,15 +100,15 @@ public class QuizActivity extends AppCompatActivity {
 
         db =  new DbHelperQuiz(this,title,cols);
         quiz = new Quiz(title, db.getQuestionsAsQuestionArray(), db.rowcount());
-        question_list = quiz.getQuestions();
-        correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
-        numOfQuestions = quiz.getNumQuestions();
-        quiz.setCurrentQuestion(question_list.get(question_id));
-        answerScore = new int[numOfQuestions];
+        //question_list = quiz.getQuestions();
+        //correctAnswers = quiz.getAnswers(); //Ex. Answer to question 1 = correctAnswers.get(0);
+        //numOfQuestions = quiz.getNumQuestions();
+        quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
+        answerScore = new int[quiz.getNumQuestions()];
 
         questionText = new ArrayList<>();
-        for(int i = 0; i < question_list.size();++i){
-            questionText.add(question_list.get(i).getQuestion());
+        for(int i = 0; i < quiz.getNumQuestions();++i){
+            questionText.add(quiz.getQuestions().get(i).getQuestion());
         }
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  Initialize Quiz Object ^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -133,7 +132,7 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         yourAnswers = new ArrayList<>();
-        for(int i = 0; i < numOfQuestions; i++)
+        for(int i = 0; i < quiz.getNumQuestions(); i++)
             yourAnswers.add("INCOMPLETE");
 
         /***************************** Initialize Radio Buttons *****************************/
@@ -159,7 +158,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
             }
         });
-        for(Question q : question_list)
+        for(Question q : quiz.getQuestions())
         {
             ArrayList<RadioButton> btns = new ArrayList<>();
             ArrayList<String> opts = q.getOptions();
@@ -176,7 +175,7 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         /* Set Radio Buttons for first page */
-        for(RadioButton r : question_list.get(0).getRadioButtons())
+        for(RadioButton r : quiz.getQuestions().get(0).getRadioButtons())
                 grp.addView(r);
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initialize Radio Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -201,7 +200,7 @@ public class QuizActivity extends AppCompatActivity {
         submit = (Button)findViewById(R.id.button_submit);
         if(isTaken)
             submit.setText("RETURN");
-        if(numOfQuestions == 1)
+        if(quiz.getNumQuestions() == 1)
             submit.setVisibility(View.VISIBLE);
         else
             submit.setVisibility(View.GONE);
@@ -300,9 +299,9 @@ public class QuizActivity extends AppCompatActivity {
                     Bundle b = new Bundle();
 
                     b.putInt("score", score); //Your score
-                    b.putInt("numOfQuestions", numOfQuestions);
+                    b.putInt("numOfQuestions", quiz.getNumQuestions());
 
-                    b.putStringArrayList("correctAnswers", correctAnswers);
+                    b.putStringArrayList("correctAnswers", quiz.getAnswers());
                     b.putStringArrayList("yourAnswers", yourAnswers);
                     b.putStringArrayList("questionText", questionText);
                     intent.putExtras(b); //Put your score to your next Intent
@@ -321,8 +320,8 @@ public class QuizActivity extends AppCompatActivity {
             Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
             Bundle b = new Bundle();
             b.putInt("score", score); //Your score
-            b.putInt("numOfQuestions", numOfQuestions);
-            b.putStringArrayList("correctAnswers", correctAnswers);
+            b.putInt("numOfQuestions", quiz.getNumQuestions());
+            b.putStringArrayList("correctAnswers", quiz.getAnswers());
             b.putStringArrayList("yourAnswers", yourAnswers);
             b.putStringArrayList("questionText", questionText);
 
@@ -337,7 +336,7 @@ public class QuizActivity extends AppCompatActivity {
             for (int i = 0; i < yourAnswers.size(); i++) {
                 ArrayList<String> row = new ArrayList<>();
                 row.add(String.valueOf(i));
-                row.add(question_list.get(i).getQuestion());
+                row.add(quiz.getQuestions().get(i).getQuestion());
                 row.add(yourAnswers.get(i));
                 row.add(String.valueOf(answerScore[i]));
                 responses.add(row);
@@ -361,23 +360,23 @@ public class QuizActivity extends AppCompatActivity {
         question_id = num ;
 
 
-        quiz.setCurrentQuestion(question_list.get(question_id));
+        quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
         grp.removeAllViews();
         for(RadioButton r : quiz.getCurrentQuestion().getRadioButtons()) {
             grp.addView(r);
         }
 
-        if (numOfQuestions == 1)
+        if (quiz.getNumQuestions() == 1)
         {
             back_button.setVisibility(View.GONE);
             next_button.setVisibility(View.GONE);
             submit.setVisibility(View.VISIBLE);
         }
-        else if (question_id == 0) {
+        else if (quiz.getCurrentQuestion().getId() == 0) {
             back_button.setVisibility(View.GONE);
             submit.setVisibility(View.GONE);
             next_button.setVisibility(View.VISIBLE);
-        }else if (question_id == numOfQuestions-1) { //numofq used to be 4
+        }else if (quiz.getCurrentQuestion().getId() == quiz.getNumQuestions()-1) { //numofq used to be 4
             submit.setVisibility(View.VISIBLE);
             next_button.setVisibility(View.GONE);
             back_button.setVisibility(View.VISIBLE);
@@ -412,7 +411,7 @@ public class QuizActivity extends AppCompatActivity {
     private void setQuestionView()
     {
         textQuestion.setText(quiz.getCurrentQuestion().getQuestion());
-        qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(numOfQuestions);
+        qid = "Question: " + String.valueOf(question_id + 1) + "/" + String.valueOf(quiz.getNumQuestions());
         getSupportActionBar().setTitle(qid);
     }
 
@@ -428,7 +427,7 @@ public class QuizActivity extends AppCompatActivity {
         //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
 
 
-        for (int i = 0; i < questionList.size(); i++) {
+        for (int i = 0; i < quiz.getNumQuestions(); i++) {
             currQuestion = questionList.get(i);
                                                             //Add 1 to zero indexed question number
             //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
@@ -491,7 +490,7 @@ public class QuizActivity extends AppCompatActivity {
                 super.onDrawerClosed(view);
                 if(getSupportActionBar() != null) {
                     getSupportActionBar().setTitle("Question: " + String.valueOf(question_id + 1)
-                            + "/" + String.valueOf(numOfQuestions));
+                            + "/" + String.valueOf(quiz.getNumQuestions()));
                 }
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
