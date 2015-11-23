@@ -55,6 +55,8 @@ public class AdminActivity extends AppCompatActivity {
     final String DEFAULT_TITLE = "Classes";
     boolean addQuizMode = false;
     boolean deleteMode  = false;
+    boolean deleteClass = false;
+    boolean deleteQuiz = false;
 
 
     final Context context = this;
@@ -289,7 +291,7 @@ public class AdminActivity extends AppCompatActivity {
                 {
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     // set title
-                    alertDialogBuilder.setTitle("Deleting Item");
+                    alertDialogBuilder.setTitle("Deleting Class");
                     selectedItem = (String) listAdapter.getGroup(groupPosition);
                     // set dialog message
                     alertDialogBuilder
@@ -298,8 +300,8 @@ public class AdminActivity extends AppCompatActivity {
                             .setCancelable(false)
                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    //deleteSelectedItem
-                                    //new AttemptDeleteItem().execute();
+                                    deleteClass = true;
+                                    new AttemptDeleteItem().execute();
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -327,15 +329,47 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
+                if (deleteMode) {
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    // set title
+                    alertDialogBuilder.setTitle("Deleting Quiz");
+                    selectedItem = (String) listAdapter.getGroup(groupPosition);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("You are about to delete: \"" +
+                                    listAdapter.getGroup(groupPosition) + "\" ")
+                            .setCancelable(false)
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //deleteSelectedItem
+                                    deleteQuiz = true;
+                                    new AttemptDeleteItem().execute();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
 
-                // sending intent to Startup Page
-                Intent intent = new Intent(getApplicationContext(), AdminStartupPageActivity.class);
-                String subject = listDataClass.get(groupPosition);
-                String classTitle = listDataChild.get(listDataClass.get(groupPosition)).get(childPosition);
+                            });
 
-                intent.putExtra("title", classTitle);
-                intent.putExtra("username", username);
-                startActivity(intent);
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                } else {
+
+                    // sending intent to Startup Page
+                    Intent intent = new Intent(getApplicationContext(), AdminStartupPageActivity.class);
+                    String subject = listDataClass.get(groupPosition);
+                    String classTitle = listDataChild.get(listDataClass.get(groupPosition)).get(childPosition);
+
+                    intent.putExtra("title", classTitle);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                }
                 return false;
             }
         });
@@ -698,4 +732,73 @@ public class AdminActivity extends AppCompatActivity {
             new AttemptUpdateClasses().execute();
         }
     }
+
+    class AttemptDeleteItem extends AsyncTask<String, String, String>
+    {
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog = new ProgressDialog(AdminActivity.this);
+            if(deleteClass)
+                pDialog.setMessage("Deleting Class....");
+            else
+                pDialog.setMessage("Deleting Quiz....");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            RemoteDBHelper remDb = new RemoteDBHelper();
+            if(deleteClass) {
+            }
+
+            String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                    "SELECT * FROM "+username+"Classes",
+                    loginUrl);
+
+
+
+
+
+
+
+            try {
+                JSONArray jTable = new JSONArray(table);
+                JSONObject currRow;
+                List<String> columns = new ArrayList<>();
+                currRow = jTable.getJSONObject(0);
+                Iterator<?> keyIt = currRow.keys();
+                String colString="";
+                while(keyIt.hasNext()) //get column names for new local database
+                {
+                    String n = (String) keyIt.next();
+
+                    //Add all child columns to columns
+                    if((!n.equals("class")) && (!n.equals("indexer"))) {
+                        columns.add(n);
+                        colString += "'',";
+                    }
+                }
+                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        "INSERT INTO `" + username + "Classes` VALUES ( '"+newClass+"', "+colString+" '')",
+                        loginUrl);
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(String message){
+            if(pDialog != null && pDialog.isShowing())
+                pDialog.dismiss();
+            deleteClass = false;
+            deleteQuiz  = false;
+            new AttemptUpdateClasses().execute();
+        }
+    }
+
 }
