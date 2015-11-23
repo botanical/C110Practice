@@ -122,13 +122,24 @@ public class EditQuizActivity extends AppCompatActivity {
         {
             EditText qField = new EditText(this);
             qField.setHint(q.getQuestion());
-            qField.setOnFocusChangeListener( new View.OnFocusChangeListener() {
+            qField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     EditQuizActivity.this.tempSubmitEdit();
                 }
             });
+
+            EditText sField = new EditText(this);
+            sField.setHint("Solution is: " + q.getSolution());
+            sField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditQuizActivity.this.tempSubmitEdit();
+                }
+            });
+
             q.setQuestionField(qField);
+            q.setSolutionField(sField);
             ArrayList<EditText> fields = new ArrayList<>();
             ArrayList<RadioButton> btns = new ArrayList<>();
             ArrayList<String> opts = q.getOptions();
@@ -167,6 +178,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
         ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
+        grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -270,6 +282,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
         ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
+        grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -319,9 +332,16 @@ public class EditQuizActivity extends AppCompatActivity {
 
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-            if (!newQuestion.equals("")) {
+            String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
+
+
+        if (!newQuestion.equals("") && !newSolution.equals("")) {
                 quiz.getCurrentQuestion().setQuestion(newQuestion);
-                textQuestion.setText(newQuestion);
+                quiz.getCurrentQuestion().setSolution(newSolution);
+            System.out.println("New q is :" + quiz.getCurrentQuestion().getQuestionField().getText().toString());
+            System.out.println("New Solution is :" + quiz.getCurrentQuestion().getSolutionField().getText().toString());
+            System.out.println("The set solution sets : " + quiz.getCurrentQuestion().getSolution());
+            textQuestion.setText(newQuestion);
             }
 
             //Set new Question radioButtons
@@ -537,9 +557,18 @@ public class EditQuizActivity extends AppCompatActivity {
                 EditQuizActivity.this.tempSubmitEdit();
             }
         });
+        EditText solution = new EditText(this);
+        solution.setHint("Add a solution!");
+        solution.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                EditQuizActivity.this.tempSubmitEdit();
+            }
+        });
+
 
         q.setQuestionField(question);
-        
+        q.setSolutionField(solution);
         ArrayList<EditText> textFields = new ArrayList<>();
         for(int i = 0; i < rads.size(); i++)
         {
@@ -611,6 +640,7 @@ public class EditQuizActivity extends AppCompatActivity {
             {
                 String tmp = sql;
                 tmp += q.toString();
+                System.out.println("tmp is : " + tmp);
                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                        tmp, loginUrl);
             }

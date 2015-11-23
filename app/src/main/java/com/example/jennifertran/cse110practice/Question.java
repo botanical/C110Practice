@@ -13,7 +13,7 @@ public class Question {
     private String question;
     private ArrayList<String> options;
     private ArrayList<RadioButton> radioButtons;
-    private EditText questionField;
+    private EditText questionField, solutionField;
     private ArrayList<EditText> textFields;
     private String answer;
     private int marked;
@@ -58,6 +58,7 @@ public class Question {
     public ArrayList<String> getOptions() { return this.options; }
     public ArrayList<RadioButton> getRadioButtons() { return this.radioButtons; }
     public EditText getQuestionField() { return this.questionField;}
+    public EditText getSolutionField() { return this.solutionField;}
     public ArrayList<EditText> getTextFields() { return this.textFields; }
     public String getAnswer() {
         return answer;
@@ -66,7 +67,7 @@ public class Question {
         return marked;
     }
     public boolean getViewed() { return viewed; }
-    public String getSolution() { return this.solution; }
+    public String getSolution() { return solution; }
     public void setId(int id)
     {
         this.id=id;
@@ -81,6 +82,7 @@ public class Question {
         this.radioButtons = radioButtons;
     }
     public void setQuestionField(EditText questionField) { this.questionField = questionField;}
+    public void setSolutionField(EditText solutionField) { this.solutionField = solutionField;}
     public void setTextFields(ArrayList<EditText> textFields) { this.textFields = textFields;}
     public void setAnswer(String answer) {
         this.answer = answer;
@@ -127,7 +129,7 @@ public class Question {
         }
 
         return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
-                cols +"'"+this.getMarked() + "', '"+this.getSolution()+"' )";
+                cols +"'" +this.getSolution()+ "', '"+this.getMarked()+"' )";
     }
 
 
