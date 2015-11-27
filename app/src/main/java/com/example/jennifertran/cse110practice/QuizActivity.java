@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -166,6 +167,7 @@ public class QuizActivity extends AppCompatActivity {
                 if(opts.get(i) != null && (!opts.get(i).equals(""))) {
                     RadioButton b = new RadioButton(this);
                     b.setText(opts.get(i));
+                    b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                     b.setId(View.generateViewId()); //Generate id for the radioButton
                     btns.add(b);
                 }

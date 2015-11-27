@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:text="Solution: "
                 android:id="@+id/solution"
-                android:layout_weight="0.09"
+                android:layout_weight="0.03"
 
                 android:background="#CCCCCC"
                 android:gravity="center"
