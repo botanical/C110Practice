@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/mainSubNav">
+
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
@@ -23,17 +27,47 @@
 
     </ExpandableListView>
     <Button
-        android:id="@+id/logout"
+        android:id="@+id/removeClass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LOGOUT"
-        android:textColor="@color/quiz_button_color"
+        android:text="REMOVE A CLASS"
         android:textSize="20dp"
-        android:background="@color/quiz_next_button_color"
-        android:weightSum="0.5"
-        android:layout_gravity="bottom"
-        android:layout_weight="0"
-        />
+        android:textColor="@color/quiz_button_color"
+        android:background="@color/quiz_submit_button_color"
+        android:weightSum="0.5"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <View android:id="@+id/fakeView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"/>
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LOGOUT"
+            android:textColor="@color/quiz_button_color"
+            android:textSize="20dp"
+            android:background="@color/quiz_next_button_color"
+            android:weightSum="0.5"
+            android:layout_alignRight="@id/fakeView"
+            android:layout_alignParentLeft="true"
+            />
+        <Button
+            android:id="@+id/addClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD NEW CLASS"
+            android:textSize="20dp"
+            android:textColor="@color/quiz_button_color"
+            android:background="@color/quiz_submit_button_color"
+            android:weightSum="0.5"
+            android:layout_alignLeft="@id/fakeView"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

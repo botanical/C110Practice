@@ -51,7 +51,6 @@ public class QuizActivity extends AppCompatActivity {
     String username;
     ArrayList<ArrayList<String>> response;
 
-
     RadioGroup grp;
     DbHelperQuiz db;
     int marked;

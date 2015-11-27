@@ -41,4 +41,36 @@ public class RemoteDBHelper {
         }
         return null;
     }
+
+    /*In a table which has a dynamic number of columns, findIndexOfEntry finds the index of a given
+     *entry where the index begins at the first of the dynamic columns.
+     *Example: Table = (question, answer, option0, option1, option2, option3, userSelectedAnswer)
+     * The function searches through the option entries looking for the given entry in a given row
+     * So if for the given row option1=entry, the function returns 1;
+     */
+
+    public int findIndexOfEntry(String table, String entry, String uniqueColumnValue, String uniqueColumn,
+                                String variableColumnPrefix,
+                                String auth, String url)
+    {
+        String wTable = "`"+table+"`";
+        String query = "SELECT * FROM "+wTable+" WHERE "+uniqueColumn+"='"+uniqueColumnValue+"'";
+        String result = queryRemote(auth,query,url);
+        try{
+            JSONArray resultTable = new JSONArray(result);
+            JSONObject row = resultTable.getJSONObject(0);
+            for(int i = 0; i < row.length(); i++){
+                String tmpEntry = row.getString((variableColumnPrefix+i));
+                if(tmpEntry != null && tmpEntry.equals(entry))
+                {
+                    return i;
+                };
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return -1; //if entry doesn't exist
+    }
 }

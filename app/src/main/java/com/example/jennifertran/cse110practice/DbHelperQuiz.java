@@ -47,8 +47,10 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
+                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT)";
         //SOLUTION Column is currently included with colQuery
+        System.out.println("ONCREATE QUERY: "+sql);
+
         //TODO remove solution from colQuery
 
         db.execSQL(sql);
@@ -73,8 +75,11 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         //db.delete(table, null, null); //Delete entries in old table
         db.execSQL("DROP TABLE " + table);
         createTable();
+        System.out.println("TABLE: " + table);
+        System.out.println("DATABASE: ");
         Cursor cur = db.rawQuery("SELECT * FROM "+table,null);
         DatabaseUtils.dumpCursor(cur);
+
 
         Iterator<?> keyIt = questOpPairs.keySet().iterator();
         String currRow;
@@ -101,6 +106,10 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             colValuePairs.put("solution", solution);
             db.insert(table, null, colValuePairs);
         }
+        System.out.println("TABLE: "+table);
+        System.out.println("DATABASE AFTER: ");
+        cur = db.rawQuery("SELECT * FROM "+table,null);
+        DatabaseUtils.dumpCursor(cur);
         //db.close();
     }
 
@@ -114,7 +123,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT )";
+                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
 
         System.out.println("CREATE TABLE QUERY "+sql);
         SQLiteDatabase db = this.getWritableDatabase();

@@ -94,7 +94,7 @@ public class AdminStartupPageActivity extends AppCompatActivity {
 
                     //Add all child columns to columns
                     if((!n.equals("id")) && (!n.equals("question")) && (!n.equals("answer")) &&
-                            !n.equals("marked"))
+                            !n.equals("marked") && !n.equals("solution"))
                         columns.add(n);
                 }
 
@@ -115,11 +115,16 @@ public class AdminStartupPageActivity extends AppCompatActivity {
                     currRow.remove("question");
                     currRow.remove("answer");
                     currRow.remove("marked");
+                    String solution = currRow.getString("solution");
+                    currRow.remove("solution");
                     keyIt = currRow.keys();
                     while(keyIt.hasNext())
                     {
                         options.add(currRow.getString((String) keyIt.next()));
+
                     }
+                    System.out.println("options "+options);
+                    options.add(solution);
                     options.add(String.valueOf(marked)); //Put indexer as last child.
                     questOpPairs.put(id, new Pair<>(quesAns ,options));
                 }
@@ -132,7 +137,7 @@ public class AdminStartupPageActivity extends AppCompatActivity {
                 DbHelperQuiz db = new DbHelperQuiz(AdminStartupPageActivity.this, title,columns);
                 db.createTable();
                 db.upgradeQuiz(questOpPairs); //store subNav.db locally
-
+                System.out.println("questOPPAIRS "+questOpPairs);
 
             }catch(Exception e){
                 e.printStackTrace();

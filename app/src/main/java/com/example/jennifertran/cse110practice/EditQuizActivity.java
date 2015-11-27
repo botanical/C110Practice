@@ -178,7 +178,8 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
         ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
-        grp.addView(quiz.getCurrentQuestion().getSolutionField());
+        //TODO fix solutionfield null pointer exception
+       // grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -186,8 +187,6 @@ public class EditQuizActivity extends AppCompatActivity {
         grp.check(quiz.getCurrentQuestion().getMarked());
 
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^ Initialize Radio Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-
-
 
 
         // Set up question on page
@@ -282,7 +281,7 @@ public class EditQuizActivity extends AppCompatActivity {
         ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
         ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
-        grp.addView(quiz.getCurrentQuestion().getSolutionField());
+        //grp.addView(quiz.getCurrentQuestion().getSolutionField());
         for(int i = 0; i < btns.size(); i++) {
             grp.addView(btns.get(i));
             editGrp.addView(fields.get(i));
@@ -334,13 +333,19 @@ public class EditQuizActivity extends AppCompatActivity {
             String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
 
 
-        if (!newQuestion.equals("") && !newSolution.equals("")) {
+            System.out.println("NEW SOLUTION " + newSolution);
+        if (!newQuestion.equals("")) {
                 quiz.getCurrentQuestion().setQuestion(newQuestion);
-                quiz.getCurrentQuestion().setSolution(newSolution);
-            textQuestion.setText(newQuestion);
+                textQuestion.setText(newQuestion);
             }
+        if(!newSolution.equals("")) {
+            quiz.getCurrentQuestion().setSolution(newSolution);
+            System.out.println("solution in Q " + quiz.getCurrentQuestion().getSolution());
 
-            //Set new Question radioButtons
+        }
+
+
+        //Set new Question radioButtons
             ArrayList<RadioButton> r = quiz.getCurrentQuestion().getRadioButtons();
             ArrayList<String> butText = new ArrayList<String>();
 
@@ -570,7 +575,7 @@ public class EditQuizActivity extends AppCompatActivity {
             }
         });
 
-        q.setSolutionField(solution);
+
         q.setQuestionField(question);
         q.setQuestion("Add a question!");
 
