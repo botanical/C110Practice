@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
     ProgressDialog pDialog;
@@ -43,10 +45,19 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 username = usernameE.getText().toString();
-                password = passwordE.getText().toString();
-                company  = companyE.getText().toString();
-                email    = emailE.getText().toString();
-                new AttemptRegister().execute();
+                Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                Matcher m = p.matcher(username);
+                if(m.find()) {
+                    Toast.makeText(RegisterActivity.this,
+                            "Username: \"" + username + "\" can't contain punctuation. ",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    password = passwordE.getText().toString();
+                    company = companyE.getText().toString();
+                    email = emailE.getText().toString();
+                    new AttemptRegister().execute();
+                }
             }
         });
      }
