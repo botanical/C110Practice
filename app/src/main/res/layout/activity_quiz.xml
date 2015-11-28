@@ -23,7 +23,8 @@
             android:text="Time Remaining"
             android:id="@+id/textViewTimer"
             android:layout_gravity="top|right"
-            android:layout_weight="0.03" />
+            android:layout_weight="0.03"
+            android:paddingRight="10dp" />
 
         <TextView
             android:id="@+id/textView1"
