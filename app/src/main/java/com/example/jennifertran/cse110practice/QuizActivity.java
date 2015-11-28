@@ -83,7 +83,7 @@ public class QuizActivity extends AppCompatActivity {
         username = intentReceived.getStringExtra("username");
         isTaken = intentReceived.getBooleanExtra("isTaken", false);
         if(isTaken)
-            textViewTime.setVisibility(View.GONE);
+            textViewTime.setText("");
 
 
         /* Get list of columns from previous activity where the quiz was updated */
@@ -141,6 +141,7 @@ public class QuizActivity extends AppCompatActivity {
         grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(!isTaken) {
+
                     RadioButton r = (RadioButton) findViewById(checkedId);
                     if (r == null)
                         return;

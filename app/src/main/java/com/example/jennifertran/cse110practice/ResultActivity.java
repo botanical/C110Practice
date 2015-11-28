@@ -66,6 +66,7 @@ public class ResultActivity extends AppCompatActivity{
             yourAnswerEntry.image = headerEntry.image;
 
             answerEntry.TextEntry = "Answer: " + answers.get(i);
+
             yourAnswerEntry.TextEntry = "Your Answer: " + yourAnswers.get(i);
 
             ArrayList<ELAEntry> childList = new ArrayList<>();
