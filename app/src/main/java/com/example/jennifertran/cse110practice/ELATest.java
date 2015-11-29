@@ -47,6 +47,7 @@ public class ELATest extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView) convertView
                 .findViewById(R.id.lblListItem);
         txtListChild.setText(entry.TextEntry);
+        txtListChild.setTextSize(20);
 /*
         convertView.setBackgroundColor(entry.color);
 

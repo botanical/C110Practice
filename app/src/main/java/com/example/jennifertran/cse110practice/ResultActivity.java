@@ -49,7 +49,7 @@ public class ResultActivity extends AppCompatActivity{
                 entry.image = "xmark";
             }
             else{
-                entry.color = Color.parseColor("#CCFFCC");
+                entry.color = Color.parseColor("#FF41B124");
                 entry.image = "checkmark";
             }
             entry.TextEntry = "   "+questionText.get(i);
