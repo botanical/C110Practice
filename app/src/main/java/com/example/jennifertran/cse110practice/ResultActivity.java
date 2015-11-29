@@ -45,7 +45,8 @@ public class ResultActivity extends AppCompatActivity{
                 entry.image = "quesmark";
             }
             else if(!answers.get(i).equals(yourAnswers.get(i))){
-                entry.color = Color.parseColor("#FFB2B2");
+                entry.color = Color.RED;
+                        // Color.parseColor("#FFB2B2");
                 entry.image = "xmark";
             }
             else{
