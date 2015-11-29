@@ -41,14 +41,26 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
     public DbHelperSubNav(Context context, String tableName, List<String> columns)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        if(columns == null)
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String deleteAll = "DROP TABLE IF EXISTS `"+tableName+"Quizzes`";
+            db.execSQL(deleteAll);
+        }
         this.childrenCols = columns;
         this.table = "`"+tableName+"Quizzes`";
     }
     public void createTable(){
         String colQuery = "";
-        for(int i = 0; i < childrenCols.size(); i++)
+        if(childrenCols == null){
+            colQuery = "child0 TEXT, child1 TEXT, ";
+        } else if(childrenCols.size() == 0)
         {
-            colQuery += childrenCols.get(i)+" TEXT, ";
+            colQuery = "child0 TEXT, child1 TEXT, ";
+        }else {
+            for (int i = 0; i < childrenCols.size(); i++) {
+                colQuery += childrenCols.get(i) + " TEXT, ";
+            }
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
                 KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
@@ -91,6 +103,9 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table, null, null); //Delete entries in old table
+        String drop = "DROP TABLE "+table;
+        db.execSQL(drop);
+        createTable();
         Iterator<?> keyIt = headerChildPairs.keySet().iterator();
         String currRow;
         List<String> currChildList;
@@ -147,7 +162,8 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
             //Iterate starts after header and ends before indexer.
             for(int i = HEADER_INDEX + 1; i < dataCurs.getColumnCount() -1; i++) {
                 if(dataCurs.getString(i) != null)  //If child isn't null, or "" add to list of child
-                    if(!dataCurs.getString(i).equals(""))
+                    if(!dataCurs.getString(i).equals("") && !dataCurs.getString(i).equals("null") &&
+                            dataCurs.getString(i) != null)
                         children.add(dataCurs.getString(i));
             }
             headerChildPairs.put(header, children);

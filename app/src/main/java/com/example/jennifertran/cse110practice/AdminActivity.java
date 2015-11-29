@@ -37,7 +37,6 @@ public class AdminActivity extends AppCompatActivity {
 
     /* Adding member variables, strings, and booleans for fragments */
     private ListView mDrawerList;
-    //private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Current Section";
@@ -52,6 +51,8 @@ public class AdminActivity extends AppCompatActivity {
     String newClass;
     String selectedClass;
     String selectedItem;
+    Pair<String,String> quizParent;
+
     final String DEFAULT_TITLE = "Classes";
     boolean addQuizMode = false;
     boolean deleteMode  = false;
@@ -116,6 +117,7 @@ public class AdminActivity extends AppCompatActivity {
                                 // if this button is clicked, close
                                 // current activity
                                 newClass = input.getText().toString();
+                                newClass = newClass.replaceAll("[\n\r]", "");
                                 new AttemptAddClass().execute();
 
                                 //TODO add yes stuff
@@ -269,6 +271,7 @@ public class AdminActivity extends AppCompatActivity {
                                     // if this button is clicked, close
                                     // current activity
                                     newQuiz = input.getText().toString();
+                                    newQuiz = newQuiz.replaceAll("[\n\r]", "");
                                 new AttemptAddQuiz().execute();
 
                                     //TODO add yes stuff
@@ -333,11 +336,12 @@ public class AdminActivity extends AppCompatActivity {
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     // set title
                     alertDialogBuilder.setTitle("Deleting Quiz");
-                    selectedItem = (String) listAdapter.getGroup(groupPosition);
+                    quizParent = new Pair<>((String) listAdapter.getChild(groupPosition, childPosition)
+                            ,(String) listAdapter.getGroup(groupPosition));
                     // set dialog message
                     alertDialogBuilder
                             .setMessage("You are about to delete: \"" +
-                                    listAdapter.getGroup(groupPosition) + "\" ")
+                                    listAdapter.getChild(groupPosition, childPosition) + "\" ")
                             .setCancelable(false)
                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -661,8 +665,6 @@ public class AdminActivity extends AppCompatActivity {
 
                 }
 
-
-
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -751,42 +753,73 @@ public class AdminActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             RemoteDBHelper remDb = new RemoteDBHelper();
             if(deleteClass) {
-            }
-
-            String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                    "SELECT * FROM "+username+"Classes",
-                    loginUrl);
-
-
-
-
-
-
-
-            try {
-                JSONArray jTable = new JSONArray(table);
-                JSONObject currRow;
-                List<String> columns = new ArrayList<>();
-                currRow = jTable.getJSONObject(0);
-                Iterator<?> keyIt = currRow.keys();
-                String colString="";
-                while(keyIt.hasNext()) //get column names for new local database
-                {
-                    String n = (String) keyIt.next();
-
-                    //Add all child columns to columns
-                    if((!n.equals("class")) && (!n.equals("indexer"))) {
-                        columns.add(n);
-                        colString += "'',";
-                    }
-                }
+                /*Delete quiz from current admin */
+                String adminTable = username+"Classes";
+                String delQuizAdmin = "DELETE FROM `"+adminTable+"` WHERE class='"+selectedItem+"'";
                 remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                        "INSERT INTO `" + username + "Classes` VALUES ( '"+newClass+"', "+colString+" '')",
+                        delQuizAdmin, loginUrl);
+
+                /* For each user, delete the entire class col name is "header" */
+                String selUsernames = "SELECT username FROM Users";
+                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        selUsernames,
                         loginUrl);
+                try{
+                    JSONArray jTable = new JSONArray(table);
+                    for(int i = 0; i < jTable.length(); i++)
+                    {
+                        String userQuizTable = jTable.getJSONObject(i).getString("username")+"Quizzes";
+                        String delQuizUser = "DELETE FROM `"+userQuizTable+"` WHERE header='"+selectedItem+"'";
+                        remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                                delQuizUser, loginUrl);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
+            }
+            else if(deleteQuiz) //Delete
+            {
+                /*Delete quiz from current admin */
+                String classTable = username+"Classes";
+                int indexOfSel =
+                        remDb.findIndexOfEntry(classTable, quizParent.first, quizParent.second,
+                                "class","child",
+                                getApplicationContext().getString(R.string.remotePass),loginUrl );
+                String delQuiz = "UPDATE `"+classTable+"` SET child"+indexOfSel+
+                        "='' WHERE class='"+quizParent.second+"'";
+                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        delQuiz, loginUrl);
 
-            }catch(Exception e){
-                e.printStackTrace();
+                /* Delete quiz from other users */
+
+                String selUsernames = "SELECT username FROM Users";
+                String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        selUsernames,
+                        loginUrl);
+                try{
+                    JSONArray jTable = new JSONArray(table);
+                    for(int i = 0; i < jTable.length(); i++)
+                    {
+                        String quizTable = jTable.getJSONObject(i).getString("username")+"Quizzes";
+                        int indexOfSelUser =
+                                remDb.findIndexOfEntry(quizTable, quizParent.first, quizParent.second,
+                                        "header","child",
+                                getApplicationContext().getString(R.string.remotePass),loginUrl );
+                        String delQuizUser = "UPDATE `"+quizTable+"` SET child"+indexOfSelUser+
+                                "='' WHERE header='"+quizParent.second+"'";
+                        remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                                delQuizUser, loginUrl);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+                /* Delete actual quiz */
+                String deleteQuiz = "DROP TABLE `"+quizParent.first+"`";
+                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                        deleteQuiz, loginUrl);
+
             }
 
             return null;

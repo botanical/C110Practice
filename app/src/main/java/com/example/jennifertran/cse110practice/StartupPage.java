@@ -134,7 +134,7 @@ public class StartupPage extends AppCompatActivity {
 
                     //Add all child columns to columns
                     if ((!n.equals("id")) && (!n.equals("question")) && (!n.equals("answer")) &&
-                            !n.equals("marked"))
+                            !n.equals("marked") &&!n.equals("solution"))
                         columns.add(n);
                 }
 
@@ -185,17 +185,18 @@ public class StartupPage extends AppCompatActivity {
                 String takenTable = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                         "SELECT * FROM  " + "`" + username + "Taken` ", loginUrl);//BACKTICKS
                 // CRITICAL OMG
+                if(!takenTable.equals("")) {
 
-                jTable = new JSONArray(takenTable);
-                HashMap<String, Integer> quizTakenPairs = new HashMap<>();
-                for (int i = 0; i < jTable.length(); i++) {
-                    currRow = jTable.getJSONObject(i);
-                    quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
+                    jTable = new JSONArray(takenTable);
+                    HashMap<String, Integer> quizTakenPairs = new HashMap<>();
+                    for (int i = 0; i < jTable.length(); i++) {
+                        currRow = jTable.getJSONObject(i);
+                        quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
+                    }
+                    DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
+                    dbTaken.createTable();
+                    dbTaken.upgradeTaken(quizTakenPairs);
                 }
-                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
-                dbTaken.createTable();
-                dbTaken.upgradeTaken(quizTakenPairs);
-
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -209,8 +210,8 @@ public class StartupPage extends AppCompatActivity {
 
             TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
             numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
-
             DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
+
             int taken = dbTaken.getIsTaken(title);
             if(taken == 1)
                 isTaken = true;
