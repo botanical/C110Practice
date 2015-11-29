@@ -44,11 +44,10 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         if(columns == null)
         {
             SQLiteDatabase db = this.getWritableDatabase();
-            String deleteAll = "DROP TABLE `"+tableName+"Quizzes`";
+            String deleteAll = "DROP TABLE IF EXISTS `"+tableName+"Quizzes`";
             db.execSQL(deleteAll);
-        }else{
-            this.childrenCols = columns;
         }
+        this.childrenCols = columns;
         this.table = "`"+tableName+"Quizzes`";
     }
     public void createTable(){
