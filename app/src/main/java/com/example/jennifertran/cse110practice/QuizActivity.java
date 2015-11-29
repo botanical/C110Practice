@@ -141,6 +141,7 @@ public class QuizActivity extends AppCompatActivity {
         grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(!isTaken) {
+
                     RadioButton r = (RadioButton) findViewById(checkedId);
                     if (r == null)
                         return;
