@@ -178,8 +178,8 @@ public class EditQuizActivity extends AppCompatActivity {
         System.out.println("QUIZ: "+quiz);
 
         /* Set Radio Buttons for first page */
-        ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
-        ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
+        final ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
+        final ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
         //TODO fix solutionfield null pointer exception
        // grp.addView(quiz.getCurrentQuestion().getSolutionField());
@@ -220,8 +220,48 @@ public class EditQuizActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.add_radio_button).setOnClickListener(new View.OnClickListener() {
+            //YYY
             public void onClick(View view) {
-                back();
+
+                System.out.println("TEST1");
+
+                RadioButton button = new RadioButton(context);
+                button.setText("MERP");
+
+                System.out.println("TEST2");
+
+
+                EditText text = new EditText(context);
+                text.setText("DERP");
+
+                System.out.println("TEST3");
+
+                //btns.add(button);
+                //fields.add(text);
+
+                quiz.getCurrentQuestion().getRadioButtons().add(button);
+                quiz.getCurrentQuestion().getTextFields().add(text);
+
+                System.out.println("TEST4");
+
+                grp.addView(button);
+                editGrp.addView(text);
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                if(quiz.getCurrentQuestion().getRadioButtons().size() > quiz.getNumCols()){
+                    quiz.updateNumColsOfQuestions(btns.size());
+                }
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        EditQuizActivity.this.tempSubmitEdit();
+                    }
+                });
+
             }
         });
 
@@ -285,7 +325,7 @@ public class EditQuizActivity extends AppCompatActivity {
         quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
         grp.removeAllViews();
         editGrp.removeAllViews();
-
+        //ZZZ
         ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
         ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
