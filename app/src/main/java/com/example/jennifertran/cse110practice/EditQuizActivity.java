@@ -56,6 +56,9 @@ public class EditQuizActivity extends AppCompatActivity {
     String title;
     Quiz quiz;
 
+    final Context context = this;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,12 +219,17 @@ public class EditQuizActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.add_radio_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 back();
             }
         });
 
+        findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                back();
+            }
+        });
         findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
