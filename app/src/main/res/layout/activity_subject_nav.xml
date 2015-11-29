@@ -20,7 +20,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         >
-
     </ExpandableListView>
     <Button
         android:id="@+id/logout"

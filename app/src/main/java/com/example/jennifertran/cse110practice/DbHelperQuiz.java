@@ -56,6 +56,8 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         //Sets question id's to start from 0 instead of 1
         String subtraction = "UPDATE " + table +  " SET " + KEY_ID + "=" + KEY_ID + " - 1";
         db.execSQL(subtraction);
+
+
     }
     /* createSubNav (Map<String, List<String>> headerChildPairs
      *  headerChildPairs: Contains key value pairs where the key is the header of a set of quizzes
