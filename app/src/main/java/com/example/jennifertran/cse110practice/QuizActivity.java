@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,7 +83,7 @@ public class QuizActivity extends AppCompatActivity {
         username = intentReceived.getStringExtra("username");
         isTaken = intentReceived.getBooleanExtra("isTaken", false);
         if(isTaken)
-            textViewTime.setVisibility(View.GONE);
+            textViewTime.setText("");
 
 
         /* Get list of columns from previous activity where the quiz was updated */
@@ -140,6 +141,7 @@ public class QuizActivity extends AppCompatActivity {
         grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(!isTaken) {
+
                     RadioButton r = (RadioButton) findViewById(checkedId);
                     if (r == null)
                         return;
@@ -166,6 +168,7 @@ public class QuizActivity extends AppCompatActivity {
                 if(opts.get(i) != null && (!opts.get(i).equals(""))) {
                     RadioButton b = new RadioButton(this);
                     b.setText(opts.get(i));
+                    b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                     b.setId(View.generateViewId()); //Generate id for the radioButton
                     btns.add(b);
                 }
