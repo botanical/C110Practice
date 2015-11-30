@@ -3,7 +3,6 @@ package com.example.jennifertran.cse110practice;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +48,21 @@ public class ELATest extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
         txtListChild.setText(entry.TextEntry);
         txtListChild.setTextSize(20);
+/*
+        convertView.setBackgroundColor(entry.color);
+
+        txtListChild.setText(entry.TextEntry);
+        if(entry.image != "") {
+            txtListChild.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (entry.image == "xmark") {
+                txtListChild.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xmark, 0, 0, 0);
+            } else if (entry.image == "checkmark") {
+                txtListChild.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0);
+            } else {
+                txtListChild.setCompoundDrawablesWithIntrinsicBounds(R.drawable.questionmark, 0, 0, 0);
+            }
+        }
+*/
         return convertView;
     }
 

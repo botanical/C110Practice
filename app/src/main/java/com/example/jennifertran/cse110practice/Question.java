@@ -117,6 +117,9 @@ public class Question {
     public String toString (){
 
         int extra = this.numCols - this.options.size();
+        System.out.print("NUMCOLS: " + this.numCols);
+        System.out.print("OPTIONS: " + this.options.size());
+        System.out.println("EXTRA: " + extra);
         String cols = "";
         for(String o : this.options)
         {
@@ -128,8 +131,7 @@ public class Question {
         }
 
         return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
-                cols +"'" +/*this.getSolution()+*/ "', '"+this.getMarked()+"' )";
-    }
+                cols +"'" +/*this.getSolution()+*/ "', '"+this.getMarked()+"' )";    }
 
 
 }

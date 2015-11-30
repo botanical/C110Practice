@@ -38,6 +38,14 @@ public class EditQuizActivity extends AppCompatActivity {
     RadioButton answer;
     String username;
 
+    private static final String KEY_ID = "id";
+    private static final String KEY_QUES = "question";
+    private static final String KEY_ANSWER = "answer"; //correct option
+    private static final String KEY_MARKED = "marked"; //marked answer by user
+    private static final String KEY_SOLUTION = "solution";
+
+    final Context context = this;
+
     RadioGroup grp;
     ViewGroup editGrp;
     DbHelperQuiz db;
@@ -55,14 +63,6 @@ public class EditQuizActivity extends AppCompatActivity {
     String open_drawer = "Question Navigation";
     String title;
     Quiz quiz;
-
-    final Context context = this;
-
-    private static final String KEY_ID = "id";
-    private static final String KEY_QUES = "question";
-    private static final String KEY_ANSWER = "answer"; //correct option
-    private static final String KEY_MARKED = "marked"; //marked answer by user
-    private static final String KEY_SOLUTION = "solution";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,8 +183,8 @@ public class EditQuizActivity extends AppCompatActivity {
         System.out.println("QUIZ: "+quiz);
 
         /* Set Radio Buttons for first page */
-        final ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
-        final ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
+        ArrayList<RadioButton> btns = quiz.getQuestions().get(0).getRadioButtons();
+        ArrayList<EditText> fields = quiz.getQuestions().get(0).getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
         //TODO fix solutionfield null pointer exception
        // grp.addView(quiz.getCurrentQuestion().getSolutionField());
@@ -224,48 +224,12 @@ public class EditQuizActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.add_radio_button).setOnClickListener(new View.OnClickListener() {
-            //YYY
-            public void onClick(View view) {
-
-                RadioButton button = new RadioButton(context);
-                button.setText("MERP");
-
-                EditText text = new EditText(context);
-                text.setText("DERP");
-
-                //btns.add(button);
-                //fields.add(text);
-
-                quiz.getCurrentQuestion().getRadioButtons().add(button);
-                quiz.getCurrentQuestion().getTextFields().add(text);
-
-                grp.addView(button);
-                editGrp.addView(text);
-
-                System.out.println("COLSIZE" + quiz.getNumCols());
-
-                if(quiz.getCurrentQuestion().getRadioButtons().size() > quiz.getNumCols()){
-                    quiz.updateNumColsOfQuestions(btns.size());
-                }
-
-                System.out.println("COLSIZE" + quiz.getNumCols());
-
-                text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        EditQuizActivity.this.tempSubmitEdit();
-                    }
-                });
-
-            }
-        });
-
         findViewById(R.id.button_back).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 back();
             }
         });
+
         findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -283,6 +247,43 @@ public class EditQuizActivity extends AppCompatActivity {
                     saveQuiz();
             }
         });
+        findViewById(R.id.add_radio_button).setOnClickListener(new View.OnClickListener() {
+            //YYY
+            public void onClick(View view) {
+
+                RadioButton button = new RadioButton(context);
+                button.setText("Add an Option!");
+
+                EditText text = new EditText(context);
+                text.setHint("Add an Option!");
+
+                quiz.getCurrentQuestion().getRadioButtons().add(button);
+                quiz.getCurrentQuestion().getTextFields().add(text);
+
+                grp.addView(button);
+                editGrp.addView(text);
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                if(quiz.getCurrentQuestion().getRadioButtons().size() > quiz.getNumCols()){
+                    quiz.updateNumColsOfQuestions(quiz.getCurrentQuestion().getRadioButtons().size());
+                    for(Question q : quiz.getQuestions()){
+                        q.setNumCols(quiz.getCurrentQuestion().getRadioButtons().size());
+                    }
+                }
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        EditQuizActivity.this.tempSubmitEdit();
+                    }
+                });
+
+            }
+        });
+
     }
     public void submit() {
         Intent openAdminActivity= new Intent(EditQuizActivity.this, AdminActivity.class);
@@ -321,7 +322,7 @@ public class EditQuizActivity extends AppCompatActivity {
         quiz.setCurrentQuestion(quiz.getQuestions().get(question_id));
         grp.removeAllViews();
         editGrp.removeAllViews();
-        //ZZZ
+
         ArrayList<RadioButton> btns = quiz.getCurrentQuestion().getRadioButtons();
         ArrayList<EditText> fields = quiz.getCurrentQuestion().getTextFields();
         grp.addView(quiz.getCurrentQuestion().getQuestionField());
@@ -374,19 +375,19 @@ public class EditQuizActivity extends AppCompatActivity {
 
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-            String newSolution = ""; //quiz.getCurrentQuestion().getSolutionField().getText().toString();
+            //String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
 
 
-            System.out.println("NEW SOLUTION " + newSolution);
+            //System.out.println("NEW SOLUTION " + newSolution);
         if (!newQuestion.equals("")) {
                 quiz.getCurrentQuestion().setQuestion(newQuestion);
                 textQuestion.setText(newQuestion);
             }
-        if(!newSolution.equals("")) {
+      /*  if(!newSolution.equals("")) {
             quiz.getCurrentQuestion().setSolution(newSolution);
             System.out.println("solution in Q " + quiz.getCurrentQuestion().getSolution());
 
-        }
+        }*/
 
 
         //Set new Question radioButtons
@@ -440,7 +441,6 @@ public class EditQuizActivity extends AppCompatActivity {
             currQuestion = questionList.get(i);
             //Add 1 to zero indexed question number
             //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
-
 
             if (currQuestion.getViewed() == false && (currQuestion.getMarked() == -1)) {
                 navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
@@ -667,7 +667,6 @@ public class EditQuizActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(event);
     }
-
     class QuizSaver extends AsyncTask<String,String,String> {
 
         protected void onPreExecute(){
@@ -727,7 +726,7 @@ public class EditQuizActivity extends AppCompatActivity {
             {
                 String tmp = sql;
                 tmp += q.toString();
-               String table = remDb.queryRemote(context.getString(R.string.remotePass),
+               String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
                        tmp, loginUrl);
             }
 
