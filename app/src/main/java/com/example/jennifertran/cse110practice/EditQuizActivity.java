@@ -58,6 +58,11 @@ public class EditQuizActivity extends AppCompatActivity {
 
     final Context context = this;
 
+    private static final String KEY_ID = "id";
+    private static final String KEY_QUES = "question";
+    private static final String KEY_ANSWER = "answer"; //correct option
+    private static final String KEY_MARKED = "marked"; //marked answer by user
+    private static final String KEY_SOLUTION = "solution";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,26 +228,17 @@ public class EditQuizActivity extends AppCompatActivity {
             //YYY
             public void onClick(View view) {
 
-                System.out.println("TEST1");
-
                 RadioButton button = new RadioButton(context);
                 button.setText("MERP");
 
-                System.out.println("TEST2");
-
-
                 EditText text = new EditText(context);
                 text.setText("DERP");
-
-                System.out.println("TEST3");
 
                 //btns.add(button);
                 //fields.add(text);
 
                 quiz.getCurrentQuestion().getRadioButtons().add(button);
                 quiz.getCurrentQuestion().getTextFields().add(text);
-
-                System.out.println("TEST4");
 
                 grp.addView(button);
                 editGrp.addView(text);
@@ -378,7 +374,7 @@ public class EditQuizActivity extends AppCompatActivity {
 
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-            String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
+            String newSolution = ""; //quiz.getCurrentQuestion().getSolutionField().getText().toString();
 
 
             System.out.println("NEW SOLUTION " + newSolution);
@@ -671,6 +667,7 @@ public class EditQuizActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(event);
     }
+
     class QuizSaver extends AsyncTask<String,String,String> {
 
         protected void onPreExecute(){
@@ -688,11 +685,24 @@ public class EditQuizActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             RemoteDBHelper remDb = new RemoteDBHelper();
             ArrayList<Question> questions = quiz.getQuestions();
-            System.out.println("QUESTIONS "+ questions);
+            System.out.println("QUESTIONS " + questions);
             //Delete old quiz
-            String delete = "DELETE FROM `"+title+"`";
-            remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+            String delete = "DROP TABLE IF EXISTS `"+title+"`";
+            remDb.queryRemote(context.getString(R.string.remotePass),
                     delete, loginUrl);
+
+            String colQuery = "";
+            for(int i = 0; i < quiz.getNumCols(); i++)
+            {
+                colQuery += "option" + i +" TEXT, ";
+            }
+            String create = "CREATE TABLE IF NOT EXISTS `" + title+"`" + " ( "
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
+
+
+            remDb.queryRemote(context.getString(R.string.remotePass),
+                    create, loginUrl);
 
             //Replace with new quiz
             String sql = "INSERT INTO "+"`"+title+"` VALUES ";
@@ -701,7 +711,7 @@ public class EditQuizActivity extends AppCompatActivity {
             {
                 String tmp = sql;
                 tmp += q.toString();
-               String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+               String table = remDb.queryRemote(context.getString(R.string.remotePass),
                        tmp, loginUrl);
             }
 
