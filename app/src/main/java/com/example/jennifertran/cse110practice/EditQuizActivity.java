@@ -691,14 +691,30 @@ public class EditQuizActivity extends AppCompatActivity {
             remDb.queryRemote(context.getString(R.string.remotePass),
                     delete, loginUrl);
 
+            /*
+            NEW
+                    String createQuizStr = "CREATE TABLE IF NOT EXISTS `" + newQuiz + "` " +
+                            "( id INTEGER, question TEXT, answer TEXT, " +
+                            "option0 TEXT, solution TEXT, " +
+                            "marked VARCHAR(50) )";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            createQuizStr,
+                            loginUrl);
+             OLD
+                     String create = "CREATE TABLE IF NOT EXISTS `" + title+"`" + " ( "
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
+             */
+
+
             String colQuery = "";
             for(int i = 0; i < quiz.getNumCols(); i++)
             {
                 colQuery += "option" + i +" TEXT, ";
             }
             String create = "CREATE TABLE IF NOT EXISTS `" + title+"`" + " ( "
-                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
+                    + KEY_ID + " INTEGER, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" VARCHAR(50) )";
 
 
             remDb.queryRemote(context.getString(R.string.remotePass),
