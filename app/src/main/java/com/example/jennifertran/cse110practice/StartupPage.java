@@ -206,8 +206,8 @@ public class StartupPage extends AppCompatActivity {
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
-            numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
+            TextView numQ = (TextView) findViewById(R.id.num_of_questions);
+            numQ.setText(String.valueOf(numQuestions));
             DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
 
             int taken = dbTaken.getIsTaken(title);
