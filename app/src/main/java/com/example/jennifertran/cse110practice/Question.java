@@ -128,8 +128,7 @@ public class Question {
         }
 
         return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
-                cols +"'" +this.getSolution()+ "', '"+this.getMarked()+"' )";
-    }
+                cols +"'" +/*this.getSolution()+*/ "', '"+this.getMarked()+"' )";    }
 
 
 }

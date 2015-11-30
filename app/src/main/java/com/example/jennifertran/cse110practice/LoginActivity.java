@@ -160,8 +160,8 @@ public class LoginActivity extends AppCompatActivity {
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-            username = usernameEdit.getText().toString();
-            password = passwordEdit.getText().toString();
+            username = usernameEdit.getText().toString().trim();
+            password = passwordEdit.getText().toString().trim();
             AttemptLogin log = new AttemptLogin();
             log.execute();
 

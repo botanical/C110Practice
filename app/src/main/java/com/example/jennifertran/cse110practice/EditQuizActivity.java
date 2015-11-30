@@ -232,10 +232,10 @@ public class EditQuizActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 RadioButton button = new RadioButton(context);
-                button.setText("MERP");
+                button.setText("Add an option!");
 
                 EditText text = new EditText(context);
-                text.setText("DERP");
+                text.setHint("Add an option!");
 
                 //btns.add(button);
                 //fields.add(text);
@@ -249,7 +249,10 @@ public class EditQuizActivity extends AppCompatActivity {
                 System.out.println("COLSIZE" + quiz.getNumCols());
 
                 if(quiz.getCurrentQuestion().getRadioButtons().size() > quiz.getNumCols()){
-                    quiz.updateNumColsOfQuestions(btns.size());
+                    quiz.updateNumColsOfQuestions(quiz.getCurrentQuestion().getRadioButtons().size());
+                    for(Question q : quiz.getQuestions()){
+                        q.setNumCols(quiz.getCurrentQuestion().getRadioButtons().size());
+                    }
                 }
 
                 System.out.println("COLSIZE" + quiz.getNumCols());
@@ -702,11 +705,11 @@ public class EditQuizActivity extends AppCompatActivity {
                 colQuery += "option" + i +" TEXT, ";
             }
             String create = "CREATE TABLE IF NOT EXISTS `"+title+"`" + " ( "
-                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
+                    + KEY_ID + " INTEGER, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" VARCHAR(50) )";
 
 
-            remDb.queryRemote(context.getString(R.string.remotePass),
+           remDb.queryRemote(context.getString(R.string.remotePass),
                     create, loginUrl);
 
             //Replace with new quiz
