@@ -43,12 +43,10 @@ public class StartupPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup_page);
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
-        // displaying subject text
         Intent intent = getIntent();
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
         username = intent.getStringExtra("username");
-        TextView subText = (TextView) findViewById(R.id.subject_title_id);
-        subText.setText(title);
+        setTitle(title); // display subject and title in bar
         title = intent.getStringExtra("title");
         new AttemptUpdateQuiz().execute();
     }

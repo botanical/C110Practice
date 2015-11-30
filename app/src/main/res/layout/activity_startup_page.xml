@@ -20,19 +20,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp" />
 
-    <!-- Subject Text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text="Subject: "
-        android:id="@+id/subject_title_id"
-        android:layout_below="@+id/instruc_id"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="40dp" />
-
-
     <!-- Number of Questions -->
     <TextView
         android:layout_width="wrap_content"
@@ -41,7 +28,7 @@
         android:textStyle="bold"
         android:text="Number of Questions: "
         android:id="@+id/num_of_questions_text"
-        android:layout_below="@+id/subject_title_id"
+        android:layout_below="@+id/instruc_id"
 
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp" />
