@@ -4,10 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,14 +38,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private SharedPreferences mLoginPreferences;
 
-        private JSONParser jsonParser = new JSONParser();
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            // boilerplate...
             super.onCreate(savedInstanceState);
             loginUrl = getApplicationContext().getString(R.string.queryUrl);
             mLoginPreferences = getSharedPreferences(LOGIN_FILE, MODE_PRIVATE);
-
 
                 setContentView(R.layout.activity_login);
                 usernameEdit = ((EditText)findViewById(R.id.login_page_username));
@@ -53,7 +54,12 @@ public class LoginActivity extends AppCompatActivity {
                         login();
                     }
                 });
-
+                findViewById(R.id.login_page_register_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        register();
+                    }
+                });
         }
 
 
@@ -67,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
                         "SELECT * FROM Users WHERE username='" + username + "'",
                         loginUrl);
                 try {
-
-                    return  new JSONArray(table).getString(0); //Get first valid username entry
+                    if(table == "")
+                        return "";
+                    else
+                        return  new JSONArray(table).getString(0); //Get first valid username entry
                                                                //There should be only one.
                 }catch (Exception e) {
                     e.printStackTrace();
@@ -100,7 +108,27 @@ public class LoginActivity extends AppCompatActivity {
                     else{
 
                         JSONObject args = new JSONObject(message);
-                        if(args.getString("username").equals(username) &&
+                        if(args.getString("username").equals(""))
+                        {
+                            Toast.makeText(LoginActivity.this,"Please enter your username.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        else if(args.getString("is_admin").equals(String.valueOf(1))) //isAdmin
+                        {
+                            if(args.getString("username").equals(username) &&
+                                    args.getString("password").equals(password)) {
+                                Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
+                                adminIntent.putExtra("username", username);
+                                startActivity(adminIntent);
+                            }
+                            else
+                            {
+                                Toast.makeText(LoginActivity.this,"Your credentials....failed.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                        else if(args.getString("username").equals(username) &&
                                 args.getString("password").equals(password))
                         {
                             Toast.makeText(LoginActivity.this,"You've logged in!",
@@ -132,16 +160,10 @@ public class LoginActivity extends AppCompatActivity {
                     .putBoolean(LOGGED_IN, true)
                     .apply();
 
-
-
             username = usernameEdit.getText().toString();
             password = passwordEdit.getText().toString();
             AttemptLogin log = new AttemptLogin();
             log.execute();
-
-
-
-
 
 
             /*
@@ -159,9 +181,32 @@ public class LoginActivity extends AppCompatActivity {
 
             */
         }
-        private void fetchServerSideData() {
+        public void register()
+        {
+            Intent reg = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(reg);
         }
 
+    /*********** Hide keyboard and unfocus currently focused EditText ********************/
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View mEditText = getCurrentFocus();
+            if (mEditText != null) {
+                Rect outRect = new Rect();
+                mEditText.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    mEditText.clearFocus();
+                    //
+                    // Hide keyboard
+                    //
+                    InputMethodManager imm = (InputMethodManager) mEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
     }
 
 

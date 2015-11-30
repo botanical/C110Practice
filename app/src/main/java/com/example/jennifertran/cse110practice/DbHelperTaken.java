@@ -25,7 +25,7 @@ public class DbHelperTaken extends SQLiteOpenHelper {
 
         public DbHelperTaken(Context context, String table) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            this.table = "`"+table+"`";
+            this.table = "`"+table+"Taken`";
 
         }
 
@@ -55,14 +55,17 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             for(Map.Entry<String, Integer> next : QTPairs.entrySet()){
                 colValuePairs.put(KEY_QUIZ, next.getKey());
                 colValuePairs.put(KEY_TAKEN, next.getValue());
+                db.insert(table, null, colValuePairs);
+
             }
-            db.insert(table, null, colValuePairs);
         }
 
+        //Gets whether the given quiz is taken
         public int getIsTaken(String title)
         {
             SQLiteDatabase db = this.getReadableDatabase();
-            String sql = "SELECT * FROM "+this.table+" WHERE title=\""+title+"\"";
+
+            String sql = "SELECT * FROM "+this.table+" WHERE title='"+title+"'"; //quotes
             Cursor dataCurs = db.rawQuery(sql, null);
             dataCurs.moveToFirst();
             int result = dataCurs.getInt(dataCurs.getColumnIndex(KEY_TAKEN)); //HardCoded location of 'taken' column
@@ -74,12 +77,7 @@ public class DbHelperTaken extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             String sql = "UPDATE "+table+" SET "+KEY_TAKEN+"="+String.valueOf(n)+" WHERE "+KEY_QUIZ+"=\""+title+"\"";
             db.execSQL(sql);
-            /*ContentValues colVal = new ContentValues();
-            colVal.put(KEY_TAKEN, n);
-            String where = KEY_QUIZ+"=\""+title+"\"";
-            String[] whereArgs = {};
-            db.update(table,colVal, where, whereArgs);
-            */
+
         }
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

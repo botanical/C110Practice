@@ -3,8 +3,8 @@ package com.example.jennifertran.cse110practice;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
 
@@ -15,57 +15,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by emd_000 on 11/9/2015.
+ * Created by emd_000 on 11/16/2015.
  */
-
-
-public class DbHelperSubNav extends SQLiteOpenHelper {
+public class DbHelperAdminClasses extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     // Database Name
-    private static final String DATABASE_NAME = "SubNav.db";
+    private static final String DATABASE_NAME = "AdminClasses.db";
     // tasks table name
     // tasks Table Columns names
-    private static final String KEY_HEADER= "header";
+    private static final String KEY_CLASS= "class";
     private static final String KEY_INDEXER = "indexer";
     private List<String> childrenCols;
     private String table;
-    private static final int HEADER_INDEX = 0;
+    private static final int CLASS_INDEX = 0;
 
 
-    public DbHelperSubNav(Context context) {
+    public DbHelperAdminClasses(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     }
 
-    public DbHelperSubNav(Context context, String tableName, List<String> columns)
+    public DbHelperAdminClasses(Context context, String tableName, List<String> columns)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        if(columns == null)
-        {
-            SQLiteDatabase db = this.getWritableDatabase();
-            String deleteAll = "DROP TABLE IF EXISTS `"+tableName+"Quizzes`";
-            db.execSQL(deleteAll);
-        }
         this.childrenCols = columns;
-        this.table = "`"+tableName+"Quizzes`";
+        this.table = "`"+tableName+"Classes`";
     }
     public void createTable(){
         String colQuery = "";
-        if(childrenCols == null){
-            colQuery = "child0 TEXT, child1 TEXT, ";
-        } else if(childrenCols.size() == 0)
+        for(int i = 0; i < childrenCols.size(); i++)
         {
-            colQuery = "child0 TEXT, child1 TEXT, ";
-        }else {
-            for (int i = 0; i < childrenCols.size(); i++) {
-                colQuery += childrenCols.get(i) + " TEXT, ";
-            }
+            colQuery += childrenCols.get(i)+" TEXT, ";
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
-                KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
+                KEY_CLASS + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.execSQL(sql);
 
     }
@@ -79,8 +64,7 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
             colQuery += childrenCols.get(i)+" TEXT, ";
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( " +
-                KEY_HEADER + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
-
+                KEY_CLASS + " TEXT, " + colQuery + KEY_INDEXER + " INTEGER)";
         db.execSQL(sql);
 
     }
@@ -97,14 +81,13 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
      * CreateSubNav fills the suBnav database from headerChildPairs in the format :
      * Row: header child0 child1 ....
      */
-    public void upgradeSubNav(Map<String,List<String>> headerChildPairs)
+    public void upgradeAdminClasses(Map<String,List<String>> headerChildPairs)
     {
         //The last child in the list of children for each header is actually that row's index
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(table, null, null); //Delete entries in old table
-        String drop = "DROP TABLE "+table;
-        db.execSQL(drop);
+        db.execSQL("DROP TABLE "+table);
         createTable();
         Iterator<?> keyIt = headerChildPairs.keySet().iterator();
         String currRow;
@@ -114,7 +97,7 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
 
             currRow = (String) keyIt.next(); //current header
             ContentValues colValuePairs = new ContentValues();
-            colValuePairs.put("header", currRow); //key represents column names
+            colValuePairs.put("class", currRow); //key represents column names
             currChildList =  headerChildPairs.get(currRow);
 
             //Iterate until last child. The last child is actually the index of the row.
@@ -130,11 +113,12 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
         db.close();
     }
 
+
     /*
-     * loadSubNav (String table)
-     * loadSubNav is a helper class which mimics the SQL format of quizzes that is used
+     * loadAdminClasses (String table)
+     * dbHelperAdminClasses is a helper class which mimics the SQL format of quizzes that is used
      * on our remote database.
-     * Parameters: String table - 'table' should be the username of the currently logged user
+     * Parameters: String username - 'username' should be the username of the currently logged user
      * Returns: Pair<ArrayList<String>, HashMap<String,List<String>>> - Returns
      *              1. An ArrayList representing the headers of each quiz topic
      *              2. A HashMap that that pairs header keys with a List of that header's children
@@ -143,37 +127,41 @@ public class DbHelperSubNav extends SQLiteOpenHelper {
      *          are specific quizzes belonging to that topic.
      *
      */
-    public Pair<ArrayList<String>, HashMap<String,List<String>>> loadSubNav (String table) {
+    public Pair<ArrayList<String>, HashMap<String,List<String>>> loadAdminClasses (String username) {
 
-        this.table = table + "Quizzes";
+        this.table = "`"+username + "Classes`";
 
         String selectionQuery = "SELECT * FROM "+this.table+" ORDER BY indexer";
-        Cursor dataCurs = this.getWritableDatabase().rawQuery(selectionQuery, null);
-        if(dataCurs.getCount() == 0)
-            return null;
-        dataCurs.moveToFirst();
-        HashMap<String, List<String>> headerChildPairs = new HashMap<>();
-        ArrayList<String> headers = new ArrayList<>();
-        do{
-            List<String> children = new ArrayList<>();
-            String header = dataCurs.getString(HEADER_INDEX);//Get Header
-            headers.add(header);
+        try {
+            Cursor dataCurs = this.getWritableDatabase().rawQuery(selectionQuery, null);
+            dataCurs.moveToFirst();
+            HashMap<String, List<String>> headerChildPairs = new HashMap<>();
+            ArrayList<String> headers = new ArrayList<>();
+            do{
+                List<String> children = new ArrayList<>();
+                String header = dataCurs.getString(CLASS_INDEX);//Get Header
+                headers.add(header);
 
-            //Iterate starts after header and ends before indexer.
-            for(int i = HEADER_INDEX + 1; i < dataCurs.getColumnCount() -1; i++) {
-                if(dataCurs.getString(i) != null)  //If child isn't null, or "" add to list of child
-                    if(!dataCurs.getString(i).equals("") && !dataCurs.getString(i).equals("null") &&
-                            dataCurs.getString(i) != null)
-                        children.add(dataCurs.getString(i));
+                //Iterate starts after header and ends before indexer.
+                for(int i = CLASS_INDEX + 1; i < dataCurs.getColumnCount() -1; i++) {
+                    if(dataCurs.getString(i) != null)  //If child isn't null, or "" add to list of child
+                        if(!dataCurs.getString(i).equals(""))
+                            children.add(dataCurs.getString(i));
+                }
+                headerChildPairs.put(header, children);
             }
-            headerChildPairs.put(header, children);
-        }
-        while(dataCurs.moveToNext());
-        dataCurs.close();
+            while(dataCurs.moveToNext());
+            dataCurs.close();
 
-        return new Pair<>(headers,headerChildPairs);
+            return new Pair<>(headers,headerChildPairs);
+        }catch(SQLiteException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {

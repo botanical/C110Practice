@@ -22,7 +22,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Time Remaining"
             android:id="@+id/textViewTimer"
-            android:layout_gravity="top|right"/>
+            android:layout_gravity="top|right"
+            android:layout_weight="0.03"
+            android:paddingRight="10dp" />
 
         <TextView
             android:id="@+id/textView1"
@@ -33,16 +35,51 @@
             android:text=""
             android:textSize="25dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/quiz_text_color"/>
+            android:textColor="@color/quiz_text_color"
+            android:layout_weight="0.04" />
         <RadioGroup
             android:id="@+id/radioGroup1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.4"
+            android:layout_weight="0.22"
             android:paddingLeft="40dp"
             android:paddingRight="40dp">
 
         </RadioGroup>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your answer was: "
+                android:id="@+id/yourAnswer"
+                android:layout_weight="0.02"
+
+                android:gravity="center"
+                android:textColor="#ff000000"
+
+                android:textSize="20sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="The correct answer was: "
+                android:id="@+id/correctAnswer"
+                android:layout_weight="0.01"
+
+                android:gravity="center"
+
+                android:textSize="20sp"
+                android:textColor="#ff1fb11b" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Solution: "
+                android:id="@+id/solution"
+                android:layout_weight="0.03"
+
+                android:gravity="center"
+
+                android:textSize="20sp"
+                android:textColor="#ffffbe20"
+                android:paddingBottom="15dp" />
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">

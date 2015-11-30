@@ -34,6 +34,7 @@ public class StartupPage extends AppCompatActivity {
     private ArrayList<String> columns;
     public final static String EXTRA_TIME = "Time: ";
     public boolean isTaken;
+    public int numQuestions;
 
 
 
@@ -46,9 +47,8 @@ public class StartupPage extends AppCompatActivity {
         Intent intent = getIntent();
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
         username = intent.getStringExtra("username");
-        //TextView subText = (TextView) findViewById(R.id.subject_title_text);
-        //subText.setText(title);
-        setTitle("Quiz: " + title); // display subject in title bar
+        TextView subText = (TextView) findViewById(R.id.subject_title_id);
+        subText.setText(title);
         title = intent.getStringExtra("title");
         new AttemptUpdateQuiz().execute();
     }
@@ -57,7 +57,7 @@ public class StartupPage extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+        DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
         int taken = dbTaken.getIsTaken(title);
         if(taken == 1) {
             isTaken = true;
@@ -66,7 +66,15 @@ public class StartupPage extends AppCompatActivity {
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(StartupPage.this, ResultActivity.class);
+                    Intent intent = new Intent(StartupPage.this, QuizActivity.class);
+                    intent.putExtra("isTaken", isTaken);
+                    intent.putExtra(EXTRA_TIME, testTimeSend);
+                    intent.putExtra("title",title);
+                    intent.putExtra("username", username);
+                    //Can't pass object to a different activity so must pass object as a string
+                    JSONArray jA = new JSONArray(columns);
+                    intent.putExtra("columns", jA.toString());
+
                     startActivity(intent);
                 }
             });
@@ -86,7 +94,7 @@ public class StartupPage extends AppCompatActivity {
         JSONArray jA = new JSONArray(columns);
         try {
             System.out.println("STARTUP: " + jA.get(0));
-        }catch(Exception e) {
+        }catch(Exception e){
             e.printStackTrace();
         }
         intent.putExtra("columns", jA.toString());
@@ -108,51 +116,55 @@ public class StartupPage extends AppCompatActivity {
         protected String doInBackground(String... params) {
             RemoteDBHelper remDb = new RemoteDBHelper();
             String table = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                    "SELECT * FROM  " + "`"+title+"` ", loginUrl);//BACKTICKS ARE CRITICAL OMG
-                                                                  //SAME KEY AS ~
+                    "SELECT * FROM  " + "`" + title + "` ", loginUrl);//BACKTICKS ARE CRITICAL OMG
+            //SAME KEY AS ~
             /*
                 Update quiz to local quiz;
              */
             try {
                 JSONArray jTable = new JSONArray(table);
+                numQuestions = jTable.length();
                 JSONObject currRow;
                 ArrayList<String> columns = new ArrayList<>();
                 currRow = jTable.getJSONObject(0);
                 Iterator<?> keyIt = currRow.keys();
-                while(keyIt.hasNext()) //get column names for new local database
+                while (keyIt.hasNext()) //get column names for new local database
                 {
                     String n = (String) keyIt.next();
 
                     //Add all child columns to columns
-                    if((!n.equals("id")) && (!n.equals("question")) && (!n.equals("answer")) &&
-                                                                        !n.equals("marked"))
+                    if ((!n.equals("id")) && (!n.equals("question")) && (!n.equals("answer")) &&
+                            !n.equals("marked") &&!n.equals("solution"))
                         columns.add(n);
                 }
 
                 /* q*/
 
-                HashMap<String, Pair<Pair<String,String>, ArrayList<String>>> questOpPairs =
+                HashMap<String, Pair<Pair<String, String>, ArrayList<String>>> questOpPairs =
                         new HashMap<>();
                 for (int i = 0; i < jTable.length(); i++) {
 
                     ArrayList<String> options = new ArrayList<>();
                     currRow = jTable.getJSONObject(i);
+                    System.out.println("CURR ROW: "+currRow);
                     String id = currRow.getString("id");
                     String question = currRow.getString("question");
-                    String answer   = currRow.getString("answer");
+                    String answer = currRow.getString("answer");
                     Pair<String, String> quesAns = new Pair<>(question, answer);
-                    String marked   = currRow.getString("marked");
+                    String marked = currRow.getString("marked");
+                    String solution = currRow.getString("solution");
                     currRow.remove("id");
                     currRow.remove("question");
                     currRow.remove("answer");
                     currRow.remove("marked");
+                    currRow.remove("solution");
                     keyIt = currRow.keys();
-                    while(keyIt.hasNext())
-                    {
+                    while (keyIt.hasNext()) {
                         options.add(currRow.getString((String) keyIt.next()));
                     }
+                    options.add(solution);
                     options.add(String.valueOf(marked)); //Put indexer as last child.
-                    questOpPairs.put(id, new Pair<>(quesAns ,options));
+                    questOpPairs.put(id, new Pair<>(quesAns, options));
                 }
 
                 /*
@@ -162,7 +174,7 @@ public class StartupPage extends AppCompatActivity {
                  */
 
                 StartupPage.this.columns = columns;
-                DbHelperQuiz db = new DbHelperQuiz(StartupPage.this, title,columns);
+                DbHelperQuiz db = new DbHelperQuiz(StartupPage.this, title, columns);
                 db.createTable();
                 db.upgradeQuiz(questOpPairs); //store subNav.db locally
 
@@ -171,34 +183,35 @@ public class StartupPage extends AppCompatActivity {
 
 
                 String takenTable = remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                        "SELECT * FROM  " + "`"+username+"Taken` ", loginUrl);//BACKTICKS
-                                                                                // CRITICAL OMG
-                jTable = new JSONArray(takenTable);
-                HashMap<String, Integer> quizTakenPairs = new HashMap<>();
-                for(int i = 0; i < jTable.length(); i++)
-                {
-                    currRow = jTable.getJSONObject(i);
-                    System.out.println(currRow.getInt("taken"));
-                    quizTakenPairs.put(currRow.getString("title"),currRow.getInt("taken"));
+                        "SELECT * FROM  " + "`" + username + "Taken` ", loginUrl);//BACKTICKS
+                // CRITICAL OMG
+                if(!takenTable.equals("")) {
+
+                    jTable = new JSONArray(takenTable);
+                    HashMap<String, Integer> quizTakenPairs = new HashMap<>();
+                    for (int i = 0; i < jTable.length(); i++) {
+                        currRow = jTable.getJSONObject(i);
+                        quizTakenPairs.put(currRow.getString("title"), currRow.getInt("taken"));
+                    }
+                    DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
+                    dbTaken.createTable();
+                    dbTaken.upgradeTaken(quizTakenPairs);
                 }
-                DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
-                dbTaken.createTable();
-                dbTaken.upgradeTaken(quizTakenPairs);
 
-
-
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
 
-
         protected void onPostExecute(String message){
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username+"Taken");
+            TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
+            numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
+            DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
+
             int taken = dbTaken.getIsTaken(title);
             if(taken == 1)
                 isTaken = true;
@@ -229,6 +242,10 @@ public class StartupPage extends AppCompatActivity {
             });
 
         }
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }

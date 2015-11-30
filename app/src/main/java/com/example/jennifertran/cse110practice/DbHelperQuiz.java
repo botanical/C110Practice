@@ -26,10 +26,8 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_QUES = "question";
     private static final String KEY_ANSWER = "answer"; //correct option
-    private static final String KEY_OPTA= "opta"; //option a
-    private static final String KEY_OPTB= "optb"; //option b
-    private static final String KEY_OPTC= "optc"; //option c
     private static final String KEY_MARKED = "marked"; //marked answer by user
+    private static final String KEY_SOLUTION = "solution";
     private ArrayList<String> optionCols;
 
     private SQLiteDatabase dbase;
@@ -49,9 +47,12 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
+                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT)";
+        //SOLUTION Column is currently included with colQuery
+        System.out.println("ONCREATE QUERY: "+sql);
 
-        System.out.println("CREATE TABLE QUERY "+sql);
+        //TODO remove solution from colQuery
+
         db.execSQL(sql);
         //db.close()
         //Sets question id's to start from 0 instead of 1
@@ -70,9 +71,16 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
     {
         //The last child in the list of children for each header is actually that row's index
 
-        System.out.println("QUEST OP PAIRS:" + questOpPairs);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(table, null, null); //Delete entries in old table
+        //db.delete(table, null, null); //Delete entries in old table
+        db.execSQL("DROP TABLE " + table);
+        createTable();
+        System.out.println("TABLE: " + table);
+        System.out.println("DATABASE: ");
+        Cursor cur = db.rawQuery("SELECT * FROM "+table,null);
+        DatabaseUtils.dumpCursor(cur);
+
+
         Iterator<?> keyIt = questOpPairs.keySet().iterator();
         String currRow;
         ArrayList<String> currOptions;
@@ -88,14 +96,20 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
             colValuePairs.put("answer", questOpPairs.get(currRow).first.second);
 
             //Iterate until last child. The last child is actually the index of the row.
-            for(int i = 0; i < currOptions.size()-1; i++)
+            for(int i = 0; i < currOptions.size()-2; i++) //TODO make final instance const
             {
                 colValuePairs.put(optionCols.get(i),  currOptions.get(i));
             }
-            String marked = currOptions.get(currOptions.size() - 1);
+            String solution = currOptions.get(currOptions.size() -2); //gets Solution
+            String marked = currOptions.get(currOptions.size() - 1);  //gets Marked
             colValuePairs.put("marked", marked);
+            colValuePairs.put("solution", solution);
             db.insert(table, null, colValuePairs);
         }
+        System.out.println("TABLE: "+table);
+        System.out.println("DATABASE AFTER: ");
+        cur = db.rawQuery("SELECT * FROM "+table,null);
+        DatabaseUtils.dumpCursor(cur);
         //db.close();
     }
 
@@ -109,7 +123,7 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + table + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
-                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_MARKED+" TEXT)";
+                + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
 
         System.out.println("CREATE TABLE QUERY "+sql);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -136,33 +150,6 @@ public class DbHelperQuiz extends SQLiteOpenHelper {
         // Inserting Row
         dbase.insert(table, null, values);
     }
-    /*
-    public List<Question> getAllQuestions() {
-        List<Question> quesList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + table;
-        dbase=this.getReadableDatabase();
-        Cursor cursor = dbase.rawQuery(selectQuery, null);
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Question quest = new Question();
-                quest.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-                quest.setQUESTION(cursor.getString((cursor.getColumnIndex(KEY_QUES))));
-                quest.setANSWER(cursor.getString(cursor.getColumnIndex(KEY_ANSWER)));
-                quest.setOPTA(cursor.getString(cursor.getColumnIndex(KEY_OPTA)));
-                quest.setOPTB(cursor.getString(cursor.getColumnIndex(KEY_OPTB)));
-                quest.setOPTC(cursor.getString(cursor.getColumnIndex(KEY_OPTC)));
-                quest.setMARKED(cursor.getString(cursor.getColumnIndex(KEY_MARKED)));
-
-                quesList.add(quest);
-            } while (cursor.moveToNext());
-        }
-        // return quest list
-        cursor.close();
-        return quesList;
-    }
-*/
 
     ArrayList<ArrayList<String>> getQuestions (String tableName)
     {
