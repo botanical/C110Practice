@@ -330,19 +330,19 @@ public class EditQuizActivity extends AppCompatActivity {
 
             //Set new Question title
             String newQuestion = quiz.getCurrentQuestion().getQuestionField().getText().toString();
-            String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
+            //String newSolution = quiz.getCurrentQuestion().getSolutionField().getText().toString();
 
 
-            System.out.println("NEW SOLUTION " + newSolution);
+            //System.out.println("NEW SOLUTION " + newSolution);
         if (!newQuestion.equals("")) {
                 quiz.getCurrentQuestion().setQuestion(newQuestion);
                 textQuestion.setText(newQuestion);
             }
-        if(!newSolution.equals("")) {
+      /*  if(!newSolution.equals("")) {
             quiz.getCurrentQuestion().setSolution(newSolution);
             System.out.println("solution in Q " + quiz.getCurrentQuestion().getSolution());
 
-        }
+        }*/
 
 
         //Set new Question radioButtons

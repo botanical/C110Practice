@@ -23,7 +23,6 @@ public class ResultActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         if( getIntent().getExtras() == null ) {
             setTitle("Results!");
-
             return;
         }
         setContentView(R.layout.activity_result);

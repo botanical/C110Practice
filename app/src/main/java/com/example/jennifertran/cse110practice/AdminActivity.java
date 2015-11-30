@@ -166,61 +166,63 @@ public class AdminActivity extends AppCompatActivity {
                 Update list of subjects and their associated quizzes to local database;
              */
             try {
-                JSONArray jTable = new JSONArray(table);
-                JSONObject currRow;
-                List<String> columns = new ArrayList<>();
-                currRow = jTable.getJSONObject(0);
-                Iterator<?> keyIt = currRow.keys();
-                while(keyIt.hasNext()) //get column names for new local database
-                {
-                    String n = (String) keyIt.next();
-
-                    //Add all child columns to columns
-                    if((!n.equals("class")) && (!n.equals("indexer")))
-                        columns.add(n);
-                }
-                Map<String,List<String>> classChildPairs = new HashMap<>();
-
-
-                //Handle Dynamic Number of Children
-                for (int i = 0; i < jTable.length(); i++) {
-                    //
-                    List<String> children = new ArrayList<>();
-                    currRow = jTable.getJSONObject(i);
-                    String aClass = currRow.getString("class");
-                    String indexer = currRow.getString("indexer");
-                    currRow.remove("class");
-                    currRow.remove("indexer");
-                    keyIt = currRow.keys();
-                    while(keyIt.hasNext())
+                if(!table.equals("")) {
+                    JSONArray jTable = new JSONArray(table);
+                    JSONObject currRow;
+                    List<String> columns = new ArrayList<>();
+                    currRow = jTable.getJSONObject(0);
+                    Iterator<?> keyIt = currRow.keys();
+                    while (keyIt.hasNext()) //get column names for new local database
                     {
-                        children.add(currRow.getString((String) keyIt.next()));
+                        String n = (String) keyIt.next();
+
+                        //Add all child columns to columns
+                        if ((!n.equals("class")) && (!n.equals("indexer")))
+                            columns.add(n);
                     }
-                    children.add(String.valueOf(indexer)); //Put indexer as last child.
-                    classChildPairs.put(aClass, children);
-                }
+                    Map<String, List<String>> classChildPairs = new HashMap<>();
+
+
+                    //Handle Dynamic Number of Children
+                    for (int i = 0; i < jTable.length(); i++) {
+                        //
+                        List<String> children = new ArrayList<>();
+                        currRow = jTable.getJSONObject(i);
+                        String aClass = currRow.getString("class");
+                        String indexer = currRow.getString("indexer");
+                        currRow.remove("class");
+                        currRow.remove("indexer");
+                        keyIt = currRow.keys();
+                        while (keyIt.hasNext()) {
+                            children.add(currRow.getString((String) keyIt.next()));
+                        }
+                        children.add(String.valueOf(indexer)); //Put indexer as last child.
+                        classChildPairs.put(aClass, children);
+                    }
 
                 /*
                     Create local subject nav table to hold subjects and their respective
                     quizzes. Insert class and childList pairs into local database
-
                  */
 
-                DbHelperAdminClasses db = new DbHelperAdminClasses(AdminActivity.this,username,columns);
-                db.createTable();
-                db.upgradeAdminClasses(classChildPairs); //store subNav.db locally
-
+                    DbHelperAdminClasses db = new DbHelperAdminClasses(AdminActivity.this, username, columns);
+                    db.createTable();
+                    db.upgradeAdminClasses(classChildPairs); //store subNav.db locally
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }
-            return null;
+            return String.valueOf(table.equals(""));
         }
 
         protected void onPostExecute(String message){
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            loadClasses();
+            System.out.println("MESSAGE "+message);
+            if(message.equals("false")) { // != ""
+                loadClasses();
+            }
 
         }
     }
@@ -229,6 +231,7 @@ public class AdminActivity extends AppCompatActivity {
 
         DbHelperAdminClasses db = new DbHelperAdminClasses(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadAdminClasses(username);
+        System.out.println(pair.second);
         if(pair == null){
             return;
         }

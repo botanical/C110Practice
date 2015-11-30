@@ -214,10 +214,9 @@ public class SubjectNavActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String message){
+            loadLocalQuizzes();
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
-
-            loadLocalQuizzes();
 
         }
     }
@@ -300,6 +299,8 @@ public class SubjectNavActivity extends AppCompatActivity {
                     SubjectNavActivity.this);
 
             System.out.println(classes);
+
+
             listPopupWindow.setAdapter(new ArrayAdapter(
                     SubjectNavActivity.this,
                     R.layout.class_list_item, classes.toArray()));

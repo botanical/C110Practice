@@ -160,6 +160,16 @@
             android:textColor="@color/app_text"
 
             />
+        <CheckBox
+            android:id="@+id/check"
+            android:text="Check to register as an Admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:clickable="false"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/login_page_username_field_text_size"
+            android:buttonTint="#ffffff"/>
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
