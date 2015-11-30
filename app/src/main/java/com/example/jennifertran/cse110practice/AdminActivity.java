@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -232,8 +234,10 @@ public class AdminActivity extends AppCompatActivity {
         if(pair == null){
             return;
         }
+
         listDataClass = pair.first;
         listDataChild = pair.second;
+
         listAdapter = new ExpandableListAdapter(AdminActivity.this, listDataClass,
                 listDataChild);
 
