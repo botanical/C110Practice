@@ -43,12 +43,10 @@ public class StartupPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup_page);
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
-        // displaying subject text
         Intent intent = getIntent();
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
         username = intent.getStringExtra("username");
-        TextView subText = (TextView) findViewById(R.id.subject_title_id);
-        subText.setText(title);
+        setTitle(title); // display subject and title in bar
         title = intent.getStringExtra("title");
         new AttemptUpdateQuiz().execute();
     }
@@ -208,8 +206,8 @@ public class StartupPage extends AppCompatActivity {
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
-            numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
+            TextView numQ = (TextView) findViewById(R.id.num_of_questions);
+            numQ.setText(String.valueOf(numQuestions));
             DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
 
             int taken = dbTaken.getIsTaken(title);
