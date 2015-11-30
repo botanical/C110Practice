@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class ELATest extends BaseExpandableListAdapter {
@@ -48,6 +49,7 @@ public class ELATest extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
         txtListChild.setText(entry.TextEntry);
         txtListChild.setTextSize(20);
+
 /*
         convertView.setBackgroundColor(entry.color);
 

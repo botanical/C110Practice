@@ -8,7 +8,6 @@ import android.os.CountDownTimer;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -238,7 +237,7 @@ public class QuizActivity extends AppCompatActivity {
                 //RadioGroup grp = (RadioGroup) findViewById(R.id.radioGroup1);
                 // Save the user's answer
                 answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
-                Log.d("size of score", String.valueOf(answerScore.length));
+
                 for (int i : answerScore) {
                     score = answerScore[i] + score;
                 }

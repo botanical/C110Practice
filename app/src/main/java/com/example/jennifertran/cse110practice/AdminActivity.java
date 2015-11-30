@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -226,14 +227,17 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void loadClasses() {
-
+        Button create_quiz = new Button(this);
+        create_quiz.setText("Create new quiz");
         DbHelperAdminClasses db = new DbHelperAdminClasses(this);
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadAdminClasses(username);
         if(pair == null){
             return;
         }
+
         listDataClass = pair.first;
         listDataChild = pair.second;
+
         listAdapter = new ExpandableListAdapter(AdminActivity.this, listDataClass,
                 listDataChild);
 
