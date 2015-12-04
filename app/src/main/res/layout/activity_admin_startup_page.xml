@@ -1,51 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:id="@+id/startupLayout"
     tools:context="com.example.jennifertran.cse110practice.StartupPage">
 
-    <!-- Instructions Text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Click Start to Edit the current Quiz."
-        android:id="@+id/instruc_id"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_marginBottom="40dp">
 
-    <!-- Subject Text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text="Subject: "
-        android:id="@+id/subject_title_id"
-        android:layout_below="@+id/instruc_id"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="40dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <!-- Number of Questions -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text="Number of Questions: "
-        android:id="@+id/num_of_questions_text"
-        android:layout_below="@+id/subject_title_id"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="40dp" />
+                <!-- Instructions Text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Click Edit to start editing the current quiz."
+                    android:id="@+id/instruc_id"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" />
 
-    <!-- Start button -->
+                <!-- Number of Questions -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold"
+                    android:text="Number of Questions: "
+                    android:id="@+id/num_title"
+                    android:layout_below="@+id/instruc_id"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/num_of_questions"
+                    android:layout_alignTop="@+id/num_title"
+                    android:layout_toEndOf="@+id/num_title" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Edit button -->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

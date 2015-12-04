@@ -43,8 +43,6 @@ public class AdminStartupPageActivity extends AppCompatActivity {
         // displaying subject text
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
-        TextView subText = (TextView) findViewById(R.id.subject_title_id);
-        subText.setText(title);
         title = intent.getStringExtra("title");
         setTitle(title);
         new AttemptUpdateQuiz().execute();
@@ -150,8 +148,8 @@ public class AdminStartupPageActivity extends AppCompatActivity {
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
-            numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
+            TextView numQ = (TextView) findViewById(R.id.num_of_questions);
+            numQ.setText(String.valueOf(numQuestions));
 
             // set listener of start button to call startQuiz() on press
             findViewById(R.id.start_quiz_button).setOnClickListener(new View.OnClickListener() {
