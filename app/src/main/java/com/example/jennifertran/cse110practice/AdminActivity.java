@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -166,14 +168,15 @@ public class AdminActivity extends AppCompatActivity {
                 Update list of subjects and their associated quizzes to local database;
              */
             try {
-                JSONArray jTable = new JSONArray(table);
-                JSONObject currRow;
-                List<String> columns = new ArrayList<>();
-                currRow = jTable.getJSONObject(0);
-                Iterator<?> keyIt = currRow.keys();
-                while(keyIt.hasNext()) //get column names for new local database
-                {
-                    String n = (String) keyIt.next();
+                if(!table.equals("")) {
+                    JSONArray jTable = new JSONArray(table);
+                    JSONObject currRow;
+                    List<String> columns = new ArrayList<>();
+                    currRow = jTable.getJSONObject(0);
+                    Iterator<?> keyIt = currRow.keys();
+                    while (keyIt.hasNext()) //get column names for new local database
+                    {
+                        String n = (String) keyIt.next();
 
                     //Add all child columns to columns
                     if((!n.equals("class")) && (!n.equals("indexer")))
@@ -206,21 +209,24 @@ public class AdminActivity extends AppCompatActivity {
 
                  */
 
-                DbHelperAdminClasses db = new DbHelperAdminClasses(AdminActivity.this,username,columns);
-                db.createTable();
-                db.upgradeAdminClasses(classChildPairs); //store subNav.db locally
-
+                    DbHelperAdminClasses db = new DbHelperAdminClasses(AdminActivity.this, username, columns);
+                    db.createTable();
+                    db.upgradeAdminClasses(classChildPairs); //store subNav.db locally
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }
-            return null;
+            return String.valueOf(table.equals(""));
         }
 
         protected void onPostExecute(String message){
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
-            loadClasses();
+            System.out.println("MESSAGE " + message);
+            if(message.equals("false")) { // != ""
+                loadClasses();
+            }
 
         }
     }
@@ -232,8 +238,10 @@ public class AdminActivity extends AppCompatActivity {
         if(pair == null){
             return;
         }
+
         listDataClass = pair.first;
         listDataChild = pair.second;
+
         listAdapter = new ExpandableListAdapter(AdminActivity.this, listDataClass,
                 listDataChild);
 
@@ -699,27 +707,33 @@ public class AdminActivity extends AppCompatActivity {
                     "SELECT * FROM "+username+"Classes",
                     loginUrl);
             try {
-                JSONArray jTable = new JSONArray(table);
-                JSONObject currRow;
-                List<String> columns = new ArrayList<>();
-                currRow = jTable.getJSONObject(0);
-                Iterator<?> keyIt = currRow.keys();
-                String colString="";
-                while(keyIt.hasNext()) //get column names for new local database
+                if(table.equals(""))
                 {
-                    String n = (String) keyIt.next();
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            "INSERT INTO `" + username + "Classes` VALUES ( '"+newClass+"', '', '', '')",
+                            loginUrl);
+                } else {
+                    JSONArray jTable = new JSONArray(table);
+                    JSONObject currRow;
+                    List<String> columns = new ArrayList<>();
+                    currRow = jTable.getJSONObject(0);
+                    Iterator<?> keyIt = currRow.keys();
+                    String colString = "";
+                    while (keyIt.hasNext()) //get column names for new local database
+                    {
+                        String n = (String) keyIt.next();
 
-                    //Add all child columns to columns
-                    if((!n.equals("class")) && (!n.equals("indexer"))) {
-                        columns.add(n);
-                        colString += "'',";
+                        //Add all child columns to columns
+                        if ((!n.equals("class")) && (!n.equals("indexer"))) {
+                            columns.add(n);
+                            colString += "'',";
+                        }
                     }
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            "INSERT INTO `" + username + "Classes` VALUES ( '" + newClass + "', " + colString + " '')",
+                            loginUrl);
+
                 }
-                remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
-                        "INSERT INTO `" + username + "Classes` VALUES ( '"+newClass+"', "+colString+" '')",
-                        loginUrl);
-
-
             }catch(Exception e){
                 e.printStackTrace();
             }

@@ -238,7 +238,7 @@ public class QuizActivity extends AppCompatActivity {
                 // Save the user's answer
                 answer = (RadioButton) findViewById(grp.getCheckedRadioButtonId());
 
-                for (int i : answerScore) {
+                for (int i = 0; i < answerScore.length; i++) {
                     score = answerScore[i] + score;
                 }
                 submit();

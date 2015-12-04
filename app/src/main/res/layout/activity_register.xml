@@ -28,17 +28,9 @@
 
         >
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            android:layout_weight="1.48" />
-
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            android:layout_weight="3.59"
+            android:layout_height="wrap_content"
 
             android:gravity="center"
             android:textSize="@dimen/login_page_title_text_size"
@@ -47,9 +39,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-
-            android:layout_weight="2.19"
+            android:layout_height="wrap_content"
 
             android:gravity="center_vertical|start"
             android:textSize="@dimen/login_page_username_field_label_text_size"
@@ -160,12 +150,24 @@
             android:textColor="@color/app_text"
 
             />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
             android:background="@color/login_page_bg"
             />
+
+        <CheckBox
+            android:id="@+id/check"
+            android:text="Check to register as an Admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:clickable="false"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/login_page_username_field_text_size"
+            android:buttonTint="#ffffff"/>
     </LinearLayout>
 
 
