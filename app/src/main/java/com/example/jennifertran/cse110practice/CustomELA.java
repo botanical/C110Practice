@@ -11,15 +11,15 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ELATest extends BaseExpandableListAdapter {
+public class CustomELA extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ELAEntry> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, ArrayList<ELAEntry>> _listDataChild;
 
-    public ELATest(Context context, ArrayList<ELAEntry> listDataHeader,
-                                 HashMap<String, ArrayList<ELAEntry>> listChildData) {
+    public CustomELA(Context context, ArrayList<ELAEntry> listDataHeader,
+                     HashMap<String, ArrayList<ELAEntry>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;

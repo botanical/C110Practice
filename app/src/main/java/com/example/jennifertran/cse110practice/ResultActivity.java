@@ -4,16 +4,24 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ExpandableListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*
+ * Name: ResultActivity
+ * Parent Activity: QuizActivity/AnalysisActivity
+ * Purpose: Result activity is what QuizActivity/AnalysisActivity direct to after the quiz/analysis are
+ * done. The result page tells the user what questions they missed, answered, and answered correctly as
+ * well as providing information about what the correct answers should have been. The activity
+ * uses a custom class CustomELA in order to save more than just strings.
+ * Children Activity: None
+ */
+
 public class ResultActivity extends AppCompatActivity{
-    ELATest listAdapter;
+    CustomELA listAdapter; //The
     ExpandableListView expListView;
     ArrayList<ELAEntry> listDataHeader = new ArrayList<>();
     HashMap<String, ArrayList<ELAEntry>> listDataChild = new HashMap<>();
@@ -74,7 +82,7 @@ public class ResultActivity extends AppCompatActivity{
             childList.add(yourAnswerEntry);
             listDataChild.put(headerEntry.TextEntry, childList);
         }
-        listAdapter = new ELATest(ResultActivity.this, listDataHeader, listDataChild);
+        listAdapter = new CustomELA(ResultActivity.this, listDataHeader, listDataChild);
         // setting list adapter
         expListView.setAdapter(listAdapter);
 

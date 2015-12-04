@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.Subject;
 
+
 public class SubjectNavActivity extends AppCompatActivity {
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
