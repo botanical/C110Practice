@@ -41,32 +41,59 @@ import org.json.JSONObject;
 import javax.security.auth.Subject;
 
 
+/*
+ * Name: SubjectNavActivity
+ * Parent Activity: LoginActivity
+ * Purpose: The purpose of subjectNavActivity is to provide a list of subjects the user
+ * has access to and the corrisponding quizes for those subjects.
+ * Children Activity: QuizActivity
+ */
+
 public class SubjectNavActivity extends AppCompatActivity {
+    //We need the ELA to store the subjects/quizes
     ExpandableListAdapter listAdapter;
+    //The view of the ELA (we will set the xml file view to this field later).
     ExpandableListView expListView;
+    //List of parent nodes
     List<String> listDataHeader;
+
+    //The various  childLists we have underneath each parent (parent - childlist)
     HashMap<String, List<String>> listDataChild;
+
+    //With the classpairs hashmap we map quizes to admins so that users only get the correct
+    //quizes from their teacher.
     HashMap<String,String> classPairs;
+
+    //List of classes we have access to
     ArrayList<String> classes;
+    //Progress dialog we need when we are loading from the database
     ProgressDialog pDialog;
+
+    //Query url to the database
     private String loginUrl;
     private SQLiteDatabase loc;
     String selectedClass;
     String selectForDelete;
     View removeClass;
+
+    //The bool we use to check which "mode" we are in. Select or remove.
     Boolean remClass = false;
+
 
     public final static String EXTRA_MESSAGE = "extra message?"; // for sending intent
     public String username;
 
+    //Function that gets called when the activity starts.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //if we have an action bar, set up said action bar.
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        //Query url to the database
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
         //Receive data from LoginActivity
         Intent loginIntent = getIntent();
@@ -86,6 +113,7 @@ public class SubjectNavActivity extends AppCompatActivity {
         // preparing list data
         prepareListData();
 
+        //We add buttons here for adding/removing classes and logging out
         findViewById(R.id.addClass).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,13 +151,11 @@ public class SubjectNavActivity extends AppCompatActivity {
     /*
      * Preparing the list data
      */
-    //TODO call loadLocalQuizzes if AttemptUpdateQuizzes isn't needed
     private void prepareListData() {
 
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
         new AttemptUpdateQuizzes().execute();
-
         /*
             Currently, the app always loads quizzes from the database.
             When I add timestamps on Quiz tables, I'll compare the server timestamps
@@ -138,8 +164,15 @@ public class SubjectNavActivity extends AppCompatActivity {
         //if attemptUpdateQuizzess is not needed then
         //loadLocalQuizzes();
     }
+
+    //The attemptUpdateQuizzes method is our method for querying the
+    //database in order to update the individual. quizes for the user
+    // The reason it extends AsyncTask is because in order
+    //to query the db we need to generate a separate thread.
     class AttemptUpdateQuizzes extends AsyncTask<String,String,String>{
 
+        //Method called for what happens before we generate the thread. Pretty much we set up
+        //The progress dialog and then wait for the query to the database to run.
         protected void onPreExecute(){
             super.onPreExecute();
             pDialog = new ProgressDialog(SubjectNavActivity.this);
@@ -149,6 +182,7 @@ public class SubjectNavActivity extends AppCompatActivity {
             pDialog.show();
 
         }
+        //This is the actual call to the db
         @Override
         protected String doInBackground(String... params) {
             RemoteDBHelper remDb = new RemoteDBHelper();
@@ -223,9 +257,11 @@ public class SubjectNavActivity extends AppCompatActivity {
         }
     }
 
+    //AttemptGetClass is the method we use to get the individual quizes based on the admin we have
     class AttemptGetClass extends AsyncTask<String,String,String>
     {
 
+        //Setting up the progress dialog
         @Override
         protected void onPreExecute()
         {
@@ -238,6 +274,9 @@ public class SubjectNavActivity extends AppCompatActivity {
 
         }
 
+
+        //In this method we query the db for the admin that we want, then we obtain all the
+        //quizes from said admin.
         @Override
         protected String doInBackground(String... params) {
 
@@ -291,7 +330,8 @@ public class SubjectNavActivity extends AppCompatActivity {
 
             return null;
         }
-
+        //Exit out of the progress dialog, set up pop up window where the user selects
+        //From the admins
         @Override
         protected void onPostExecute(String message) {
             if (pDialog != null && pDialog.isShowing())
@@ -323,10 +363,11 @@ public class SubjectNavActivity extends AppCompatActivity {
         }
     }
 
-
+    //This class queries the db in order to add a subject to the user from the db. We only
+    //add classes from the admin we have chosen.
     class AttemptAddClass extends AsyncTask<String,String,String>
     {
-
+        //Sets up the progress dialog.
         @Override
         protected void onPreExecute()
         {
@@ -351,11 +392,12 @@ public class SubjectNavActivity extends AppCompatActivity {
                     sqlSelect, loginUrl);
 
 
-
+            //This try block parses the object returned by the DB query
             try {
                 if(!newQuizzes.equals("")) {
                     JSONArray jTable = new JSONArray(newQuizzes);
                     JSONObject currRow = jTable.getJSONObject(0);
+                    //Breaking down the parsed object to make it more managable.
                     String header = currRow.getString("class");
                     currRow.remove("class");
                     String indexer = currRow.getString("indexer");
@@ -381,7 +423,8 @@ public class SubjectNavActivity extends AppCompatActivity {
                         System.out.println("COLSIZE: "+cols.size());
                         System.out.println("COLS: "+cols);
 
-
+                        //Readjust database if cols are greater, tables must be the same accross
+                        //all dbs.
                         if(cols.size() > userColSize)
                         {
 
@@ -408,7 +451,7 @@ public class SubjectNavActivity extends AppCompatActivity {
                         }
                     }
 
-
+                    //Reinserting all the quizes back into the db.
                     String colQuery = "";
                     for(int i = 0; i < cols.size(); i++)
                     {
@@ -434,7 +477,7 @@ public class SubjectNavActivity extends AppCompatActivity {
             }
             return null;
         }
-
+        //Exit progress dialog
         @Override
         protected void onPostExecute(String message)
         {
@@ -453,9 +496,10 @@ public class SubjectNavActivity extends AppCompatActivity {
 
 
 
-
+    //Creates the local db we use to load local quizzes
     private void loadLocalQuizzes() {
         DbHelperSubNav db = new DbHelperSubNav(this);
+        //This is the expandable list, which we save to the local db
         Pair<ArrayList<String>, HashMap<String, List<String>> > pair = db.loadSubNav(username);
 
         //TODO add behavior for this user has no quizzes
@@ -515,6 +559,7 @@ public class SubjectNavActivity extends AppCompatActivity {
 
     }
 
+    //Logs the user out back to login activity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -549,19 +594,22 @@ public class SubjectNavActivity extends AppCompatActivity {
         return true;
     }
 
+    //Class to remove quiz items
     class AttemptRemoveClass extends AsyncTask<String,String,String>{
+        //Obligatory dialog bar
         @Override
         protected void onPreExecute()
         {
             super.onPreExecute();
             pDialog = new ProgressDialog(SubjectNavActivity.this);
-            pDialog.setMessage("Adding Class");
+            pDialog.setMessage("Remove Class");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
 
         }
 
+        //Delete the quiz from the users table of quizzes.
         @Override
         protected String doInBackground(String... params) {
 
@@ -604,7 +652,7 @@ public class SubjectNavActivity extends AppCompatActivity {
 
             return null;
         }
-
+        //obligatory end dialog
         @Override
         protected void onPostExecute(String message)
         {
