@@ -32,8 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     String email;
     String loginUrl;
     Boolean isAdmin = false;
-    //EditText is_admin;
-    //Last login is final entry
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
