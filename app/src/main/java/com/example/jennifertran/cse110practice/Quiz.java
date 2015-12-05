@@ -2,17 +2,26 @@ package com.example.jennifertran.cse110practice;
 
 import java.util.ArrayList;
 
-/**
- * Created by emd_000 on 11/14/2015.
+/*
+ * Name: Quiz
+ * Parent Activity: SubjectNavActivity
+ * Purpose: The quiz object which represents the entirity of the quiz being taken in
+ * QuizActivity.
+ * Children Activity: ResultActivity
  */
 public class Quiz {
+    //The list of questions the quiz contains
     private ArrayList<Question> questionList;
+    //The answers to the questions in the quiz.
     private ArrayList<String> answers = new ArrayList<>();
+    //Title of the quiz shown in the subjectNav
     private String title;
+    //Questions and cols of quiz. Cols is used to create a uniform structure in the quiz
+    //In case questions have different amounts of options.
     private int numQuestions;
     private int numCols;
+    //The current viewed question
     private Question currentQuestion;
-    private int currentQuestionIndex;
 
 
 
@@ -24,6 +33,7 @@ public class Quiz {
         currentQuestion = questionList.get(0); //currentQuestion is by default the first question
 
     }
+
     /* generateAnswers()
        Purpose: Pull answers from this Quiz's questions and put into this Quiz's list of 'answers'
        Parameter: None
@@ -80,6 +90,7 @@ public class Quiz {
             q.setNumCols(this.numCols);
         }
     }
+    //setters
     public void setTitle(String title){ this.title = title; }
     public void setNumQuestions(int numQuestions) { this.numQuestions = numQuestions; }
     public void setCurrentQuestion(Question currentQuestion){ this.currentQuestion = currentQuestion; }
@@ -94,11 +105,11 @@ public class Quiz {
     public int getNumQuestions() { return this.numQuestions; }
     public Question getCurrentQuestion() { return this.currentQuestion; }
     public ArrayList<String> getAnswers() { return this.answers; }
-
-
     public int getNumCols() { return this.numCols; }
     public void setNumCols(int numCols) { this.numCols = numCols; }
 
+    //An extremely important method. This method updates each question to have the correct
+    //number of columns so that they can be passed into the database correctly.
     public void updateNumColsOfQuestions(int numCols) {
         for(Question q : questionList)
         {
@@ -106,7 +117,7 @@ public class Quiz {
         }
     }
 
-
+    //A method that turns all of the questions to strings and then prints said strings.
     public String toString()
     {
         String quizStr = "{ ";

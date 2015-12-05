@@ -8,25 +8,52 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/*
+ * Name: Question
+ * Parent Activity: None
+ * Purpose: The question class creates an object which has all of the information individual
+ * questions will have in a quiz.
+ * Children Activity: None
+ */
+
 public class Question {
+    //The zero indexed question location in the array of questions stored in the quiz.
     private int id;
+
+    //The actual question text
     private String question;
+
+    //the List of options text
     private ArrayList<String> options;
+
+    //The physical buttons that corispond to options
     private ArrayList<RadioButton> radioButtons;
+
+    //The fields to edit the question text and solution text
     private EditText questionField, solutionField;
+
+    //The fields to edit questions, used to editQuizActivity
     private ArrayList<EditText> textFields;
+    //The correct answer
     private String answer;
+    //Whether or not we answered.
     private int marked;
+    //Whether or not we even looked at the question.
     private boolean viewed;
+    //The number of cols in the quiz total, used to resize the db table to the correct size
+    //with differing numbers of options for each question.
     private int numCols;
+    //The solution text
     private String solution;
+
+    //Values for determining the structure of the local db.
     private static final int KEY_ID = 0;
     private static final int KEY_QUESTION = 1;
     private static final int KEY_ANSWER = 2;
     private static final int DEFAULT_MARKED = -1;
     private static final int SOLUTION_OFFSET = 2;
 
-
+    //default constructor for a quiz question, adding dummy values.
     public Question()
     {
         id=0;
@@ -39,6 +66,7 @@ public class Question {
         viewed=false;
 
     }
+    //The constructor that sets the correct values for the quiz
     public Question(String question, ArrayList<String> options,
                     String answer, int marked, boolean viewed) {
         this.question = question;
@@ -47,6 +75,7 @@ public class Question {
         this.marked = marked;
         this.viewed = viewed;
     }
+    //All of the various getters and setterss we need to set the fields of the question
     public int getId()
     {
         return id;
@@ -93,6 +122,9 @@ public class Question {
     public void setNumCols(int numCols){ this.numCols = numCols; }
     public void setSolution(String solution){ this.solution = solution; }
 
+    //A method for turning in a very particularly set up array into a quiz.
+    //All of the indexes are marked with various values to determine what they should be
+    //ie a solution, id, what have you.
     static public Question arrayListToQuestion(ArrayList<String> row)
     {
 
@@ -114,6 +146,7 @@ public class Question {
         rowq.setViewed(false);
         return rowq;
     }
+    //Method for turning the question into a string representation. Generally used for debug output.
     public String toString (){
 
         int extra = this.numCols - this.options.size();
@@ -129,6 +162,4 @@ public class Question {
 
         return "( '"+ this.getId()+"', '"+this.getQuestion()+"', '"+this.getAnswer()+"', " +
                 cols +"'" +/*this.getSolution()+*/ "', '"+this.getMarked()+"' )";    }
-
-
 }
