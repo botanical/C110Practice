@@ -23,17 +23,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
+/*
+ * Name: StartupPage
+ * Parent Activity: SubjectNavActivity
+ * Purpose: To provide information to the user before they start the quiz, such as the length of time
+ * of the quiz.
+ * Children Activity: QuizActivity
+ */
+
+
 public class StartupPage extends AppCompatActivity {
-    Button start_button;
+    //Time we use for the quiz length
     int testTimeSend = 70000;
+
+    //Textview we list the time of the quiz
     TextView startTime;
+
+    //title of the quiz
     private String title;
+
+    //the users name
     private String username;
+    //progress dialog for async tasks
     private ProgressDialog pDialog;
+
+    //domain for db query
     private String loginUrl;
+    //columns we have in our db
     private ArrayList<String> columns;
+    //Time we have left
     public final static String EXTRA_TIME = "Time: ";
+    //is the quiz taken
     public boolean isTaken;
+    //questions in the quiz
     public int numQuestions;
 
 
@@ -41,13 +64,19 @@ public class StartupPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set the layout
         setContentView(R.layout.activity_startup_page);
+        //url for the query
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
         Intent intent = getIntent();
+        //title of quiz
         title = intent.getStringExtra(SubjectNavActivity.EXTRA_MESSAGE);
+        //username
         username = intent.getStringExtra("username");
         setTitle(title); // display subject and title in bar
         title = intent.getStringExtra("title");
+
+        //update the quize
         new AttemptUpdateQuiz().execute();
     }
 
@@ -57,6 +86,7 @@ public class StartupPage extends AppCompatActivity {
         super.onRestart();
         DbHelperTaken dbTaken = new DbHelperTaken(StartupPage.this, username);
         int taken = dbTaken.getIsTaken(title);
+
         if(taken == 1) {
             isTaken = true;
             Button b = (Button) findViewById(R.id.start_quiz_button);
@@ -83,8 +113,10 @@ public class StartupPage extends AppCompatActivity {
         }
     }
 
+    //Start the new quiz!
     private void startQuiz() {
         Intent intent = new Intent(this, QuizActivity.class);
+        //put the time/title/username. Need all these fields to take quiz/update db.
         intent.putExtra(EXTRA_TIME, testTimeSend);
         intent.putExtra("title",title);
         intent.putExtra("username", username);
@@ -99,6 +131,7 @@ public class StartupPage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //Db call to update the quiz
     class AttemptUpdateQuiz extends AsyncTask<String,String,String> {
 
         protected void onPreExecute(){
@@ -136,10 +169,11 @@ public class StartupPage extends AppCompatActivity {
                         columns.add(n);
                 }
 
-                /* q*/
-
+                //Make a map from questions to the options for said questions.
                 HashMap<String, Pair<Pair<String, String>, ArrayList<String>>> questOpPairs =
                         new HashMap<>();
+                //The purpose of this loop is to update the values of the quiz to reflect the values
+                //in the db.
                 for (int i = 0; i < jTable.length(); i++) {
 
                     ArrayList<String> options = new ArrayList<>();
@@ -201,7 +235,7 @@ public class StartupPage extends AppCompatActivity {
             }
             return null;
         }
-
+        //After updating the quiz set the time text and update isTaken fields
         protected void onPostExecute(String message){
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
@@ -241,6 +275,7 @@ public class StartupPage extends AppCompatActivity {
 
         }
     }
+    //If we press back we are done
     @Override
     public void onBackPressed() {
         finish();

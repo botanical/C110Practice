@@ -46,7 +46,7 @@ import javax.security.auth.Subject;
  * Parent Activity: LoginActivity
  * Purpose: The purpose of subjectNavActivity is to provide a list of subjects the user
  * has access to and the corrisponding quizes for those subjects.
- * Children Activity: QuizActivity
+ * Children Activity: startupPage
  */
 
 public class SubjectNavActivity extends AppCompatActivity {

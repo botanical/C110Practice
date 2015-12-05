@@ -1,8 +1,8 @@
 package com.example.jennifertran.cse110practice;
 
-/**
- * Created by JenniferTran on 11/16/15.
- */
+
+//The purpose of this class is to place the answerd and visited flags into the hamburger in
+//quiz activity.
 public class FragmentNavigationTitle {
     public int answered_icon;
     public int viewed_icon;

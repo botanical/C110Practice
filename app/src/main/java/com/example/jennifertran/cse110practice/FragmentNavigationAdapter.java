@@ -9,13 +9,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by JenniferTran on 11/16/15.
+/*
+ * Name: FragmentNavigationAdapter
+ * Parent Activity: None
+ * Purpose: The purpose of this class is to create a hamburger to be used in the quiz to
+ * navigate to certain questions (as well as tell users which questions they have answered).
+ * Children Activity: None
  */
 public class FragmentNavigationAdapter extends ArrayAdapter<FragmentNavigationTitle> {
 
+    //Context of the hamburger
     Context context;
+    //id for layout
     int layoutResourceId;
+    //Title of the fragment we create.
     FragmentNavigationTitle data[] = null;
 
     public FragmentNavigationAdapter(Context context, int layoutResourceId, FragmentNavigationTitle[] data) {
@@ -25,11 +32,12 @@ public class FragmentNavigationAdapter extends ArrayAdapter<FragmentNavigationTi
         this.data = data;
     }
 
+    //If the view is called we inflate the hamburger, which shows the answered and visited flags.
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         NavHolder holder = null;
-
+        //get default navholders if we have no info
         if(row == null)
         {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -42,11 +50,13 @@ public class FragmentNavigationAdapter extends ArrayAdapter<FragmentNavigationTi
 
             row.setTag(holder);
         }
+        //get actual image values if we have any row values.
         else
         {
             holder = (NavHolder)row.getTag();
         }
 
+        //set navholders
         FragmentNavigationTitle navigationTitle = data[position];
         holder.txtTitle.setText(navigationTitle.title);
         holder.v_imgIcon.setImageResource(navigationTitle.viewed_icon);
@@ -56,6 +66,7 @@ public class FragmentNavigationAdapter extends ArrayAdapter<FragmentNavigationTi
         return row;
     }
 
+    //Navholders simply contain two images and text.
     static class NavHolder
     {
         ImageView a_imgIcon;
