@@ -19,19 +19,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+/*
+ * AdminStartupPageActivity
+ * AdminStartupPageActivity is a launch pad for the EditQuizActivity where admins can edit quizzes
+ * they've already made.
+ *
+ * This activity displays some basic information about the quiz to be edited.
+ */
+
+
 public class AdminStartupPageActivity extends AppCompatActivity {
 
-    Button start_button;
     int testTimeSend = 70000;
     int numQuestions;
-    TextView startTime;
     private String title;
     private String username;
     private ProgressDialog pDialog;
     private String loginUrl;
     private ArrayList<String> columns;
     public final static String EXTRA_TIME = "Time: ";
-    public boolean isTaken;
 
 
 
@@ -39,10 +45,13 @@ public class AdminStartupPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_startup_page);
+
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
-        // displaying subject text
+
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+
+        /* Initialize this activity's title */
         TextView subText = (TextView) findViewById(R.id.subject_title_id);
         subText.setText(title);
         title = intent.getStringExtra("title");
@@ -50,6 +59,13 @@ public class AdminStartupPageActivity extends AppCompatActivity {
         new AttemptUpdateQuiz().execute();
     }
 
+
+    /*
+     * Name: startQuiz()
+     * Parameter: None
+     * Return: Void
+     * Function: Starts EditQuizActivity with the current username.
+     */
     private void startQuiz() {
         Intent intent = new Intent(this, EditQuizActivity.class);
         intent.putExtra(EXTRA_TIME, testTimeSend);
@@ -62,6 +78,11 @@ public class AdminStartupPageActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+     * Class: AttemptUpdateQuiz
+     * AttemptUpdateQuiz is an AsyncTask which attempts to update the quiz from the remote
+     * the user has selected and is about to edit.
+     */
     class AttemptUpdateQuiz extends AsyncTask<String,String,String> {
 
         protected void onPreExecute(){
@@ -98,8 +119,6 @@ public class AdminStartupPageActivity extends AppCompatActivity {
                         columns.add(n);
                 }
 
-                /* q*/
-
                 HashMap<String, Pair<Pair<String,String>, ArrayList<String>>> questOpPairs =
                         new HashMap<>();
                 for (int i = 0; i < jTable.length(); i++) {
@@ -111,6 +130,8 @@ public class AdminStartupPageActivity extends AppCompatActivity {
                     String answer   = currRow.getString("answer");
                     Pair<String, String> quesAns = new Pair<>(question, answer);
                     String marked   = currRow.getString("marked");
+
+                    //Remove the non-dynamic columns so we can iterate through the dynamic columns
                     currRow.remove("id");
                     currRow.remove("question");
                     currRow.remove("answer");
@@ -150,6 +171,7 @@ public class AdminStartupPageActivity extends AppCompatActivity {
             if(pDialog != null && pDialog.isShowing())
                 pDialog.dismiss();
 
+            /* Displays the number of questions in this quiz */
             TextView numQ = (TextView) findViewById(R.id.num_of_questions_text);
             numQ.setText("Number of Questions: " +String.valueOf(numQuestions));
 

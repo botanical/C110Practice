@@ -61,6 +61,18 @@
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
+            <Button
+                android:id="@+id/add_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADD RADIO BUTTON"
+                android:textColor="@color/quiz_button_color"
+                android:textSize="20dp"
+                android:background="@color/quiz_next_button_color"
+                android:weightSum="0.5"
+                android:layout_gravity="bottom"
+                android:layout_weight="0"
+                />
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">

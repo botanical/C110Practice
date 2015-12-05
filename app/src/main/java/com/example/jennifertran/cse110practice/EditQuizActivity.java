@@ -56,6 +56,14 @@ public class EditQuizActivity extends AppCompatActivity {
     String title;
     Quiz quiz;
 
+    final Context context = this;
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_QUES = "question";
+    private static final String KEY_ANSWER = "answer"; //correct option
+    private static final String KEY_MARKED = "marked"; //marked answer by user
+    private static final String KEY_SOLUTION = "solution";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,6 +221,43 @@ public class EditQuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 next();
+            }
+        });
+
+        findViewById(R.id.add_radio_button).setOnClickListener(new View.OnClickListener() {
+            //YYY
+            public void onClick(View view) {
+
+                RadioButton button = new RadioButton(context);
+                button.setText("MERP");
+
+                EditText text = new EditText(context);
+                text.setText("DERP");
+
+                //btns.add(button);
+                //fields.add(text);
+
+                quiz.getCurrentQuestion().getRadioButtons().add(button);
+                quiz.getCurrentQuestion().getTextFields().add(text);
+
+                grp.addView(button);
+                editGrp.addView(text);
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                if(quiz.getCurrentQuestion().getRadioButtons().size() > quiz.getNumCols()){
+                    quiz.updateNumColsOfQuestions(quiz.getCurrentQuestion().getRadioButtons().size());
+                }
+
+                System.out.println("COLSIZE" + quiz.getNumCols());
+
+                text.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        EditQuizActivity.this.tempSubmitEdit();
+                    }
+                });
+
             }
         });
 
@@ -642,9 +687,38 @@ public class EditQuizActivity extends AppCompatActivity {
             ArrayList<Question> questions = quiz.getQuestions();
             System.out.println("QUESTIONS "+ questions);
             //Delete old quiz
-            String delete = "DELETE FROM `"+title+"`";
-            remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+            String delete = "DROP TABLE IF EXISTS `"+title+"`";
+            remDb.queryRemote(context.getString(R.string.remotePass),
                     delete, loginUrl);
+
+            /*
+            NEW
+                    String createQuizStr = "CREATE TABLE IF NOT EXISTS `" + newQuiz + "` " +
+                            "( id INTEGER, question TEXT, answer TEXT, " +
+                            "option0 TEXT, solution TEXT, " +
+                            "marked VARCHAR(50) )";
+                    remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
+                            createQuizStr,
+                            loginUrl);
+             OLD
+                     String create = "CREATE TABLE IF NOT EXISTS `" + title+"`" + " ( "
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" TEXT )";
+             */
+
+
+            String colQuery = "";
+            for(int i = 0; i < quiz.getNumCols(); i++)
+            {
+                colQuery += "option" + i +" TEXT, ";
+            }
+            String create = "CREATE TABLE IF NOT EXISTS `" + title+"`" + " ( "
+                    + KEY_ID + " INTEGER, " + KEY_QUES
+                    + " TEXT, " + KEY_ANSWER+ " TEXT, "+colQuery+KEY_SOLUTION+" TEXT, "+KEY_MARKED+" VARCHAR(50) )";
+
+
+            remDb.queryRemote(context.getString(R.string.remotePass),
+                    create, loginUrl);
 
             //Replace with new quiz
             String sql = "INSERT INTO "+"`"+title+"` VALUES ";

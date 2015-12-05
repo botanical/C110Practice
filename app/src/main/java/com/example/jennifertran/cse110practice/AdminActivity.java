@@ -33,26 +33,45 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/*******
+ * Filename: AdminActivity.java
+ * Author: Ethan DeSon
+ * Date: 12/3/2015
+ *
+ * AdminActivity is the homepage for admin users. Here, admins can view a list of all the
+ * classes they have created, as well as the quizzes they've made for each class. AdminActivity
+ * includes functionality for creating new classes/quizzes and editing/deleting existing ones.
+ * From here, admins can tap on a specific quiz to enter EditQuizActivity where quiz editing takes
+ * place, or they can tap "logout" to return to LoginActivity.
+ *
+ */
+
 public class AdminActivity extends AppCompatActivity {
 
-    /* Adding member variables, strings, and booleans for fragments */
+    /* Setting up Hamburger Menu*/
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     String open_drawer = "Current Section";
+
+    /* Setting up Class/Quiz ExpandableList */
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     ArrayList<String> listDataClass;
     HashMap<String, List<String>> listDataChild;
-    ProgressDialog pDialog;
-    String username;
-    String loginUrl;
+
+    ProgressDialog pDialog; //Used when loading data from remote database
+    String username; //The current user's username
+    String loginUrl; //The URL of the file which accepts and handles Post requests to the remote db.
+
+    /* To handle class and quiz editing */
     String newQuiz;
     String newClass;
     String selectedClass;
     String selectedItem;
     Pair<String,String> quizParent;
 
+    /* To handle class and quiz addition/deletion */
     final String DEFAULT_TITLE = "Classes";
     boolean addQuizMode = false;
     boolean deleteMode  = false;
@@ -60,17 +79,21 @@ public class AdminActivity extends AppCompatActivity {
     boolean deleteQuiz = false;
 
 
-    final Context context = this;
+    final Context context = this; //The local context
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         setTitle(DEFAULT_TITLE);
+
+
         expListView = (ExpandableListView) findViewById(R.id.expListAdmin);
         Intent received = getIntent();
         username = received.getStringExtra("username");
         loginUrl = getApplicationContext().getString(R.string.queryUrl);
+
+
         /******************************** Create Hamburger  *********************************/
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.navList);  /* Set ListView for Fragment */
@@ -83,10 +106,12 @@ public class AdminActivity extends AppCompatActivity {
         }
         /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Create Hamburger  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-
+        /* Update classes */
         if(username != null)
             new AttemptUpdateClasses().execute();
 
+        /********************************* Initialize Buttons ******************************/
+        /* Logout Button */
         findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,9 +122,17 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
+        /* Add new Class Button */
         findViewById(R.id.button_new_class).setOnClickListener(new View.OnClickListener() {
+
+
+            /* Add new Class Button onClick()
+             * The add new Class Button opens an alertDialog prompting the user to confirm
+             * that they want to create a new class.
+             */
             @Override
             public void onClick(View view) {
+
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
                 // set title
@@ -119,8 +152,6 @@ public class AdminActivity extends AppCompatActivity {
                                 newClass = input.getText().toString();
                                 newClass = newClass.replaceAll("[\n\r]", "");
                                 new AttemptAddClass().execute();
-
-                                //TODO add yes stuff
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -136,14 +167,16 @@ public class AdminActivity extends AppCompatActivity {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
                 alertDialog.show();
-
-                /*
-                listAdapter.addHeader("TEST");
-                listAdapter.notifyDataSetChanged(); */
             }
+        /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Initialize Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
         });
     }
 
+
+    /* Class: AttemptUpdateClasses
+     * Helper class to update local class database from the remote database off the UI thread.
+     */
     class AttemptUpdateClasses extends AsyncTask<String,String,String> {
 
         protected void onPreExecute(){
@@ -227,6 +260,14 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * loadClasses()
+     * Parameters: None
+     * Returns: void
+     * Function: Loads a list of an admin's classes and the quizzes of each class from the local
+     * database.
+     *
+     */
     private void loadClasses() {
 
         DbHelperAdminClasses db = new DbHelperAdminClasses(this);
@@ -385,56 +426,19 @@ public class AdminActivity extends AppCompatActivity {
     /* Helper method called by onCreate to add drawer items to Drawer */
     private void addDrawerItems() {
 
-        //ArrayList<String> row;
-        //Question currQuestion;
-        //ArrayList<Question> questionList = quiz.getQuestions();
         FragmentNavigationAdapter mAdapter;
         FragmentNavigationTitle navTitle[] = new FragmentNavigationTitle[1];
                 navTitle[0] = new FragmentNavigationTitle (R.drawable.ic_answered_question_24px
                         , R.drawable.ic_unviewed_question_24px, "TEST");
-        //String[] questionNums = new String[questionList.size()]; //Used to hold question titles
 
-        /*
-        for (int i = 0; i < questionList.size(); i++) {
-            currQuestion = questionList.get(i);
-            //Add 1 to zero indexed question number
-            //questionNums[i] = "Question " + String.valueOf(currQuestion.getId()+1);
-
-
-            if (currQuestion.getViewed() == false && (currQuestion.getMarked() == -1)) {
-                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
-                        R.drawable.ic_unviewed_question_24px,
-                        "Question " + String.valueOf(currQuestion.getId() + 1));
-            }
-            else if (currQuestion.getViewed() == false && (currQuestion.getMarked() != -1)){
-                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
-                        R.drawable.ic_unviewed_question_24px,
-                        "Question " + String.valueOf(currQuestion.getId() + 1));
-            }
-            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() == -1)){
-                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_unanswered_question_24px,
-                        R.drawable.ic_viewed_question_24px,
-                        "Question " + String.valueOf(currQuestion.getId() + 1));
-            }
-
-            else if (currQuestion.getViewed() == true && (currQuestion.getMarked() != -1)){
-                navTitle[i] = new FragmentNavigationTitle(R.drawable.ic_answered_question_24px,
-                        R.drawable.ic_viewed_question_24px,
-                        "Question " + String.valueOf(currQuestion.getId() + 1));
-            }
-        }
-       */
         mAdapter =
                 new FragmentNavigationAdapter(this, R.layout.fragment_navigation_titles, navTitle);
-
-        //mAdapter = new ArrayAdapter<>(this, R.layout.fragment_navigation_titles, questionNums);
 
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //goToQuestion(position);
                 addDrawerItems();
             }
         });
@@ -789,6 +793,11 @@ public class AdminActivity extends AppCompatActivity {
                         remDb.findIndexOfEntry(classTable, quizParent.first, quizParent.second,
                                 "class","child",
                                 getApplicationContext().getString(R.string.remotePass),loginUrl );
+
+                /*TODO UPDATE makes the current the empty string, but doesn't move all the entries
+                  to the left to fill the space left by the deleted entry. This is a problem because
+                  the insert method assumes it can insert in the leftmost child column.
+                */
                 String delQuiz = "UPDATE `"+classTable+"` SET child"+indexOfSel+
                         "='' WHERE class='"+quizParent.second+"'";
                 remDb.queryRemote(getApplicationContext().getString(R.string.remotePass),
