@@ -5,37 +5,32 @@ package com.example.jennifertran.cse110practice;
  */
 // MainActivityInstrumentationTest.java
 
-import android.app.Application;
-import android.support.test.rule.ActivityTestRule;
-import android.test.ApplicationTestCase;
-
-import org.junit.Rule;
-import org.junit.Test;
+import android.test.ActivityInstrumentationTestCase2;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 // Tests for MainActivity
-public class MainActivityInstrumentationTest extends ApplicationTestCase<Application> {
+public class MainActivityInstrumentationTest extends ActivityInstrumentationTestCase2<LoginActivity> {
     public MainActivityInstrumentationTest() {
-        super(Application.class);
+        super(LoginActivity.class);
     }
 
     // Preferred JUnit 4 mechanism of specifying the activity to be launched before each test
-    @Rule
-    public ActivityTestRule<MainActivity> activityTestRule =
-            new ActivityTestRule<>(MainActivity.class);
 
-    
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        getActivity();
+    }
+
+
     // Looks for an EditText with id = "R.id.etInput"
     // Types the text "Hello" into the EditText
     // Verifies the EditText has text "Hello"
-    @Test
-    public void validateEditText() {
+    public void testValidateEditText() {
         onView(withId(R.id.login_page_username))
                 .perform(typeText("a"));
         onView(withId(R.id.login_page_password))
