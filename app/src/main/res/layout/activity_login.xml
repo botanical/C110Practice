@@ -99,7 +99,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:id="@+id/login_page_password_text"
             android:gravity="center_vertical|start"
             android:textSize="@dimen/login_page_username_field_label_text_size"
             android:textColor="@color/login_page_fg"

@@ -120,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent adminIntent = new Intent(LoginActivity.this, AdminActivity.class);
                                 adminIntent.putExtra("username", username);
                                 startActivity(adminIntent);
+                                finish();
                             }
                             else
                             {
@@ -137,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this, SubjectNavActivity.class);
                             intent.putExtra("username", args.getString("username"));
                             startActivity(intent);
+                            finish();
                         }
                         else
                             Toast.makeText(LoginActivity.this,"Your credentials....failed.",
@@ -185,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             Intent reg = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(reg);
+            finish();
         }
 
     /*********** Hide keyboard and unfocus currently focused EditText ********************/

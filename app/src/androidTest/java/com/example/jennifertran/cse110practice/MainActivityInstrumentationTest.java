@@ -45,6 +45,7 @@ public class MainActivityInstrumentationTest extends ActivityInstrumentationTest
         onView(withId(R.id.login_page_register_button))
                 .perform(click());
     }
+
     public void testPassword() {
         onView(withId(R.id.login_page_username))
                 .perform(typeText("a"), closeSoftKeyboard());
